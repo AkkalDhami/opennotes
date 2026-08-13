@@ -21,7 +21,7 @@ export function Heading({
     <Tag
       {...props}
       className={cn(
-        "font-heading text-3xl font-semibold sm:text-4xl",
+        "font-heading text-3xl font-medium sm:text-4xl",
         as === "h2" && "text-2xl font-medium sm:text-3xl",
         className
       )}
