@@ -1,11 +1,11 @@
-import { UpdateProfileType } from "@/validations/auth"
+import { UserType } from "@/types/auth"
 import { create } from "zustand"
 import { devtools } from "zustand/middleware"
 
 export type ModalType = "update-profile" | "update-note"
 
 export interface ModalData {
-  profile?: UpdateProfileType & { id: string }
+  profile?: Omit<UserType, "role" | "emailVerified" | "email">
 }
 
 export interface ModalStore {

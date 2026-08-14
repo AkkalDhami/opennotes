@@ -9,7 +9,7 @@ export type UserType = {
   email: string
   username: string
   emailVerified: boolean
-  bio?: string
+  bio?: string | null
   avatar: string | null
   role: "ADMIN" | "MODERATOR" | "USER"
 }
