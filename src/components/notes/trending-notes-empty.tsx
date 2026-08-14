@@ -21,7 +21,7 @@ export function TrendingNotesEmpty() {
           Be one of the first to share a note with the community.
         </p>
       </div>
-      <Link href="/upload" className={cn(buttonVariants(), "mt-1")}>
+      <Link href="/contribution" className={cn(buttonVariants(), "mt-1")}>
         Share your notes
       </Link>
     </div>
