@@ -33,6 +33,8 @@ export default async function AdminLayout({
           avatar: user.avatar,
           role: user.role,
           username: user.username,
+          bio: user.bio,
+          emailVerified: user.emailVerified ?? false,
         }}
       />
       <SidebarInset>

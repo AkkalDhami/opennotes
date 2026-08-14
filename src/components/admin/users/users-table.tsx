@@ -13,6 +13,8 @@ import { UserAvatar } from "@/components/admin/users/user-avatar"
 import { EmailStatus } from "@/components/admin/users/email-status"
 import { UserRowActions } from "@/components/admin/users/user-row-actions"
 import type { AdminUser } from "@/lib/admin/users"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { CheckmarkBadge01Icon } from "@hugeicons/core-free-icons"
 
 interface UsersTableProps {
   users: AdminUser[]
@@ -36,7 +38,6 @@ export function UsersTable({ users }: UsersTableProps) {
         <TableHeader>
           <TableRow>
             <TableHead>User</TableHead>
-            <TableHead>Username</TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Role</TableHead>
             <TableHead>Email Status</TableHead>
@@ -62,14 +63,24 @@ export function UsersTable({ users }: UsersTableProps) {
                       avatarUrl={user.avatar}
                       className="size-9"
                     />
-                    <span className="font-medium text-foreground group-hover:underline">
-                      {displayName}
-                    </span>
+                    <div className="flex flex-col">
+                      <div className="flex items-center gap-1 font-medium text-foreground group-hover:underline">
+                        {displayName}
+                        {user.emailVerified && (
+                          <HugeiconsIcon
+                            icon={CheckmarkBadge01Icon}
+                            size={18}
+                            color="currentColor"
+                            strokeWidth={1.8}
+                            className="size-4 stroke-blue-600 text-white fill-blue-600"
+                          />
+                        )}
+                      </div>
+                      <span className="text-muted-foreground">
+                        {user.username ? `@${user.username}` : "—"}
+                      </span>
+                    </div>
                   </Link>
-                </TableCell>
-
-                <TableCell className="text-muted-foreground">
-                  {user.username ? `@${user.username}` : "—"}
                 </TableCell>
 
                 <TableCell>
