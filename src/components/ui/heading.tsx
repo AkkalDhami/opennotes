@@ -1,13 +1,12 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import { HTMLMotionProps, motion } from "motion/react"
 import React from "react"
 
 type HeadingProps = {
   as?: "h1" | "h2"
   children: React.ReactNode
-} & Omit<HTMLMotionProps<"h1">, "children">
+} & React.ComponentProps<"h1">
 
 export function Heading({
   children,
@@ -15,7 +14,7 @@ export function Heading({
   className,
   ...props
 }: HeadingProps) {
-  const Tag = as === "h1" ? motion.h1 : motion.h2
+  const Tag = as === "h1" ? "h1" : "h2"
 
   return (
     <Tag
