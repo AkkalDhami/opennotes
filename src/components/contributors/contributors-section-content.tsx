@@ -6,10 +6,10 @@ import { motion, useReducedMotion, type Variants } from "motion/react"
 import { Button } from "@/components/ui/button"
 import { ContributorCard } from "@/components/contributors/contributor-card"
 import type { Contributor } from "@/types/contributor"
-import { Reveal } from "../shared/reveal"
-import { SectionHeader } from "../shared/section-header"
-import { SubHeading } from "../ui/sub-heading";
-import { Heading } from "../ui/heading";
+import { Reveal } from "@/components/shared/reveal"
+import { SectionHeader } from "@/components/shared/section-header"
+import { SubHeading } from "@/components/ui/sub-heading"
+import { Heading } from "@/components/ui/heading"
 
 interface ContributorsSectionContentProps {
   contributors: Contributor[]
@@ -60,7 +60,8 @@ export function ContributorsSectionContent({
         </motion.div>
         <motion.div variants={item}>
           <Button
-            render={<Link href="/upload">Share Your Notes</Link>}
+            nativeButton={false}
+            render={<Link href="/contribution">Share Your Notes</Link>}
           ></Button>
         </motion.div>
       </motion.div>
@@ -103,7 +104,8 @@ export function ContributorsSectionContent({
         </SubHeading>
         <Button
           variant="brand"
-          render={<Link href="/upload">Share Your Notes</Link>}
+          nativeButton={false}
+          render={<Link href="/contribution">Share Your Notes</Link>}
           className="mt-2 px-4 py-4"
         ></Button>
       </motion.div>

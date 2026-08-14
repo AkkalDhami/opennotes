@@ -1,81 +1,152 @@
 "use client"
 
-import { signIn, useSession } from "next-auth/react"
+import { useSession } from "next-auth/react"
+import { signIn } from "next-auth/react"
 import { redirect } from "next/navigation"
+
 import { Button } from "@/components/ui/button"
+import { APP_NAME } from "@/constants/app.constants"
+import Link from "next/link"
 
 export function GoogleAndGitHubSignin() {
-  const session = useSession()
+  const { status } = useSession()
 
-  if (session.status === "authenticated") {
-    return redirect("/profile")
+  if (status === "authenticated") {
+    redirect("/")
   }
 
   return (
-    <div className={"mt-4 flex flex-col items-center justify-center"}>
-      <h3 className="text-xl font-medium uppercase">Continue with</h3>
-      <div className="mt-3 grid w-100 grid-cols-2 gap-3">
-        <Button
-          variant={"secondary"}
-          onClick={() =>
-            signIn("google", {
-              callbackUrl: "/",
-            })
-          }
-          type="button"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 128 128"
-          >
-            <path
-              fill="#fff"
-              d="M44.59 4.21a63.28 63.28 0 0 0 4.33 120.9a67.6 67.6 0 0 0 32.36.35a57.13 57.13 0 0 0 25.9-13.46a57.44 57.44 0 0 0 16-26.26a74.3 74.3 0 0 0 1.61-33.58H65.27v24.69h34.47a29.72 29.72 0 0 1-12.66 19.52a36.2 36.2 0 0 1-13.93 5.5a41.3 41.3 0 0 1-15.1 0A37.2 37.2 0 0 1 44 95.74a39.3 39.3 0 0 1-14.5-19.42a38.3 38.3 0 0 1 0-24.63a39.25 39.25 0 0 1 9.18-14.91A37.17 37.17 0 0 1 76.13 27a34.3 34.3 0 0 1 13.64 8q5.83-5.8 11.64-11.63c2-2.09 4.18-4.08 6.15-6.22A61.2 61.2 0 0 0 87.2 4.59a64 64 0 0 0-42.61-.38"
-            />
-            <path
-              fill="#e33629"
-              d="M44.59 4.21a64 64 0 0 1 42.61.37a61.2 61.2 0 0 1 20.35 12.62c-2 2.14-4.11 4.14-6.15 6.22Q95.58 29.23 89.77 35a34.3 34.3 0 0 0-13.64-8a37.17 37.17 0 0 0-37.46 9.74a39.25 39.25 0 0 0-9.18 14.91L8.76 35.6A63.53 63.53 0 0 1 44.59 4.21"
-            />
-            <path
-              fill="#f8bd00"
-              d="M3.26 51.5a63 63 0 0 1 5.5-15.9l20.73 16.09a38.3 38.3 0 0 0 0 24.63q-10.36 8-20.73 16.08a63.33 63.33 0 0 1-5.5-40.9"
-            />
-            <path
-              fill="#587dbd"
-              d="M65.27 52.15h59.52a74.3 74.3 0 0 1-1.61 33.58a57.44 57.44 0 0 1-16 26.26c-6.69-5.22-13.41-10.4-20.1-15.62a29.72 29.72 0 0 0 12.66-19.54H65.27c-.01-8.22 0-16.45 0-24.68"
-            />
-            <path
-              fill="#319f43"
-              d="M8.75 92.4q10.37-8 20.73-16.08A39.3 39.3 0 0 0 44 95.74a37.2 37.2 0 0 0 14.08 6.08a41.3 41.3 0 0 0 15.1 0a36.2 36.2 0 0 0 13.93-5.5c6.69 5.22 13.41 10.4 20.1 15.62a57.13 57.13 0 0 1-25.9 13.47a67.6 67.6 0 0 1-32.36-.35a63 63 0 0 1-23-11.59A63.7 63.7 0 0 1 8.75 92.4"
-            />
-          </svg>
-          Google
-        </Button>
+    <div className="flex min-h-svh w-full items-center justify-center bg-background px-4 py-8">
+      <div className="w-full max-w-md">
+        <div className="mb-8 text-center">
+          <Link href="/" className="text-2xl font-medium tracking-tight">
+            {APP_NAME}
+          </Link>
 
-        <Button
-          variant={"secondary"}
-          onClick={() =>
-            signIn("github", {
-              callbackUrl: "/",
-            })
-          }
-          type="button"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 64 64"
-          >
-            <path
-              fill="currentColor"
-              d="M32 0C14 0 0 14 0 32c0 21 19 30 22 30c2 0 2-1 2-2v-5c-7 2-10-2-11-5c0 0 0-1-2-3c-1-1-5-3-1-3c3 0 5 4 5 4c3 4 7 3 9 2c0-2 2-4 2-4c-8-1-14-4-14-15q0-6 3-9s-2-4 0-9c0 0 5 0 9 4c3-2 13-2 16 0c4-4 9-4 9-4c2 7 0 9 0 9q3 3 3 9c0 11-7 14-14 15c1 1 2 3 2 6v8c0 1 0 2 2 2c3 0 22-9 22-30C64 14 50 0 32 0"
-            />
-          </svg>
-          GitHub
-        </Button>
+          <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-muted-foreground">
+            A place where students discover, share, and learn from notes
+            together.
+          </p>
+        </div>
+
+        <div className="rounded-lg border bg-card p-6 shadow-sm sm:p-8">
+          <div className="text-center">
+            <h2 className="text-xl font-semibold tracking-tight">
+              Welcome back
+            </h2>
+
+            <p className="mt-2 text-sm text-muted-foreground">
+              Sign in to continue to your account.
+            </p>
+          </div>
+
+          {/* OAuth buttons */}
+          <div className="mt-7 space-y-3">
+            <Button
+              type="button"
+              variant="outline"
+              className="h-11 w-full"
+              disabled={status === "loading"}
+              onClick={() =>
+                signIn("google", {
+                  callbackUrl: "/",
+                })
+              }
+            >
+              {/* Google */}
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  fill="#4285F4"
+                  d="M21.35 12.23c0-.79-.07-1.55-.2-2.27H12v4.3h5.24a4.48 4.48 0 0 1-1.94 2.94v2.45h3.14c1.84-1.7 2.91-4.21 2.91-7.42Z"
+                />
+                <path
+                  fill="#34A853"
+                  d="M12 21.75c2.63 0 4.84-.87 6.45-2.35l-3.14-2.45c-.87.58-1.98.93-3.31.93-2.54 0-4.69-1.72-5.46-4.03H3.3v2.53A9.75 9.75 0 0 0 12 21.75Z"
+                />
+                <path
+                  fill="#FBBC05"
+                  d="M6.54 13.85A5.86 5.86 0 0 1 6.23 12c0-.64.11-1.27.31-1.85V7.62H3.3A9.75 9.75 0 0 0 2.25 12c0 1.57.38 3.05 1.05 4.38l3.24-2.53Z"
+                />
+                <path
+                  fill="#EA4335"
+                  d="M12 6.12c1.43 0 2.71.49 3.72 1.45l2.79-2.79C16.84 3.2 14.63 2.25 12 2.25a9.75 9.75 0 0 0-8.7 5.37l3.24 2.53C7.31 7.84 9.46 6.12 12 6.12Z"
+                />
+              </svg>
+
+              <span>Continue with Google</span>
+            </Button>
+
+            <Button
+              type="button"
+              variant="outline"
+              className="h-11 w-full"
+              disabled={status === "loading"}
+              onClick={() =>
+                signIn("github", {
+                  callbackUrl: "/",
+                })
+              }
+            >
+              {/* GitHub */}
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path d="M12 .5a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.04c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.33-1.76-1.33-1.76-1.09-.75.08-.73.08-.73 1.2.08 1.84 1.23 1.84 1.23 1.07 1.84 2.8 1.31 3.49 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.23-3.22-.12-.3-.53-1.52.12-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.3-1.55 3.3-1.23 3.3-1.23.65 1.66.24 2.88.12 3.18.76.84 1.23 1.91 1.23 3.22 0 4.61-2.81 5.62-5.49 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.69.83.58A12 12 0 0 0 12 .5Z" />
+              </svg>
+
+              <span>Continue with GitHub</span>
+            </Button>
+          </div>
+
+          {/* Divider */}
+          <div className="my-7 flex items-center gap-3">
+            <div className="h-px flex-1 bg-border" />
+
+            <span className="shrink-0 text-xs text-muted-foreground">
+              Secure authentication
+            </span>
+
+            <div className="h-px flex-1 bg-border" />
+          </div>
+
+          {/* Terms */}
+          <p className="text-center text-xs leading-5 text-muted-foreground">
+            By continuing, you agree to our{" "}
+            <a
+              href="/terms"
+              className="font-medium text-foreground underline underline-offset-4 hover:text-primary"
+            >
+              Terms of Service
+            </a>{" "}
+            and{" "}
+            <a
+              href="/privacy"
+              className="font-medium text-foreground underline underline-offset-4 hover:text-primary"
+            >
+              Privacy Policy
+            </a>
+            .
+          </p>
+        </div>
+
+        {/* Footer */}
+        <div className="mt-6 text-center">
+          <p className="text-sm text-muted-foreground">
+            Study together.{" "}
+            <span className="font-medium text-foreground">
+              Share knowledge.
+            </span>
+          </p>
+        </div>
       </div>
     </div>
   )
