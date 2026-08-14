@@ -1,4 +1,4 @@
-import type { Contributor } from "@/types/contributor";
+import { Contributor } from "@/types/contributor"
 
 /**
  * Temporary mock data for the homepage Contributors section.
@@ -55,4 +55,4 @@ export const mockContributors: Contributor[] = [
     subject: "Biology",
     notesCount: 11,
   },
-];
+]

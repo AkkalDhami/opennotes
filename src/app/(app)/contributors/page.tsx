@@ -1,5 +1,3 @@
-import type { Metadata } from "next"
-
 import { ContributorPagination } from "@/components/admin/contributors/contributor-pagination"
 import { ContributorSearch } from "@/components/admin/contributors/contributor-search"
 import { ContributorSortSelect } from "@/components/admin/contributors/contributor-sort"
@@ -9,14 +7,15 @@ import { ContributorsEmptyState } from "@/components/admin/contributors/contribu
 import { ContributorsGrid } from "@/components/admin/contributors/contributors-grid"
 import { TopContributors } from "@/components/admin/contributors/top-contributors"
 import {
+  ContributorSort,
   getContributors,
   getContributorStats,
   getTopContributors,
-  type ContributorSort,
 } from "@/components/admin/contributors/queries"
 import { Container } from "@/components/ui/container"
 import { Heading } from "@/components/ui/heading"
 import { SubHeading } from "@/components/ui/sub-heading"
+import { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "Contributors | NotesApp",

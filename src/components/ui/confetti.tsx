@@ -1,6 +1,6 @@
 "use client"
 
-import type { ReactNode } from "react"
+import { ReactNode } from "react"
 import React, {
   createContext,
   forwardRef,
@@ -10,7 +10,7 @@ import React, {
   useMemo,
   useRef,
 } from "react"
-import type {
+import {
   GlobalOptions as ConfettiGlobalOptions,
   CreateTypes as ConfettiInstance,
   Options as ConfettiOptions,

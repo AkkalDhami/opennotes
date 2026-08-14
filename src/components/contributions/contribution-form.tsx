@@ -21,14 +21,11 @@ import {
 
 import {
   PdfUpload,
-  type PdfUploadStatus,
+  PdfUploadStatus,
 } from "@/components/contributions/pdf-upload"
 import { SearchSelect } from "@/components/shared/search-select"
 
-import {
-  contributionFormSchema,
-  type ContributionFormValues,
-} from "@/validations/contribution"
+import { contributionFormSchema, ContributionFormValues } from "@/validations/contribution"
 import {
   COURSE_LEVELS,
   EDUCATIONAL_LEVELS,
@@ -451,10 +448,10 @@ function submitWithProgress(
     }
 
     xhr.onload = () => {
-      console.log("STATUS:", xhr.status)
-      console.log("STATUS TEXT:", xhr.statusText)
-      console.log("CONTENT TYPE:", xhr.getResponseHeader("content-type"))
-      console.log("RESPONSE:", JSON.stringify(xhr.responseText))
+      // console.log("STATUS:", xhr.status)
+      // console.log("STATUS TEXT:", xhr.statusText)
+      // console.log("CONTENT TYPE:", xhr.getResponseHeader("content-type"))
+      // console.log("RESPONSE:", JSON.stringify(xhr.responseText))
 
       if (!xhr.responseText) {
         reject(new Error(`Empty response from server. HTTP ${xhr.status}`))

@@ -1,5 +1,5 @@
 import "server-only"
-import type { NoteStatus } from "@/db/schemas/note.schema"
+import { NoteStatus } from "@/db/schemas/note.schema"
 
 /**
  * The single source of truth for which status transitions are allowed.

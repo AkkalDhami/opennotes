@@ -5,11 +5,9 @@ import {
 } from "@hugeicons/core-free-icons"
 
 import { Card, CardContent } from "@/components/ui/card"
-import type { ContributorStats } from "./queries"
+import { ContributorStats } from "./queries"
 import { HugeiconsIcon } from "@hugeicons/react"
 
-// NOTE: verify these hugeicons-react export names against your installed
-// version — icon names occasionally change between package versions.
 const STAT_ICONS = [UserGroupIcon, BookOpen01Icon, Album02Icon]
 
 export function ContributorStatsSection({

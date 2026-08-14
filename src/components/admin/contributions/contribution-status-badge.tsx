@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
-import type { NoteStatus } from "@/db/schemas/note.schema"
+import { NoteStatus } from "@/db/schemas/note.schema"
 
 const STATUS_CONFIG: Record<
   NoteStatus,

@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-import type { SelectOption } from "@/components/shared/search-select"
+import { SelectOption } from "@/components/shared/search-select"
 
 const NONE_VALUE = "__none__"
 

@@ -11,7 +11,7 @@ import { ApproveContributionButton } from "./approve-contribution-button"
 import { RejectContributionDialog } from "./reject-contribution-dialog"
 import { RemoveContributionDialog } from "./remove-contribution-dialog"
 import { RestoreContributionDialog } from "./restore-contribution-dialog"
-import type { NoteStatus } from "@/db/schemas/note.schema"
+import { NoteStatus } from "@/db/schemas/note.schema"
 
 export function ContributionActions({
   noteId,

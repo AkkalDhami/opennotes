@@ -5,7 +5,7 @@ import { motion, useReducedMotion, type Variants } from "motion/react"
 
 import { Button } from "@/components/ui/button"
 import { ContributorCard } from "@/components/contributors/contributor-card"
-import type { Contributor } from "@/types/contributor"
+import { Contributor } from "@/types/contributor"
 import { Reveal } from "@/components/shared/reveal"
 import { SectionHeader } from "@/components/shared/section-header"
 import { SubHeading } from "@/components/ui/sub-heading"

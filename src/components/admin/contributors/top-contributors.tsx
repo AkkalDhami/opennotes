@@ -1,4 +1,4 @@
-import type { ContributorListItem } from "./queries"
+import { ContributorListItem } from "./queries"
 import { ContributorCard } from "./contributor-card"
 import { Heading } from "@/components/ui/heading"
 

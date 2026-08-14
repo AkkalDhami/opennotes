@@ -8,11 +8,8 @@ import { RejectContributionDialog } from "./reject-contribution-dialog"
 import { RemoveContributionDialog } from "./remove-contribution-dialog"
 import { RestoreContributionDialog } from "./restore-contribution-dialog"
 import { formatFullDate } from "@/lib/notes/format-date"
-import type {
-  AdminContributionDetail,
-  ContributorStats,
-} from "@/lib/notes/queries"
-import { slugify, slugToTitle } from "@/utils/slug"
+import { AdminContributionDetail, ContributorStats } from "@/lib/notes/queries"
+import { slugToTitle } from "@/utils/slug"
 
 function MetaRow({ label, value }: { label: string; value: React.ReactNode }) {
   return (
@@ -99,7 +96,11 @@ export function ContributionDetail({
             <CardTitle className="text-base">PDF Preview</CardTitle>
           </CardHeader>
           <CardContent>
-            <ContributionPdfPreview fileUrl={fileUrl} noteId={note.id} title={note.title} />
+            <ContributionPdfPreview
+              fileUrl={fileUrl}
+              noteId={note.id}
+              title={note.title}
+            />
           </CardContent>
         </Card>
       </div>

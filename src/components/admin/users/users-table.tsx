@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge"
 import { UserAvatar } from "@/components/admin/users/user-avatar"
 import { EmailStatus } from "@/components/admin/users/email-status"
 import { UserRowActions } from "@/components/admin/users/user-row-actions"
-import type { AdminUser } from "@/lib/admin/users"
+import { AdminUser } from "@/lib/admin/users"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { CheckmarkBadge01Icon } from "@hugeicons/core-free-icons"
 

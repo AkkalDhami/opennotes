@@ -1,5 +1,5 @@
 import { mockContributors } from "@/data/contributors";
-import type { Contributor } from "@/types/contributor";
+import { Contributor } from "@/types/contributor";
 
 /**
  * Returns the contributors shown on the homepage.

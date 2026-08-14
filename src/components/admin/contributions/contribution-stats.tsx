@@ -1,7 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import type { AdminContributionStats } from "@/lib/notes/queries"
+import { AdminContributionStats } from "@/lib/notes/queries"
 
-export function ContributionStats({ stats }: { stats: AdminContributionStats }) {
+export function ContributionStats({
+  stats,
+}: {
+  stats: AdminContributionStats
+}) {
   const cards = [
     {
       label: "Pending Review",
@@ -35,7 +39,7 @@ export function ContributionStats({ stats }: { stats: AdminContributionStats }) 
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-semibold tabular-nums text-foreground">
+            <div className="text-3xl font-semibold text-foreground tabular-nums">
               {card.value.toLocaleString()}
             </div>
             <p className="mt-1 text-xs text-muted-foreground">{card.hint}</p>

@@ -5,7 +5,7 @@ import { ArrowRight02Icon } from "@hugeicons/core-free-icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import type { Contributor } from "@/types/contributor";
+import { Contributor } from "@/types/contributor";
 
 const ROLE_LABEL: Record<NonNullable<Contributor["role"]>, string> = {
   student: "Student",

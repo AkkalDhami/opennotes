@@ -6,7 +6,7 @@ import {
   Download01Icon,
 } from "@hugeicons/core-free-icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import type { Note } from "@/data/notes";
+import { Note } from "@/data/notes";
 import { HugeiconsIcon } from "@hugeicons/react";
 
 interface NoteCardProps {

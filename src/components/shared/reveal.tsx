@@ -1,13 +1,13 @@
-"use client";
+"use client"
 
-import { motion, useReducedMotion, type Variants } from "motion/react";
-import type { ReactNode } from "react";
+import { motion, useReducedMotion, Variants } from "motion/react"
+import { ReactNode } from "react"
 
-const EASE = [0.22, 1, 0.36, 1] as const;
+const EASE = [0.22, 1, 0.36, 1] as const
 
 interface RevealProps {
-  children: ReactNode;
-  className?: string;
+  children: ReactNode
+  className?: string
 }
 
 /**
@@ -15,7 +15,7 @@ interface RevealProps {
  * Used for section headings.
  */
 export function Reveal({ children, className }: RevealProps) {
-  const shouldReduceMotion = useReducedMotion();
+  const shouldReduceMotion = useReducedMotion()
 
   return (
     <motion.div
@@ -27,12 +27,12 @@ export function Reveal({ children, className }: RevealProps) {
     >
       {children}
     </motion.div>
-  );
+  )
 }
 
 interface StaggerGroupProps {
-  children: ReactNode;
-  className?: string;
+  children: ReactNode
+  className?: string
 }
 
 const containerVariants: Variants = {
@@ -43,7 +43,7 @@ const containerVariants: Variants = {
       delayChildren: 0.1,
     },
   },
-};
+}
 
 const itemVariants: Variants = {
   hidden: { opacity: 0, y: 16 },
@@ -52,7 +52,7 @@ const itemVariants: Variants = {
     y: 0,
     transition: { duration: 0.45, ease: EASE },
   },
-};
+}
 
 /**
  * Wraps a grid/list of cards; each direct child staggers in on viewport
@@ -60,10 +60,10 @@ const itemVariants: Variants = {
  * `popular-subjects.tsx` / `trending-notes.tsx`.
  */
 export function StaggerGroup({ children, className }: StaggerGroupProps) {
-  const shouldReduceMotion = useReducedMotion();
+  const shouldReduceMotion = useReducedMotion()
 
   if (shouldReduceMotion) {
-    return <div className={className}>{children}</div>;
+    return <div className={className}>{children}</div>
   }
 
   return (
@@ -76,19 +76,19 @@ export function StaggerGroup({ children, className }: StaggerGroupProps) {
     >
       {children}
     </motion.div>
-  );
+  )
 }
 
 export function StaggerItem({ children, className }: StaggerGroupProps) {
-  const shouldReduceMotion = useReducedMotion();
+  const shouldReduceMotion = useReducedMotion()
 
   if (shouldReduceMotion) {
-    return <div className={className}>{children}</div>;
+    return <div className={className}>{children}</div>
   }
 
   return (
     <motion.div className={className} variants={itemVariants}>
       {children}
     </motion.div>
-  );
+  )
 }

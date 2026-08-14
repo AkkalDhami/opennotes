@@ -14,7 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import type { NoteStatus } from "@/db/schemas/note.schema"
+import { NoteStatus } from "@/db/schemas/note.schema"
 import { restoreContribution } from "@/lib/admin/contributions"
 
 export function RestoreContributionDialog({

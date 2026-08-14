@@ -2,7 +2,10 @@
 
 import { useState } from "react"
 
-import { ArrowDown01Icon, CheckmarkCircle01Icon, Tick02Icon } from "@hugeicons/core-free-icons"
+import {
+  ArrowDown01Icon,
+  CheckmarkCircle01Icon,
+} from "@hugeicons/core-free-icons"
 
 import { HugeiconsIcon } from "@hugeicons/react"
 
