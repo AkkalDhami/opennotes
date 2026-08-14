@@ -16,7 +16,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import { LayoutBottomIcon } from "@hugeicons/core-free-icons"
 import { AdminProfile } from "@/components/admin/admin-profile"
-import { APP_NAME } from "@/constants/app.constant"
+import { APP_NAME } from "@/constants/app.constants"
 
 import {
   DashboardSquare02Icon,
@@ -29,72 +29,45 @@ import { UserType } from "@/types/auth"
 const data = {
   navMain: [
     {
+      title: "Home",
+      url: "/",
+      icon: <HugeiconsIcon icon={DashboardSquare02Icon} strokeWidth={2} />,
+    },
+    {
       title: "Dashboard",
-      url: "#",
+      url: "/admin/dashboard",
       icon: <HugeiconsIcon icon={DashboardSquare02Icon} strokeWidth={2} />,
       isActive: true,
-      items: [
-        {
-          title: "Home",
-          url: "/",
-        },
-        {
-          title: "Dashboard",
-          url: "/admin/dashboard",
-        },
-      ],
     },
-
     {
-      title: "Content",
-      url: "#",
+      title: "All Notes",
+      url: "/admin/notes",
       icon: <HugeiconsIcon icon={File01Icon} strokeWidth={2} />,
-      items: [
-        {
-          title: "All Notes",
-          url: "/admin/notes",
-        },
-        {
-          title: "Pending Reviews",
-          url: "/admin/notes/pending",
-        },
-        {
-          title: "Subjects",
-          url: "/admin/subjects",
-        },
-      ],
     },
-
     {
-      title: "Community",
-      url: "#",
-      icon: <HugeiconsIcon icon={UserGroupIcon} strokeWidth={2} />,
-      items: [
-        {
-          title: "Users",
-          url: "/admin/users",
-        },
-        {
-          title: "Contributors",
-          url: "/admin/contributors",
-        },
-        {
-          title: "Reports",
-          url: "/admin/reports",
-        },
-      ],
+      title: "Pending Reviews",
+      url: "/admin/notes/pending",
+      icon: <HugeiconsIcon icon={File01Icon} strokeWidth={2} />,
     },
-
+    {
+      title: "Contributions",
+      url: "/admin/contributions",
+      icon: <HugeiconsIcon icon={File01Icon} strokeWidth={2} />,
+    },
+    {
+      title: "Users",
+      url: "/admin/users",
+      icon: <HugeiconsIcon icon={UserGroupIcon} strokeWidth={2} />,
+    },
+    {
+      title: "Reports",
+      url: "/admin/reports",
+      icon: <HugeiconsIcon icon={UserGroupIcon} strokeWidth={2} />,
+    },
     {
       title: "Settings",
-      url: "#",
+      url: "/admin/settings",
       icon: <HugeiconsIcon icon={Settings02Icon} strokeWidth={2} />,
-      items: [
-        {
-          title: "General",
-          url: "/admin/settings",
-        },
-      ],
     },
   ],
 }

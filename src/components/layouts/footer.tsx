@@ -1,4 +1,4 @@
-import { APP_NAME } from "@/constants/app.constant"
+import { APP_NAME } from "@/constants/app.constants"
 import Link from "next/link"
 
 export function Footer() {

@@ -1,18 +1,24 @@
-import { APP_NAME } from "@/constants/app.constant"
+import { APP_NAME } from "@/constants/app.constants"
 import { Menu01Icon, Search01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import Link from "next/link"
 import { ThemeToggle } from "../shared/theme-toggle"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { CommandMenu } from "../search/search-box"
+import { Route } from "next"
+import { UserAvatar } from "../admin/users/user-avatar"
+import { getCurrentUser } from "@/lib/auth/get-current-user"
+import { cn } from "@/lib/utils"
 
 const links = [
   { href: "/notes", label: "Notes" },
-  { href: "/subjects", label: "Subjects" },
+  // { href: "/subjects", label: "Subjects" },
   { href: "/contributors", label: "Contributors" },
 ]
 
-export function Navbar() {
+export async function Navbar() {
+  const user = await getCurrentUser()
+
   return (
     <header className="sticky top-0 z-40 border-b bg-background backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 border-x px-4">
@@ -31,7 +37,7 @@ export function Navbar() {
           {links.map((l) => (
             <Link
               key={l.href}
-              href={l.href}
+              href={l.href as Route}
               className="text-muted-foreground hover:text-foreground"
             >
               {l.label}
@@ -44,19 +50,34 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button
-            variant={"ghost"}
-            className="hidden rounded-full px-4 hover:bg-muted md:flex"
+          <Link
+            href="/contribution"
+            className={cn(
+              buttonVariants({
+                variant: "ghost",
+              }),
+              "hidden rounded-full px-4 hover:bg-muted md:flex"
+            )}
           >
             Share Your Notes
-          </Button>
+          </Link>
 
-          <Button
-            variant={"brand"}
-            className="hidden rounded-full px-4 md:flex"
-          >
-            Login
-          </Button>
+          {user?.id ? (
+            <UserAvatar avatarUrl={user.avatar ?? ""} name={user?.name ?? ""} />
+          ) : (
+            <Link
+              href="/signin"
+              className={cn(
+                buttonVariants({
+                  variant: "brand",
+                }),
+                "hidden rounded-full px-4 md:flex"
+              )}
+            >
+              Login
+            </Link>
+          )}
+
           <ThemeToggle />
 
           <Button
