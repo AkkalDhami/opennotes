@@ -21,7 +21,7 @@ export function SubjectCard({ subject }: SubjectCardProps) {
           <HugeiconsIcon
             icon={Icon}
             size={21}
-            strokeWidth={1.8}
+            strokeWidth={2}
             className="size-5"
             aria-hidden="true"
           />
