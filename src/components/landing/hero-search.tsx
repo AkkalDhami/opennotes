@@ -1,15 +1,16 @@
 "use client"
 
-import { FormEvent, useState } from "react"
+import { FormEvent, SyntheticEvent, useState } from "react"
 import { useRouter } from "next/navigation"
 import { ArrowRight01Icon, Search01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { Route } from "next"
 
 export function HeroSearch() {
   const router = useRouter()
   const [query, setQuery] = useState("")
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  function handleSubmit(event: SyntheticEvent) {
     event.preventDefault()
 
     const trimmedQuery = query.trim()
@@ -18,7 +19,7 @@ export function HeroSearch() {
       return
     }
 
-    router.push(`/search?q=${encodeURIComponent(trimmedQuery)}`)
+    router.push(`/search?q=${encodeURIComponent(trimmedQuery)}` as Route)
   }
 
   return (

@@ -66,7 +66,7 @@ export function HeroSection({ className }: HeroSectionProps) {
           autoRampDuration={0.6}
         />
       </div>
-      <div className="hiddenn pointer-events-none absolute inset-0 h-screen dark:hidden">
+      <div className="pointer-events-none absolute inset-0 hidden h-screen dark:hidden">
         <SideRays
           rayColor1="#f6f1df"
           rayColor2="#080e07"
@@ -105,17 +105,20 @@ export function HeroSection({ className }: HeroSectionProps) {
             variants={item}
             className="text-5xl leading-[1.05] font-medium tracking-tight sm:text-6xl lg:text-7xl"
           >
-            Study together.
+            Built by students, <br />
+            for students.
+            {/* Knowledge shouldn&lsquo;t be locked in a drive. */}
+            {/* Study together.
             <br />
-            Share knowledge.
+            Share knowledge. */}
           </motion.h1>
 
           <motion.p
             variants={item}
             className="mx-auto max-w-150 text-base leading-relaxed text-muted-foreground sm:max-w-170 sm:text-lg"
           >
-            Find and share notes, study materials, and learning resources with
-            students everywhere.
+            A free, open library of notes and study materials — search what
+            others shared, or add your own.
           </motion.p>
 
           <motion.div variants={item} className="w-full max-w-2xl">

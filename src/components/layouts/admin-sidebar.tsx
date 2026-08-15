@@ -14,7 +14,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { LayoutBottomIcon } from "@hugeicons/core-free-icons"
+import { FileStarIcon, LayoutBottomIcon, UserGroup03Icon } from "@hugeicons/core-free-icons"
 import { AdminProfile } from "@/components/admin/admin-profile"
 import { APP_NAME } from "@/constants/app.constants"
 
@@ -37,7 +37,6 @@ const data = {
       title: "Dashboard",
       url: "/admin/dashboard",
       icon: <HugeiconsIcon icon={DashboardSquare02Icon} strokeWidth={2} />,
-      isActive: true,
     },
     {
       title: "All Notes",
@@ -45,14 +44,9 @@ const data = {
       icon: <HugeiconsIcon icon={File01Icon} strokeWidth={2} />,
     },
     {
-      title: "Pending Reviews",
-      url: "/admin/notes/pending",
-      icon: <HugeiconsIcon icon={File01Icon} strokeWidth={2} />,
-    },
-    {
       title: "Contributions",
       url: "/admin/contributions",
-      icon: <HugeiconsIcon icon={File01Icon} strokeWidth={2} />,
+      icon: <HugeiconsIcon icon={FileStarIcon} strokeWidth={2} />,
     },
     {
       title: "Users",
@@ -60,9 +54,9 @@ const data = {
       icon: <HugeiconsIcon icon={UserGroupIcon} strokeWidth={2} />,
     },
     {
-      title: "Reports",
-      url: "/admin/reports",
-      icon: <HugeiconsIcon icon={UserGroupIcon} strokeWidth={2} />,
+      title: "Contributors",
+      url: "/admin/contributors",
+      icon: <HugeiconsIcon icon={UserGroup03Icon} strokeWidth={2} />,
     },
     {
       title: "Settings",

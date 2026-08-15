@@ -1,12 +1,13 @@
 import { Suspense } from "react"
 import { ContributorsSectionContent } from "@/components/contributors/contributors-section-content"
 import { ContributorsSectionFallback } from "@/components/contributors/contributors-section-fallback"
-import { getFeaturedContributors } from "@/data/get-contributors"
 import { Section } from "@/components/ui/section"
+import { getTopContributors } from "@/lib/admin/queries"
 
 async function ContributorsData() {
-  const contributors = await getFeaturedContributors(4)
-  return <ContributorsSectionContent contributors={contributors} />
+  const topContributors = await getTopContributors()
+
+  return <ContributorsSectionContent contributors={topContributors} home />
 }
 
 export function ContributorsSection() {
