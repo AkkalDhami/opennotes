@@ -1,9 +1,8 @@
-/* eslint-disable react-hooks/incompatible-library */
 "use client"
 
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { Controller, useForm } from "react-hook-form"
+import { Controller, useForm, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import toast from "react-hot-toast"
 
@@ -25,7 +24,10 @@ import {
 } from "@/components/contributions/pdf-upload"
 import { SearchSelect } from "@/components/shared/search-select"
 
-import { contributionFormSchema, ContributionFormValues } from "@/validations/contribution"
+import {
+  contributionFormSchema,
+  ContributionFormValues,
+} from "@/validations/contribution"
 import {
   COURSE_LEVELS,
   EDUCATIONAL_LEVELS,
@@ -35,6 +37,8 @@ import {
   SUBJECTS,
 } from "@/constants/notes.constants"
 import { handleConfetti } from "@/components/ui/confetti"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { CheckmarkCircle02Icon } from "@hugeicons/core-free-icons"
 
 interface ApiResponse {
   success: boolean
@@ -65,15 +69,22 @@ export function ContributionForm() {
       course: "",
       academicYear: "",
       file: undefined as unknown as File,
+      tags: "",
     },
   })
 
-  const { watch } = form
-
-  const descriptionValue = watch("description")
-  const fileValue = form.watch("file") as File | null | undefined
-  const educationLevel = watch("educationLevel")
-
+  const descriptionValue = useWatch({
+    control: form.control,
+    name: "description",
+  })
+  const fileValue = useWatch({
+    control: form.control,
+    name: "file",
+  })
+  const educationLevel = useWatch({
+    control: form.control,
+    name: "educationLevel",
+  })
   const handleFileSelect = (file: File | null) => {
     setUploadError(undefined)
     setUploadStatus("idle")
@@ -110,6 +121,7 @@ export function ContributionForm() {
       formData.append("topic", values.topic ?? "")
       formData.append("academicYear", values.academicYear ?? "")
       formData.append("file", values.file)
+      formData.append("tags", values.tags ?? "")
 
       const result = await submitWithProgress(formData, setUploadProgress)
       console.log({ result })
@@ -355,26 +367,52 @@ export function ContributionForm() {
               )}
             />
           </div>
-          <Controller
-            name="academicYear"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid} className="">
-                <FieldLabel>Academic Year</FieldLabel>
+          <div className="grid gap-6 sm:grid-cols-3">
+            <Controller
+              name="academicYear"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid} className="">
+                  <FieldLabel>Academic Year</FieldLabel>
 
-                <Input
-                  {...field}
-                  placeholder="eg. 2083-2084"
-                  disabled={isSubmitting}
-                  aria-invalid={fieldState.invalid}
-                />
+                  <Input
+                    {...field}
+                    placeholder="eg. 2083-2084"
+                    disabled={isSubmitting}
+                    aria-invalid={fieldState.invalid}
+                  />
 
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
-          />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+            <Controller
+              name="tags"
+
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field
+                  data-invalid={fieldState.invalid}
+                  className="sm:col-span-2"
+                >
+                  <FieldLabel>Tags(Comma separated)</FieldLabel>
+
+                  <Input
+                    {...field}
+                    placeholder="eg. electromagnetic induction, physics, electromagnetism"
+                    disabled={isSubmitting}
+                    aria-invalid={fieldState.invalid}
+                  />
+
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+          </div>
         </CardContent>
       </Card>
 
@@ -415,6 +453,48 @@ export function ContributionForm() {
       <p className="text-sm text-muted-foreground">
         ✓ Your submission will be reviewed before publication.
       </p>
+
+      <div className="border-t pt-5">
+        <h4 className="mb-3 text-sm font-semibold">Before you submit</h4>
+
+        <ul className="space-y-2 text-sm text-muted-foreground">
+          <li className="flex items-start gap-2">
+            <HugeiconsIcon
+              icon={CheckmarkCircle02Icon}
+              className="mt-0.5 size-4 shrink-0"
+              strokeWidth={2}
+            />
+            Title and description accurately describe the note.
+          </li>
+
+          <li className="flex items-start gap-2">
+            <HugeiconsIcon
+              icon={CheckmarkCircle02Icon}
+              className="mt-0.5 size-4 shrink-0"
+              strokeWidth={2}
+            />
+            Subject, course, and grade are correctly selected.
+          </li>
+
+          <li className="flex items-start gap-2">
+            <HugeiconsIcon
+              icon={CheckmarkCircle02Icon}
+              className="mt-0.5 size-4 shrink-0"
+              strokeWidth={2}
+            />
+            The uploaded file is readable and complete.
+          </li>
+
+          <li className="flex items-start gap-2">
+            <HugeiconsIcon
+              icon={CheckmarkCircle02Icon}
+              className="mt-0.5 size-4 shrink-0"
+              strokeWidth={2}
+            />
+            The content does not violate copyright or other rights.
+          </li>
+        </ul>
+      </div>
 
       <div className="flex justify-end gap-3">
         <Button

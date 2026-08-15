@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
 import { toast } from "react-hot-toast"
 
 import {
@@ -59,26 +60,11 @@ import {
   COURSE_LEVELS,
   EDUCATIONAL_LEVELS,
   GRADES,
+  NOTES_CATEGORIES,
+  SUBJECTS,
 } from "@/constants/notes.constants"
 import { SearchSelect } from "../shared/search-select"
-import { AdminContributionRow } from "@/lib/notes/queries"
 import { useModal } from "@/hooks/use-modal-store"
-
-export interface UpdateNoteDialogProps {
-  note: AdminContributionRow
-  open?: boolean
-  onOpenChange?: (open: boolean) => void
-
-  subjects: {
-    id: string
-    name: string
-  }[]
-
-  categories: {
-    id: string
-    name: string
-  }[]
-}
 
 const STATUS_OPTIONS: {
   value: NoteStatus
@@ -106,7 +92,7 @@ const STATUS_OPTIONS: {
   },
 ]
 
-export function UpdateNoteDialog({}) {
+export function UpdateNoteDialog() {
   const { close, isOpen, type, data } = useModal()
 
   const isModalOpen = isOpen && type === "update-note"
@@ -114,21 +100,25 @@ export function UpdateNoteDialog({}) {
   const router = useRouter()
 
   const [tagInput, setTagInput] = useState("")
-
-  const form = useForm<UpdateNoteFormValues>({
+  const { note } = data
+  const form = useForm<
+    z.input<typeof UpdateNoteSchema>,
+    unknown,
+    UpdateNoteFormValues
+  >({
     resolver: zodResolver(UpdateNoteSchema),
     defaultValues: {
-      title: note.title ?? "",
-      description: note.description ?? "",
-      subject: note.subject ?? "",
-      category: note.category ?? "",
-      educationLevel: note.educationLevel ?? "",
-      course: note.course ?? "",
-      grade: note.grade ?? "",
-      topic: note.topic ?? "",
-      academicYear: note.academicYear ?? "",
-      tags: note.tags ?? [],
-      status: note.status,
+      title: note?.title ?? "",
+      description: note?.description ?? "",
+      subject: note?.subject ?? "",
+      category: note?.category ?? "",
+      educationLevel: note?.educationLevel ?? "",
+      course: note?.course ?? "",
+      grade: note?.grade ?? "",
+      topic: note?.topic ?? "",
+      academicYear: note?.academicYear ?? "",
+      tags: note?.tags ?? [],
+      status: note?.status,
       rejectionReason: "",
     },
   })
@@ -221,7 +211,7 @@ export function UpdateNoteDialog({}) {
 
   async function onSubmit(values: UpdateNoteFormValues) {
     try {
-      const response = await fetch(`/api/admin/notes/${note.id}`, {
+      const response = await fetch(`/api/admin/notes/${note?.id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -237,7 +227,7 @@ export function UpdateNoteDialog({}) {
 
       toast.success("Note updated successfully.")
 
-      onOpenChange?.(false)
+      close()
 
       router.refresh()
     } catch (error) {
@@ -267,7 +257,7 @@ export function UpdateNoteDialog({}) {
           </DialogDescription>
 
           <div className="mt-2 rounded-lg border bg-muted/40 px-3 py-2 text-sm">
-            <span className="font-medium">Current note:</span> {note.title}
+            <span className="font-medium">Current note:</span> {note?.title}
           </div>
         </DialogHeader>
 
@@ -323,10 +313,10 @@ export function UpdateNoteDialog({}) {
 
                     <FieldContent>
                       <SearchSelect
-                        options={subjects}
+                        options={SUBJECTS}
                         value={form.watch("subject")}
                         onChange={(value) =>
-                          form.setValue("subject", value, {
+                          form.setValue("subject", value as string, {
                             shouldDirty: true,
                             shouldValidate: true,
                           })
@@ -344,10 +334,10 @@ export function UpdateNoteDialog({}) {
 
                     <FieldContent>
                       <SearchSelect
-                        options={categories}
+                        options={NOTES_CATEGORIES}
                         value={form.watch("category")}
                         onChange={(value) =>
-                          form.setValue("category", value, {
+                          form.setValue("category", value as string, {
                             shouldDirty: true,
                             shouldValidate: true,
                           })
@@ -376,7 +366,7 @@ export function UpdateNoteDialog({}) {
                       options={EDUCATIONAL_LEVELS}
                       value={form.watch("educationLevel")}
                       onChange={(value) =>
-                        form.setValue("educationLevel", value, {
+                        form.setValue("educationLevel", value as string, {
                           shouldDirty: true,
                           shouldValidate: true,
                         })
@@ -410,7 +400,7 @@ export function UpdateNoteDialog({}) {
                         }
                         value={form.watch("course") ?? ""}
                         onChange={(value) =>
-                          form.setValue("course", value, {
+                          form.setValue("course", value as string, {
                             shouldDirty: true,
                             shouldValidate: true,
                           })
@@ -435,7 +425,7 @@ export function UpdateNoteDialog({}) {
                         options={filteredGrades}
                         value={form.watch("grade")}
                         onChange={(value) =>
-                          form.setValue("grade", value, {
+                          form.setValue("grade", value as string, {
                             shouldDirty: true,
                             shouldValidate: true,
                           })
@@ -648,12 +638,7 @@ export function UpdateNoteDialog({}) {
           </div>
 
           <DialogFooter className="border-t px-6 py-4">
-            <Button
-              type="button"
-              variant="outline"
-              disabled={isSubmitting}
-              onClick={() => onOpenChange?.(false)}
-            >
+            <Button type="button" variant="outline" disabled={isSubmitting}>
               Cancel
             </Button>
 

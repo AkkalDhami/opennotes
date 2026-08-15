@@ -15,6 +15,7 @@ import { UserRowActions } from "@/components/admin/users/user-row-actions"
 import { AdminUser } from "@/lib/admin/users"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { CheckmarkBadge01Icon } from "@hugeicons/core-free-icons"
+import { formatDate } from "@/utils/format-date"
 
 interface UsersTableProps {
   users: AdminUser[]
@@ -43,7 +44,7 @@ export function UsersTable({ users }: UsersTableProps) {
             <TableHead>Email Status</TableHead>
             <TableHead>Joined</TableHead>
             <TableHead className="w-10">
-              <span className="sr-only">Actions</span>
+              <span className="">Actions</span>
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -72,7 +73,7 @@ export function UsersTable({ users }: UsersTableProps) {
                             size={18}
                             color="currentColor"
                             strokeWidth={1.8}
-                            className="size-4 stroke-blue-600 text-white fill-blue-600"
+                            className="size-4 fill-blue-600 stroke-blue-600 text-white"
                           />
                         )}
                       </div>
@@ -103,7 +104,10 @@ export function UsersTable({ users }: UsersTableProps) {
                 </TableCell>
 
                 <TableCell className="text-muted-foreground">
-                  {formatJoinedDate(user.createdAt)}
+                  {formatDate(user.createdAt, {
+                    dateStyle: "long",
+                    timeStyle: "medium",
+                  })}
                 </TableCell>
 
                 <TableCell>
