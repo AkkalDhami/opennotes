@@ -33,7 +33,7 @@ import {
 import { HugeiconsIcon, IconSvgElement } from "@hugeicons/react"
 import { ContributionStatusBadge } from "./contribution-status-badge"
 import { ContributionActions } from "./contribution-actions"
-import { formatFullDate, formatRelativeTime } from "@/lib/notes/format-date"
+import { formatFullDate, formatRelativeTime } from "@/utils/format-date"
 import { AdminContributionRow } from "@/lib/notes/queries"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"

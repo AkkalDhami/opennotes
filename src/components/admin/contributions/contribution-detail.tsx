@@ -7,7 +7,7 @@ import { ApproveContributionButton } from "./approve-contribution-button"
 import { RejectContributionDialog } from "./reject-contribution-dialog"
 import { RemoveContributionDialog } from "./remove-contribution-dialog"
 import { RestoreContributionDialog } from "./restore-contribution-dialog"
-import { formatFullDate } from "@/lib/notes/format-date"
+import { formatDate } from "@/utils/format-date"
 import { AdminContributionDetail, ContributorStats } from "@/lib/notes/queries"
 import { slugToTitle } from "@/utils/slug"
 
@@ -33,7 +33,6 @@ export function ContributionDetail({
 }) {
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-      {/* Main column */}
       <div className="flex flex-col gap-6 lg:col-span-2">
         <Card>
           <CardHeader>
@@ -61,12 +60,21 @@ export function ContributionDetail({
             <MetaRow label="Topic" value={note.topic} />
             <MetaRow label="Academic Year" value={note.academicYear} />
             <MetaRow label="Processing Status" value={note.processingStatus} />
-            <MetaRow label="Submitted" value={formatFullDate(note.createdAt)} />
+            <MetaRow
+              label="Submitted"
+              value={formatDate(note.createdAt, {
+                dateStyle: "long",
+                timeStyle: "short",
+              })}
+            />
             <MetaRow
               label="Published"
               value={
                 note.publishedAt
-                  ? formatFullDate(note.publishedAt)
+                  ? formatDate(note.publishedAt, {
+                      dateStyle: "long",
+                      timeStyle: "short",
+                    })
                   : "Not published"
               }
             />
@@ -74,6 +82,16 @@ export function ContributionDetail({
               label="Downloads"
               value={note.downloadCount.toLocaleString()}
             />
+            {note?.tags && (
+              <MetaRow
+                label="Tags"
+                value={
+                  note?.tags?.length > 0
+                    ? note?.tags?.map((tag) => `#${tag}`).join(", ")
+                    : "None"
+                }
+              />
+            )}
 
             {note.status === "REJECTED" && note.rejectionReason && (
               <>
@@ -105,7 +123,6 @@ export function ContributionDetail({
         </Card>
       </div>
 
-      {/* Sidebar */}
       <div className="flex flex-col gap-6">
         <Card>
           <CardHeader>

@@ -49,6 +49,7 @@ export function ContributionPdfPreview({
         <Button
           size="sm"
           variant="outline"
+          nativeButton={false}
           render={
             <a href={fileUrl} target="_blank" rel="noopener noreferrer">
               <HugeiconsIcon

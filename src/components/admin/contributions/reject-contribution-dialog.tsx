@@ -51,6 +51,7 @@ export function RejectContributionDialog({ noteId }: { noteId: string }) {
       }}
     >
       <DialogTrigger
+        nativeButton={false}
         render={
           <Button
             size="sm"

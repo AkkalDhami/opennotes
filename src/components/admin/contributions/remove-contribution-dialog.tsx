@@ -41,6 +41,7 @@ export function RemoveContributionDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
+        nativeButton={false}
         render={
           <Button
             size="sm"

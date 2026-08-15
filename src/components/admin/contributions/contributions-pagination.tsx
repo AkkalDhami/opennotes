@@ -32,6 +32,7 @@ export function ContributionsPagination({
       </p>
       <div className="flex items-center gap-2">
         <Button
+          nativeButton={false}
           render={
             <Link
               href={hrefForPage(Math.max(1, page - 1)) as Route}
@@ -53,6 +54,7 @@ export function ContributionsPagination({
           disabled={page <= 1}
         ></Button>
         <Button
+          nativeButton={false}
           render={
             <Link
               href={hrefForPage(Math.min(totalPages, page + 1)) as Route}
