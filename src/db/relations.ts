@@ -2,14 +2,12 @@ import { relations } from "drizzle-orm/_relations"
 import { users } from "./schemas/user.schema"
 import { notes } from "./schemas/note.schema"
 import { bookmarks } from "./schemas/bookmark.schema"
-import { badges, userBadges } from "./schemas/badge.schema"
 import { downloads } from "./schemas/download.schema"
 import { reports } from "./schemas/report.schema"
 
 export const usersRelations = relations(users, ({ many }) => ({
   notes: many(notes),
   bookmarks: many(bookmarks),
-  badges: many(userBadges),
 }))
 
 export const notesRelations = relations(notes, ({ one, many }) => ({
@@ -43,13 +41,4 @@ export const reportsRelations = relations(reports, ({ one }) => ({
     fields: [reports.reporterId],
     references: [users.id],
   }),
-}))
-
-export const badgesRelations = relations(badges, ({ many }) => ({
-  userBadges: many(userBadges),
-}))
-
-export const userBadgesRelations = relations(userBadges, ({ one }) => ({
-  user: one(users, { fields: [userBadges.userId], references: [users.id] }),
-  badge: one(badges, { fields: [userBadges.badgeId], references: [badges.id] }),
 }))

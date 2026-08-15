@@ -2,7 +2,6 @@
 export * from "./schemas/user.schema"
 
 export * from "./schemas/note.schema"
-export * from "./schemas/badge.schema"
 export * from "./schemas/download.schema"
 export * from "./schemas/report.schema"
 export * from "./schemas/bookmark.schema"
