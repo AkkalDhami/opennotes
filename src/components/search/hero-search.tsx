@@ -11,6 +11,7 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group"
+import { Route } from "next";
 
 interface HeroSearchProps {
   className?: string
@@ -27,7 +28,7 @@ export function HeroSearch({ className, action = "/search" }: HeroSearchProps) {
     const destination = trimmed
       ? `${action}?q=${encodeURIComponent(trimmed)}`
       : action
-    router.push(destination)
+    router.push(destination as Route)
   }
 
   return (

@@ -40,17 +40,17 @@ export function BackToTop() {
           className="fixed right-6 bottom-22 z-40 sm:bottom-12"
         >
           <Button
-            variant="secondary"
-            size="icon"
+            variant="brand"
+            size="icon-lg"
             onClick={() => {
               scrollToTop()
             }}
-            className="rounded-full border backdrop-blur-md hover:bg-muted"
+            className="rounded-full backdrop-blur-md"
             aria-label="Back to top"
           >
             <HugeiconsIcon
               icon={ArrowUp02Icon}
-              size={24}
+              size={25}
               color="currentColor"
               strokeWidth={1.5}
             />
