@@ -5,6 +5,12 @@ import { db, users } from "@/db"
 import { getCurrentUser } from "@/lib/auth/get-current-user"
 import { validateRequest } from "@/lib/validate-request"
 import { UpdateProfileSchema } from "@/validations/auth"
+import { uploadToImageKit } from "@/services/imagekit.service"
+import { randomUUID } from "node:crypto"
+import imagekitClient from "@/configs/imagekit"
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024
+const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"]
 
 export async function PATCH(request: NextRequest) {
   try {
@@ -20,18 +26,14 @@ export async function PATCH(request: NextRequest) {
       )
     }
 
-    const body = await request.json()
+    const formData = await request.formData()
+    const avatarUrl = formData.get("avatarUrl")
 
-    const name = typeof body.name === "string" ? body.name.trim() : ""
-
-    const username =
-      typeof body.username === "string"
-        ? body.username.trim().toLowerCase()
-        : ""
-
-    const bio = typeof body.bio === "string" ? body.bio.trim() : ""
-
-    const result = validateRequest(UpdateProfileSchema, body)
+    const result = validateRequest(UpdateProfileSchema, {
+      name: formData.get("name"),
+      username: formData.get("username"),
+      bio: formData.get("bio"),
+    })
 
     if (!result.success) {
       return NextResponse.json(
@@ -41,6 +43,56 @@ export async function PATCH(request: NextRequest) {
         },
         { status: 400 }
       )
+    }
+
+    const { name, username, bio } = result.data
+
+    if (avatarUrl) {
+      if (!(avatarUrl instanceof File)) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: "No image provided",
+          },
+          { status: 400 }
+        )
+      }
+
+      if (!ALLOWED_TYPES.includes(avatarUrl.type)) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: "Only JPEG, PNG, WEBP, or GIF images are allowed",
+          },
+          { status: 400 }
+        )
+      }
+
+      if (avatarUrl.size > MAX_FILE_SIZE) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: "Image must be smaller than 5MB",
+          },
+          { status: 400 }
+        )
+      }
+
+      const buffer = Buffer.from(await avatarUrl.arrayBuffer())
+
+      const { url, fileId } = await uploadToImageKit(buffer, {
+        folder: "avatars",
+        fileName: `${user.id}-${randomUUID()}`,
+      })
+
+      await db
+        .update(users)
+        .set({ avatarUrl: url, avatarId: fileId })
+        .where(eq(users.id, user.id))
+
+      if (user.avatarId) {
+        await imagekitClient.files.delete(user.avatarId)
+      }
     }
 
     const existingUser = await db
@@ -95,6 +147,7 @@ export async function PATCH(request: NextRequest) {
         data: updatedUser,
       })
     } catch (error) {
+      console.error("[PATCH /api/profile]", error)
       // PostgreSQL unique constraint violation
       if ((error as Error & { code?: string })?.code === "23505") {
         return NextResponse.json(
