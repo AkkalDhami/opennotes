@@ -4,19 +4,19 @@ import Link from "next/link"
 import { motion, useReducedMotion, type Variants } from "motion/react"
 
 import { Button } from "@/components/ui/button"
-import { ContributorCard } from "@/components/contributors/contributor-card"
-import { Contributor } from "@/types/contributor"
-import { Reveal } from "@/components/shared/reveal"
-import { SectionHeader } from "@/components/shared/section-header"
-import { SubHeading } from "@/components/ui/sub-heading"
-import { Heading } from "@/components/ui/heading"
+import { TopContributors } from "@/components/admin/contributors/top-contributors"
+import { ContributorListItem } from "@/lib/admin/queries"
 
 interface ContributorsSectionContentProps {
-  contributors: Contributor[]
+  contributors: ContributorListItem[]
+  admin?: boolean
+  home?: boolean
 }
 
 export function ContributorsSectionContent({
   contributors,
+  admin = false,
+  home = false,
 }: ContributorsSectionContentProps) {
   const shouldReduceMotion = useReducedMotion()
 
@@ -68,47 +68,5 @@ export function ContributorsSectionContent({
     )
   }
 
-  return (
-    <motion.div
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, amount: 0.2 }}
-      variants={container}
-    >
-      <Reveal>
-        <SectionHeader
-          headingId="popular-subjects-heading"
-          title="Meet the contributors"
-          description="Students and teachers sharing knowledge to help others learn."
-          viewAllHref="/contributors"
-          viewAllLabel="View all contributors"
-        />
-      </Reveal>
-
-      <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {contributors.map((contributor) => (
-          <motion.div key={contributor.id} variants={item}>
-            <ContributorCard contributor={contributor} className="h-full" />
-          </motion.div>
-        ))}
-      </div>
-
-      <motion.div
-        variants={item}
-        className="mt-14 flex flex-col items-center gap-3 rounded-lg bg-card px-6 py-10 text-center"
-      >
-        <Heading className="">Your notes can help someone learn.</Heading>
-        <SubHeading className="">
-          Share what you&apos;ve learned and make useful study resources
-          accessible to everyone.
-        </SubHeading>
-        <Button
-          variant="brand"
-          nativeButton={false}
-          render={<Link href="/contribution">Share Your Notes</Link>}
-          className="mt-2 px-4 py-4"
-        ></Button>
-      </motion.div>
-    </motion.div>
-  )
+  return <TopContributors contributors={contributors} home={home} admin={admin} />
 }

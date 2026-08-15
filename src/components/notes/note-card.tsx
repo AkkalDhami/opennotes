@@ -59,7 +59,6 @@ export function NoteCard({ note }: NoteCardProps) {
               strokeWidth={2}
               className="size-3.5"
             />
-            Trending
           </span>
         ) : null}
       </div>
@@ -97,18 +96,6 @@ export function NoteCard({ note }: NoteCardProps) {
             />
             {formatCount(note.downloads)}
           </span>
-          {note.views ? (
-            <span className="inline-flex items-center gap-1">
-              <HugeiconsIcon
-                icon={ViewIcon}
-                size={24}
-                color="currentColor"
-                strokeWidth={2}
-                className="size-3.5"
-              />
-              {formatCount(note.views)}
-            </span>
-          ) : null}
         </div>
       </div>
     </Link>

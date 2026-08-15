@@ -1,23 +1,17 @@
 import { ContributorCardSkeleton } from "@/components/contributors/contributor-card-skeleton";
+import { Heading } from "../ui/heading";
+import { SubHeading } from "../ui/sub-heading";
 
 export function ContributorsSectionFallback() {
   return (
     <div>
-      <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div className="space-y-2">
-          <p className="text-sm font-medium tracking-wide text-primary">
-            THE COMMUNITY
-          </p>
-          <h2
-            id="contributors-heading"
-            className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl"
-          >
-            Meet the contributors
-          </h2>
-          <p className="max-w-md text-muted-foreground">
-            Students and teachers sharing knowledge to help others learn.
-          </p>
-        </div>
+      <div className="space-y-2">
+        <Heading id="top-contributors-heading">
+          Meet Our Top Contributors
+        </Heading>
+        <SubHeading>
+          Recognizing members who&lsquo;ve shared the most notes with everyone.
+        </SubHeading>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -26,5 +20,5 @@ export function ContributorsSectionFallback() {
         ))}
       </div>
     </div>
-  );
+  )
 }
