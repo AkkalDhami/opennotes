@@ -2,7 +2,6 @@ import { ContributorPagination } from "@/components/admin/contributors/contribut
 import { ContributorSearch } from "@/components/admin/contributors/contributor-search"
 import { ContributorSortSelect } from "@/components/admin/contributors/contributor-sort"
 import { ContributorStatsSection } from "@/components/admin/contributors/contributor-stats"
-import { ContributorsCta } from "@/components/admin/contributors/contributors-cta"
 import { ContributorsEmptyState } from "@/components/admin/contributors/contributors-empty-state"
 import { ContributorsGrid } from "@/components/admin/contributors/contributors-grid"
 import { TopContributors } from "@/components/admin/contributors/top-contributors"
@@ -11,16 +10,16 @@ import {
   getContributors,
   getContributorStats,
   getTopContributors,
-} from "@/components/admin/contributors/queries"
-import { Container } from "@/components/ui/container"
+} from "@/lib/admin/queries"
 import { Heading } from "@/components/ui/heading"
 import { SubHeading } from "@/components/ui/sub-heading"
 import { Metadata } from "next"
+import { ContributorMedalShowcase } from "@/components/shared/medal-showcase"
+import { APP_NAME } from "@/constants/app.constants"
 
 export const metadata: Metadata = {
-  title: "Contributors | NotesApp",
-  description:
-    "Meet the students and learners sharing educational notes with the NotesApp community.",
+  title: "Contributors ",
+  description: `Meet the students and learners sharing educational notes with the ${APP_NAME} community.`,
 }
 
 interface ContributorsPageProps {
@@ -31,7 +30,11 @@ interface ContributorsPageProps {
   }>
 }
 
-const VALID_SORTS: ContributorSort[] = ["contributions", "recent", "name"]
+export const VALID_SORTS: ContributorSort[] = [
+  "contributions",
+  "recent",
+  "name",
+]
 
 export default async function ContributorsPage({
   searchParams,
@@ -43,12 +46,9 @@ export default async function ContributorsPage({
     : "contributions"
   const page = Math.max(1, Number(params.page) || 1)
 
-  // Top Contributors is a "best of everyone" spotlight, so it's skipped
-  // while actively searching — otherwise a filtered search would show
-  // podium cards unrelated to the query above the filtered grid.
   const [stats, topContributors, contributorsResult] = await Promise.all([
     getContributorStats(),
-    search ? Promise.resolve([]) : getTopContributors(),
+    getTopContributors(),
     getContributors({ search, sort, page }),
   ])
 
@@ -65,7 +65,7 @@ export default async function ContributorsPage({
   }
 
   return (
-    <Container className="space-y-6 border-x px-4 pt-4 pb-6">
+    <section className="space-y-6">
       <div className="mb-6 space-y-3">
         <Heading>Meet the Contributors</Heading>
         <SubHeading>
@@ -83,19 +83,17 @@ export default async function ContributorsPage({
       ) : (
         <>
           {topContributors.length > 0 && (
-            <div className="mt-16">
+            <div className="mt-8">
               <TopContributors contributors={topContributors} />
             </div>
           )}
 
-          <section className="mt-16 px-4">
-            <div className="">
-              <h2 className="text-xl font-semibold text-foreground">
-                All Contributors
-              </h2>
-              <p className="mt-1 text-sm text-muted-foreground">
+          <section className="mt-8">
+            <div className="space-y-2">
+              <Heading>All Contributors</Heading>
+              <SubHeading>
                 Students and learners sharing knowledge with the community.
-              </p>
+              </SubHeading>
             </div>
 
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-between">
@@ -126,9 +124,7 @@ export default async function ContributorsPage({
         </>
       )}
 
-      <div className="">
-        <ContributorsCta />
-      </div>
-    </Container>
+      <ContributorMedalShowcase />
+    </section>
   )
 }

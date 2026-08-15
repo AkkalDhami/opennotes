@@ -1,12 +1,13 @@
 import { ContributionForm } from "@/components/contributions/contribution-form"
+import { ContributionGuidelines } from "@/components/contributions/contribution-guidelines";
 import { Reveal } from "@/components/shared/reveal"
 import { SectionHeader } from "@/components/shared/section-header"
 import { Container } from "@/components/ui/container"
 
 export default function page() {
   return (
-    <Container className="space-y-2 border-x px-4 pt-4 pb-6">
-      <div className="mb-6 space-y-3">
+    <Container className="space-y-6 border-x px-4 pt-4 pb-6">
+      <div className="space-y-3">
         <Reveal>
           <SectionHeader
             headingId="share-notes"
@@ -17,6 +18,7 @@ export default function page() {
           />
         </Reveal>
       </div>
+      <ContributionGuidelines />
       <ContributionForm />
     </Container>
   )
