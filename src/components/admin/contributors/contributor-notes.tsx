@@ -3,8 +3,9 @@ import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { ContributorPagination } from "./contributor-pagination"
-import { ContributorNoteItem } from "./queries";
+import { ContributorNoteItem } from "@/lib/admin/queries"
 import { Route } from "next";
+import { slugToTitle } from "@/utils/slug"
 
 /**
  * NOTE: If the project already has a shared public note card component
@@ -40,17 +41,21 @@ export function ContributorNotes({
               <CardContent className="flex flex-col gap-2 py-5">
                 <Link
                   href={`/notes/${note.slug}` as Route}
-                  className="font-medium text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="font-medium text-foreground hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                 >
                   {note.title}
                 </Link>
                 <div className="flex flex-wrap gap-1.5">
-                  <Badge variant="outline">{note.subject}</Badge>
-                  <Badge variant="outline">{note.category}</Badge>
+                  <Badge variant="outline">{slugToTitle(note.subject)}</Badge>
+                  <Badge variant="outline">{slugToTitle(note.category)}</Badge>
                   {note.educationLevel && (
-                    <Badge variant="outline">{note.educationLevel}</Badge>
+                    <Badge variant="outline">
+                      {slugToTitle(note.educationLevel)}
+                    </Badge>
                   )}
-                  {note.grade && <Badge variant="outline">{note.grade}</Badge>}
+                  {note.grade && (
+                    <Badge variant="outline">{slugToTitle(note.grade)}</Badge>
+                  )}
                 </div>
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
                   {note.publishedAt && (

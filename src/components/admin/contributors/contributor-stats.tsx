@@ -4,8 +4,7 @@ import {
   UserGroupIcon,
 } from "@hugeicons/core-free-icons"
 
-import { Card, CardContent } from "@/components/ui/card"
-import { ContributorStats } from "./queries"
+import { ContributorStats } from "@/lib/admin/queries"
 import { HugeiconsIcon } from "@hugeicons/react"
 
 const STAT_ICONS = [UserGroupIcon, BookOpen01Icon, Album02Icon]
@@ -29,25 +28,28 @@ export function ContributorStatsSection({
       {items.map((item, i) => {
         const Icon = STAT_ICONS[i]
         return (
-          <Card key={item.label} className="border-border p-3 bg-card">
-            <CardContent className="flex flex-col items-center gap-2 py-6 text-center">
-              {Icon && (
-                <HugeiconsIcon
-                  icon={Icon}
-                  size={21}
-                  strokeWidth={2}
-                  className="size-5 text-muted-foreground"
-                  aria-hidden="true"
-                />
-              )}
-              <span className="text-2xl font-semibold text-foreground">
+          <div
+            key={item.label}
+            className="flex items-center border gap-2 rounded-[16px] bg-card p-2"
+          >
+            {Icon && (
+              <HugeiconsIcon
+                icon={Icon}
+                size={21}
+                strokeWidth={2}
+                className="size-16 rounded-[10px] border bg-muted p-4 text-brand"
+                aria-hidden="true"
+              />
+            )}
+            <div className="flex-col flex gap-2">
+              <span className="text-2xl font-medium text-foreground">
                 {item.value.toLocaleString()}
               </span>
-              <span className="text-sm text-muted-foreground">
+              <span className="text-muted-foreground">
                 {item.label}
               </span>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         )
       })}
     </section>

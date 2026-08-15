@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { ContributorSort } from "./queries";
+import { ContributorSort } from "@/lib/admin/queries"
 import { Route } from "next";
 
 const OPTIONS: { value: ContributorSort; label: string }[] = [
@@ -25,9 +25,9 @@ export function ContributorSortSelect() {
   const current =
     (searchParams.get("sort") as ContributorSort | null) ?? "contributions"
 
-  function handleChange(next: string) {
+  function handleChange(next: ContributorSort | null) {
     const params = new URLSearchParams(searchParams.toString())
-    if (next === "contributions") {
+    if (next === null || next === "contributions") {
       params.delete("sort")
     } else {
       params.set("sort", next)

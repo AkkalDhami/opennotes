@@ -8,7 +8,7 @@ import { ContributorNotes } from "@/components/admin/contributors/contributor-no
 import {
   getContributorByUsername,
   getContributorPublishedNotes,
-} from "./queries"
+} from "@/lib/admin/queries"
 import { formatJoinedDate, getInitials } from "./utils";
 
 interface ContributorDetailPageProps {

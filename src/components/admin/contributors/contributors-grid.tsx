@@ -1,5 +1,5 @@
 import { ContributorCard } from "./contributor-card"
-import { ContributorListItem } from "./queries";
+import { ContributorListItem } from "@/lib/admin/queries"
 
 export function ContributorsGrid({
   contributors,
@@ -7,7 +7,7 @@ export function ContributorsGrid({
   contributors: ContributorListItem[]
 }) {
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <div className="flex flex-wrap items-center gap-4">
       {contributors.map((c) => (
         <ContributorCard
           key={c.id}
@@ -16,7 +16,6 @@ export function ContributorsGrid({
           username={c.username}
           avatarUrl={c.avatarUrl}
           publishedNoteCount={c.publishedNoteCount}
-          topSubject={c.topSubject}
         />
       ))}
     </div>
