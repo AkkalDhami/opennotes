@@ -7,6 +7,7 @@ import { SessionProvider } from "@/components/providers/session-provider"
 import { Toaster } from "react-hot-toast"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { DialogProvider } from "@/components/providers/dialog-provider"
+import { Analytics } from "@vercel/analytics/next"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 
@@ -40,6 +41,7 @@ export default function RootLayout({
     >
       <body>
         <ThemeProvider>
+          <Analytics />
           <DialogProvider />
           <Toaster />
           <SessionProvider>

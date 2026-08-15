@@ -24,7 +24,7 @@ export default async function AdminContributionDetailPage({
 
   const note = await getAdminContributionById(id)
 
-  console.log({ note, id })
+  // console.log({ note, id })
 
   if (!note) {
     notFound()
@@ -38,8 +38,9 @@ export default async function AdminContributionDetailPage({
   return (
     <div className="flex flex-col gap-6">
       <Button
-        variant="ghost"
+        variant="secondary"
         size="sm"
+        nativeButton={false}
         className="w-fit"
         render={
           <Link href="/admin/contributions">

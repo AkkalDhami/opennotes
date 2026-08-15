@@ -19,7 +19,7 @@ export default function Loading() {
 
       <Skeleton className="h-24 rounded-lg" />
 
-      <div className="rounded-lg border border-border">
+      <div className="rounded-lg">
         {Array.from({ length: 6 }).map((_, i) => (
           <Skeleton key={i} className="h-16 border-b border-border last:border-0" />
         ))}
