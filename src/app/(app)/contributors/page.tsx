@@ -9,13 +9,14 @@ import {
   ContributorSort,
   getContributors,
   getContributorStats,
-  getTopContributors,
 } from "@/lib/admin/queries"
 import { Heading } from "@/components/ui/heading"
 import { SubHeading } from "@/components/ui/sub-heading"
 import { Metadata } from "next"
 import { ContributorMedalShowcase } from "@/components/shared/medal-showcase"
 import { APP_NAME } from "@/constants/app.constants"
+import { getContributorsRanking } from "@/lib/contributors/contributors-ranking"
+import { Suspense } from "react"
 
 export const metadata: Metadata = {
   title: "Contributors ",
@@ -48,7 +49,7 @@ export default async function ContributorsPage({
 
   const [stats, topContributors, contributorsResult] = await Promise.all([
     getContributorStats(),
-    getTopContributors(),
+    getContributorsRanking(),
     getContributors({ search, sort, page }),
   ])
 
@@ -66,7 +67,7 @@ export default async function ContributorsPage({
 
   return (
     <section className="space-y-6">
-      <div className="mb-6 space-y-3">
+      <div className="mb-6 space-y-2">
         <Heading>Meet the Contributors</Heading>
         <SubHeading>
           Meet the students and learners helping make quality educational notes
@@ -84,7 +85,9 @@ export default async function ContributorsPage({
         <>
           {topContributors.length > 0 && (
             <div className="mt-8">
-              <TopContributors contributors={topContributors} />
+              <Suspense fallback={<p>Loading...</p>}>
+                <TopContributors contributors={topContributors} />
+              </Suspense>
             </div>
           )}
 

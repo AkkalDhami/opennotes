@@ -7,7 +7,7 @@ import { Container } from "@/components/ui/container"
 export default function page() {
   return (
     <Container className="space-y-6 border-x px-4 pt-4 pb-6">
-      <div className="space-y-3">
+      <div className="space-y-2">
         <Reveal>
           <SectionHeader
             headingId="share-notes"
