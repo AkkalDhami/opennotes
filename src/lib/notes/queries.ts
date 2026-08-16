@@ -16,10 +16,6 @@ import { ContributionFiltersInput } from "@/validations/contribution-filter"
 
 const PAGE_SIZE = 20
 
-// ---------------------------------------------------------------------------
-// Stats (four summary cards)
-// ---------------------------------------------------------------------------
-
 export interface AdminContributionStats {
   pendingReview: number
   published: number
@@ -64,6 +60,8 @@ export interface AdminContributionRow {
   tags: string[]
 
   status: NoteStatus
+
+  downloadCount: number
 
   createdAt: Date
 
@@ -158,6 +156,8 @@ export async function getAdminContributions(
         status: notes.status,
         createdAt: notes.createdAt,
 
+        downloadCount: notes.downloadCount,
+
         contributorId: users.id,
         contributorName: users.name,
         contributorUsername: users.username,
@@ -193,6 +193,8 @@ export async function getAdminContributions(
     academicYear: r.academicYear,
     tags: r.tags ?? [],
 
+    downloadCount: r.downloadCount,
+
     status: r.status,
     createdAt: r.createdAt,
 
@@ -215,10 +217,6 @@ export async function getAdminContributions(
   }
 }
 
-// ---------------------------------------------------------------------------
-// Single contribution (detail/review page)
-// ---------------------------------------------------------------------------
-
 export interface AdminContributionDetail {
   id: string
   slug: string
@@ -238,7 +236,9 @@ export interface AdminContributionDetail {
   rejectionReason: string | null
   downloadCount: number
   createdAt: Date
+  course: string
   publishedAt: Date | null
+  tags?: string[]
   contributor: {
     id: string
     name: string
@@ -277,6 +277,8 @@ export async function getAdminContributionById(
       contributorEmail: users.email,
       contributorAvatar: users.avatarUrl,
       rejectionReason: notes.rejectionReason,
+      tags: notes.tags,
+      course: notes.course,
     })
     .from(notes)
     .innerJoin(users, eq(notes.contributorId, users.id))
@@ -293,6 +295,8 @@ export async function getAdminContributionById(
     subject: row.subject,
     category: row.category,
 
+    course: row.course,
+
     educationLevel: row.educationLevel,
     grade: row.grade,
     topic: row.topic,
@@ -306,6 +310,8 @@ export async function getAdminContributionById(
     createdAt: row.createdAt,
     publishedAt: row.publishedAt,
     rejectionReason: row.status === "REJECTED" ? row.rejectionReason : null,
+
+    tags: row.tags ?? [],
     contributor: {
       id: row.contributorId,
       name: row.contributorName,
@@ -315,10 +321,6 @@ export async function getAdminContributionById(
     },
   }
 }
-
-// ---------------------------------------------------------------------------
-// Per-contributor stats (shown in the detail page sidebar)
-// ---------------------------------------------------------------------------
 
 export interface ContributorStats {
   published: number
@@ -344,11 +346,6 @@ export async function getContributorStats(
     rejected: Number(row?.rejected ?? 0),
   }
 }
-
-// ---------------------------------------------------------------------------
-// Public contributors (ranking) — a user counts as a contributor ONLY when
-// they have at least one PUBLISHED note. Never stored/incremented manually.
-// ---------------------------------------------------------------------------
 
 export interface PublicContributor {
   id: string
