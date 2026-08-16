@@ -159,7 +159,6 @@ export function UpdateProfileDialog() {
       formData.append("name", data.name)
       formData.append("bio", data.bio ?? "")
       formData.append("username", data.username)
-      console.log({ e: process.env.NEXT_API_URL })
       const response = await fetch(`/api/auth/profile`, {
         method: "PATCH",
         body: formData,
