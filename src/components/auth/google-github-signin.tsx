@@ -12,7 +12,7 @@ export function GoogleAndGitHubSignin() {
   const { status } = useSession()
 
   if (status === "authenticated") {
-    redirect("/")
+    redirect("/profile")
   }
 
   return (
