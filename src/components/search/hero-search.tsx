@@ -82,7 +82,7 @@ export function HeroSearch({
           "focus-within:ring-4 focus-within:ring-primary/10"
         )}
       >
-        <InputGroupAddon className="pl-3 mr-2">
+        <InputGroupAddon className="mr-2 pl-3">
           <HugeiconsIcon
             icon={Search01Icon}
             size={21}

@@ -30,7 +30,9 @@ export function CategorySelect({
   return (
     <Select
       value={value || NONE_VALUE}
-      onValueChange={(next) => onChange(next === NONE_VALUE ? "" : (next ?? ""))}
+      onValueChange={(next) =>
+        onChange(next === NONE_VALUE ? "" : (next ?? ""))
+      }
       disabled={disabled}
     >
       <SelectTrigger id={id} className="w-full">

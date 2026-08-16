@@ -5,8 +5,8 @@ import {
   SourceCodeIcon,
   MicroscopeIcon,
   ChartLineData01Icon,
-} from "@hugeicons/core-free-icons";
-import { IconSvgObject } from "@hugeicons/core-free-icons/types";
+} from "@hugeicons/core-free-icons"
+import { IconSvgObject } from "@hugeicons/core-free-icons/types"
 
 export interface Subject {
   id: string
@@ -15,7 +15,6 @@ export interface Subject {
   noteCount: number
   icon: IconSvgObject
 }
-
 
 export const popularSubjects: Subject[] = [
   {
@@ -60,4 +59,4 @@ export const popularSubjects: Subject[] = [
     noteCount: 48,
     icon: ChartLineData01Icon,
   },
-];
+]

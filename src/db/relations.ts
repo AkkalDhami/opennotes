@@ -25,7 +25,6 @@ export const notesRelations = relations(notes, ({ one, many }) => ({
 // Both sides need an explicit relation to it — that's what lets the query builder resolve
 // `db.query.notes.findMany({ with: { noteTags: { with: { tag: true } } } })`.
 
-
 export const downloadsRelations = relations(downloads, ({ one }) => ({
   note: one(notes, { fields: [downloads.noteId], references: [notes.id] }),
 }))

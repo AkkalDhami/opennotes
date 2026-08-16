@@ -1,7 +1,7 @@
 import { and, desc, eq, ne, or, sql } from "drizzle-orm"
 import { db } from "@/db"
 import { notes, users } from "@/db"
-import type { PublicNote } from "@/types/note"
+import { PublicNote } from "@/types/note"
 
 interface GetRelatedNotesArgs {
   noteId: string

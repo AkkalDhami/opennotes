@@ -1,8 +1,8 @@
 "use client"
 
-import type { ComponentProps } from "react"
+import { ComponentProps } from "react"
 
-import type { CopyState } from "@/hooks/use-copy-to-clipboard"
+import { CopyState } from "@/hooks/use-copy-to-clipboard"
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard"
 import { cn } from "@/lib/utils"
 import { HugeiconsIcon } from "@hugeicons/react"

@@ -1,60 +1,60 @@
-import { NoteStatus } from "@/db";
-import { SortOption } from "./profile";
+import { NoteStatus } from "@/db"
+import { SortOption } from "./profile"
 
 export interface ContributionListItem {
-  id: string;
-  slug: string;
-  title: string;
-  description: string | null;
-  subject: string;
-  category: string;
-  educationLevel: string;
-  course: string | null;
-  grade: string | null;
-  topic: string | null;
-  academicYear: string | null;
-  status: NoteStatus;
-  tags?: string[] | null;
-  downloadCount: number;
-  createdAt: Date;
-  publishedAt: Date | null;
-  rejectionReason: string | null;
+  id: string
+  slug: string
+  title: string
+  description: string | null
+  subject: string
+  category: string
+  educationLevel: string
+  course: string | null
+  grade: string | null
+  topic: string | null
+  academicYear: string | null
+  status: NoteStatus
+  tags?: string[] | null
+  downloadCount: number
+  createdAt: Date
+  publishedAt: Date | null
+  rejectionReason: string | null
 }
 
 export interface ContributionStats {
-  total: number;
-  published: number;
-  pendingReview: number;
-  rejected: number;
-  draft: number;
-  removed: number;
-  totalDownloads: number;
+  total: number
+  published: number
+  pendingReview: number
+  rejected: number
+  draft: number
+  removed: number
+  totalDownloads: number
 }
 
 export interface ContributionFilters {
-  search?: string;
-  status?: NoteStatus | "ALL";
-  subject?: string;
-  level?: string;
-  course?: string;
-  sort?: SortOption;
-  page?: number;
+  search?: string
+  status?: NoteStatus | "ALL"
+  subject?: string
+  level?: string
+  course?: string
+  sort?: SortOption
+  page?: number
 }
 
 export interface ContributionListResult {
-  items: ContributionListItem[];
-  page: number;
-  pageSize: number;
-  totalCount: number;
-  totalPages: number;
+  items: ContributionListItem[]
+  page: number
+  pageSize: number
+  totalCount: number
+  totalPages: number
 }
 
 export const STATUS_CONFIG: Record<
   NoteStatus,
   {
-    label: string;
-    description: string;
-    badgeClassName: string;
+    label: string
+    description: string
+    badgeClassName: string
   }
 > = {
   DRAFT: {
@@ -64,12 +64,14 @@ export const STATUS_CONFIG: Record<
   },
   PENDING_REVIEW: {
     label: "Pending Review",
-    description: "Your note has been submitted and is waiting for admin review.",
+    description:
+      "Your note has been submitted and is waiting for admin review.",
     badgeClassName: "bg-warning/10 text-warning border-warning/20",
   },
   PUBLISHED: {
     label: "Published",
-    description: "Your note is published and visible to the OpenNotes community.",
+    description:
+      "Your note is published and visible to the OpenNotes community.",
     badgeClassName: "bg-success/10 text-success border-success/20",
   },
   REJECTED: {
@@ -82,4 +84,4 @@ export const STATUS_CONFIG: Record<
     description: "This note has been removed from publication.",
     badgeClassName: "bg-muted text-muted-foreground border-muted-foreground/20",
   },
-};
+}

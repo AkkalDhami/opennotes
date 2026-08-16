@@ -20,7 +20,7 @@ import {
   MAX_NOTE_FILE_SIZE,
   MAX_NOTE_FILE_SIZE_LABEL,
 } from "@/constants/notes.constants"
-import { HugeiconsIcon } from "@hugeicons/react";
+import { HugeiconsIcon } from "@hugeicons/react"
 
 const formatBytes = (bytes: number) => {
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`
@@ -53,7 +53,11 @@ export function PdfUpload({
     (candidate: File | undefined | null) => {
       if (!candidate) return
 
-      if (!(ALLOWED_NOTE_FILE_MIME_TYPES as readonly string[]).includes(candidate.type)) {
+      if (
+        !(ALLOWED_NOTE_FILE_MIME_TYPES as readonly string[]).includes(
+          candidate.type
+        )
+      ) {
         onFileSelect(null)
         return
       }

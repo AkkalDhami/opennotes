@@ -5,8 +5,8 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 
 import { Input } from "@/components/ui/input"
-import { Route } from "next";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { Route } from "next"
+import { HugeiconsIcon } from "@hugeicons/react"
 
 const DEBOUNCE_MS = 350
 

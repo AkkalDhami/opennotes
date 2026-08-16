@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton"
 
 export function NoteCardSkeleton() {
   return (
@@ -23,7 +23,7 @@ export function NoteCardSkeleton() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 /** Grid of skeleton cards for the discovery page's Suspense fallback. */
@@ -34,5 +34,5 @@ export function NoteCardSkeletonGrid({ count = 9 }: { count?: number }) {
         <NoteCardSkeleton key={i} />
       ))}
     </div>
-  );
+  )
 }

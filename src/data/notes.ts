@@ -1,16 +1,16 @@
 export interface Note {
-  id: string;
-  title: string;
-  slug: string;
-  subject: string;
-  level?: string;
+  id: string
+  title: string
+  slug: string
+  subject: string
+  level?: string
   contributor: {
-    name: string;
-    avatarUrl?: string;
-  };
-  downloads: number;
-  views?: number;
-  trending?: boolean;
+    name: string
+    avatarUrl?: string
+  }
+  downloads: number
+  views?: number
+  trending?: boolean
 }
 
 /**
@@ -62,4 +62,4 @@ export const trendingNotes: Note[] = [
     views: 705,
     trending: true,
   },
-];
+]

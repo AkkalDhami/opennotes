@@ -1,7 +1,7 @@
 import "server-only"
 
 import { db, notes, users } from "@/db"
-import {  sql } from "drizzle-orm"
+import { sql } from "drizzle-orm"
 
 export interface ContributorRank {
   contributorId: string

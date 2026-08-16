@@ -14,7 +14,11 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { FileStarIcon, LayoutBottomIcon, UserGroup03Icon } from "@hugeicons/core-free-icons"
+import {
+  FileStarIcon,
+  LayoutBottomIcon,
+  UserGroup03Icon,
+} from "@hugeicons/core-free-icons"
 import { AdminProfile } from "@/components/admin/admin-profile"
 import { APP_NAME } from "@/constants/app.constants"
 

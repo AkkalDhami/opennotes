@@ -1,5 +1,5 @@
 import { UserType } from "@/types/auth"
-import { UpdateNoteFormValues } from "@/validations/note";
+import { UpdateNoteFormValues } from "@/validations/note"
 import { create } from "zustand"
 import { devtools } from "zustand/middleware"
 

@@ -2,12 +2,11 @@
 
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "motion/react"
-import { Button } from "@/components/ui/button";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { ArrowUp02Icon } from "@hugeicons/core-free-icons";
+import { Button } from "@/components/ui/button"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { ArrowUp02Icon } from "@hugeicons/core-free-icons"
 export function BackToTop() {
   const [isVisible, setIsVisible] = useState(false)
-
 
   useEffect(() => {
     const toggleVisibility = () => {

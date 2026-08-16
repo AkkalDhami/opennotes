@@ -1,5 +1,5 @@
 import { ContributionForm } from "@/components/contributions/contribution-form"
-import { ContributionGuidelines } from "@/components/contributions/contribution-guidelines";
+import { ContributionGuidelines } from "@/components/contributions/contribution-guidelines"
 import { Reveal } from "@/components/shared/reveal"
 import { SectionHeader } from "@/components/shared/section-header"
 import { Container } from "@/components/ui/container"

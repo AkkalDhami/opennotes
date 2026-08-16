@@ -1,7 +1,7 @@
 "use client"
 
 import { motion, type Variants } from "motion/react"
-import { useId } from "react";
+import { useId } from "react"
 
 export type Rank = number
 

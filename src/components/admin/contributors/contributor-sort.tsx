@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { ContributorSort } from "@/lib/admin/queries"
-import { Route } from "next";
+import { Route } from "next"
 
 const OPTIONS: { value: ContributorSort; label: string }[] = [
   { value: "contributions", label: "Most Contributions" },

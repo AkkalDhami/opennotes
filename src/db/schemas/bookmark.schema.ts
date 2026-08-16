@@ -1,7 +1,7 @@
 import { pgTable, primaryKey, uuid } from "drizzle-orm/pg-core"
 import { notes } from "./note.schema"
 import { users } from "./user.schema"
-import { timestamps } from "./schema.helper";
+import { timestamps } from "./schema.helper"
 
 export const bookmarks = pgTable(
   "bookmarks",

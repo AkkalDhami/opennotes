@@ -1,34 +1,37 @@
-"use client";
+"use client"
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/select"
 import {
   buildNoteFiltersQuery,
   parseNoteFilters,
   resolveDefaultSort,
-} from "@/lib/notes/note-filters";
-import { NOTE_SORT_OPTIONS, type NoteSortOption } from "@/types/note";
+} from "@/lib/notes/note-filters"
+import { NOTE_SORT_OPTIONS, NoteSortOption } from "@/types/note"
+import { Route } from "next"
 
 export function NoteSort() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
 
-  const filters = parseNoteFilters(Object.fromEntries(searchParams.entries()));
-  const activeSort = resolveDefaultSort(filters);
+  const filters = parseNoteFilters(Object.fromEntries(searchParams.entries()))
+  const activeSort = resolveDefaultSort(filters)
 
-  function handleChange(next: string) {
+  function handleChange(next: NoteSortOption | null) {
+    if (next === null) return
+
     const query = buildNoteFiltersQuery(filters, {
-      sort: next as NoteSortOption,
+      sort: next,
       page: undefined,
-    });
-    router.push(`${pathname}${query}`, { scroll: false });
+    })
+    router.push(`${pathname}${query}` as Route, { scroll: false })
   }
 
   return (
@@ -44,5 +47,5 @@ export function NoteSort() {
         ))}
       </SelectContent>
     </Select>
-  );
+  )
 }

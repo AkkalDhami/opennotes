@@ -30,7 +30,7 @@ export function ContributorStatsSection({
         return (
           <div
             key={item.label}
-            className="flex items-center border gap-2 rounded-[16px] bg-card p-2"
+            className="flex items-center gap-2 rounded-[16px] border bg-card p-2"
           >
             {Icon && (
               <HugeiconsIcon
@@ -41,13 +41,11 @@ export function ContributorStatsSection({
                 aria-hidden="true"
               />
             )}
-            <div className="flex-col flex gap-2">
+            <div className="flex flex-col gap-2">
               <span className="text-2xl font-medium text-foreground">
                 {item.value.toLocaleString()}
               </span>
-              <span className="text-muted-foreground">
-                {item.label}
-              </span>
+              <span className="text-muted-foreground">{item.label}</span>
             </div>
           </div>
         )

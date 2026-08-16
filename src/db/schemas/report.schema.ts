@@ -1,10 +1,4 @@
-import {
-  index,
-  pgEnum,
-  pgTable,
-  text,
-  uuid,
-} from "drizzle-orm/pg-core"
+import { index, pgEnum, pgTable, text, uuid } from "drizzle-orm/pg-core"
 import { users } from "./user.schema"
 import { notes } from "./note.schema"
 import { timestamps } from "./schema.helper"

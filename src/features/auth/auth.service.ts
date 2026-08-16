@@ -119,7 +119,7 @@ export async function createAuthSession({
 
 import { verifyRefreshToken } from "@/lib/jwt"
 import { SessionType } from "@/types/auth"
-import { env } from "@/configs/env";
+import { env } from "@/configs/env"
 
 export async function refreshAccessToken(refreshToken: string) {
   const payload = verifyRefreshToken(refreshToken)

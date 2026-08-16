@@ -10,7 +10,7 @@ import { UsersFilters } from "@/components/admin/users/users-filters"
 import { UsersTable } from "@/components/admin/users/users-table"
 import { UsersPagination } from "@/components/admin/users/users-pagination"
 import { UsersEmptyState } from "@/components/admin/users/users-empty-state"
-import { RefreshButton } from "@/components/admin/contributions/refresh-button";
+import { RefreshButton } from "@/components/admin/contributions/refresh-button"
 
 export const metadata = {
   title: "Users · Admin",

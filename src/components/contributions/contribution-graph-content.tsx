@@ -22,7 +22,7 @@ import {
 
 import { Spinner } from "@/components/ui/spinner"
 import { SubHeading } from "../ui/sub-heading"
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"
 
 // const YEARS = [
 //   { label: "2026", value: "2026" },
@@ -37,7 +37,7 @@ interface NoteContributionGraphProps {
 
 export function NoteContributionGraph({
   initialData,
-  className
+  className,
 }: NoteContributionGraphProps) {
   const [year] = useState(initialData[0]?.date.slice(0, 4) ?? "2026")
 

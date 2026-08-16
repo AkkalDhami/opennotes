@@ -1,13 +1,13 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 interface UserAvatarProps {
-  name: string | null;
-  avatarUrl: string | null;
-  className?: string;
+  name: string | null
+  avatarUrl: string | null
+  className?: string
 }
 
 function getInitials(name: string | null) {
-  if (!name) return "?";
+  if (!name) return "?"
   return (
     name
       .split(" ")
@@ -15,7 +15,7 @@ function getInitials(name: string | null) {
       .slice(0, 2)
       .map((part) => part[0]?.toUpperCase())
       .join("") || "?"
-  );
+  )
 }
 
 export function UserAvatar({ name, avatarUrl, className }: UserAvatarProps) {
@@ -26,5 +26,5 @@ export function UserAvatar({ name, avatarUrl, className }: UserAvatarProps) {
         {getInitials(name)}
       </AvatarFallback>
     </Avatar>
-  );
+  )
 }

@@ -20,7 +20,6 @@ async function requireAdminUser() {
 }
 
 async function fetchNoteOrThrow(noteId: string) {
-  
   const [note] = await db.select().from(notes).where(eq(notes.id, noteId))
   if (!note) {
     throw new Error("Note not found")

@@ -1,13 +1,13 @@
-import { Ratelimit } from "@upstash/ratelimit";
+import { Ratelimit } from "@upstash/ratelimit"
 
-import redis from "@/configs/redis";
+import redis from "@/configs/redis"
 
 export const ratelimit = new Ratelimit({
   redis: redis,
   limiter: Ratelimit.fixedWindow(100, "10 s"), //* 100 requests per 10 seconds
   ephemeralCache: new Map(), //* cache for the ratelimit
-  prefix: "@servercn/ratelimit" //* prefix for the ratelimit
-});
+  prefix: "@servercn/ratelimit", //* prefix for the ratelimit
+})
 
 /**
  * ? Usage:

@@ -374,7 +374,7 @@ export async function getContributorPublishedNotes(
         name: r.contributorName,
         username: r.contributorUsername,
         avatarUrl: r.contributorAvatarUrl,
-      }
+      },
     })),
     totalCount,
     totalPages: Math.max(1, Math.ceil(totalCount / CONTRIBUTOR_NOTES_PER_PAGE)),

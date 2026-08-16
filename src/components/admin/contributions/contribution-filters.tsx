@@ -11,9 +11,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Search01Icon, RefreshIcon, Cancel01Icon } from "@hugeicons/core-free-icons"
+import {
+  Search01Icon,
+  RefreshIcon,
+  Cancel01Icon,
+} from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { Route } from "next";
+import { Route } from "next"
 
 const STATUS_OPTIONS = [
   { value: "ALL", label: "All" },
@@ -86,7 +90,13 @@ export function ContributionFilters() {
   const dateTo = searchParams.get("dateTo") ?? ""
 
   const hasActiveFilters =
-    search || subject || category || educationLevel || dateFrom || dateTo || status !== "ALL"
+    search ||
+    subject ||
+    category ||
+    educationLevel ||
+    dateFrom ||
+    dateTo ||
+    status !== "ALL"
 
   function clearAll() {
     setSearch("")
@@ -105,7 +115,7 @@ export function ContributionFilters() {
             icon={Search01Icon}
             size={16}
             strokeWidth={2}
-            className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+            className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
             aria-hidden="true"
           />
           <Input
@@ -121,7 +131,10 @@ export function ContributionFilters() {
           value={status}
           onValueChange={(value) => updateParams({ status: value ?? "ALL" })}
         >
-          <SelectTrigger className="w-full lg:w-45" aria-label="Filter by status">
+          <SelectTrigger
+            className="w-full lg:w-45"
+            aria-label="Filter by status"
+          >
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
@@ -174,7 +187,13 @@ export function ContributionFilters() {
         <div className="flex items-center gap-2">
           {hasActiveFilters && (
             <Button variant="ghost" size="sm" onClick={clearAll}>
-              <HugeiconsIcon icon={Cancel01Icon} size={16} strokeWidth={2} className="size-4" aria-hidden="true" />
+              <HugeiconsIcon
+                icon={Cancel01Icon}
+                size={16}
+                strokeWidth={2}
+                className="size-4"
+                aria-hidden="true"
+              />
               Clear
             </Button>
           )}

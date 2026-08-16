@@ -1,5 +1,5 @@
 import Link from "next/link"
-import type { PublicContributor, PublicNote } from "@/types/note"
+import { PublicContributor, PublicNote } from "@/types/note"
 import { getInitials } from "@/utils/get-initials"
 import { cn } from "@/lib/utils"
 import { CheckmarkBadge01Icon, Link04Icon } from "@hugeicons/core-free-icons"
@@ -22,7 +22,7 @@ export function ContributorPreview({
 }: ContributorPreviewProps) {
   return (
     <div className="space-y-6">
-      <div className="space-y-4 p-4 border rounded-[16px]">
+      <div className="space-y-4 rounded-[16px] border p-4">
         <div className="flex items-center gap-3">
           <div className="relative">
             <Avatar className="size-18 border">

@@ -15,7 +15,7 @@ import {
 
 import { PublicNote } from "@/types/note"
 import { QrCode } from "@/components/shared/qr-code"
-import { useOrigin } from "@/hooks/use-origin";
+import { useOrigin } from "@/hooks/use-origin"
 
 interface NoteQrDialogProps {
   note: PublicNote

@@ -1,18 +1,18 @@
-import { HugeiconsIcon } from "@hugeicons/react";
-import { CheckmarkCircle02Icon, Alert02Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react"
+import { CheckmarkCircle02Icon, Alert02Icon } from "@hugeicons/core-free-icons"
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"
 
 interface EmailStatusProps {
-  verified: boolean;
-  className?: string;
+  verified: boolean
+  className?: string
 }
 
 export function EmailStatus({ verified, className }: EmailStatusProps) {
   return (
     <span
       className={cn(
-        "inline-flex items-center font-medium gap-1.5 text-sm",
+        "inline-flex items-center gap-1.5 text-sm font-medium",
         verified ? "text-green-500" : "text-muted-foreground",
         className
       )}
@@ -26,5 +26,5 @@ export function EmailStatus({ verified, className }: EmailStatusProps) {
       />
       {verified ? "Verified" : "Unverified"}
     </span>
-  );
+  )
 }

@@ -1,12 +1,15 @@
 import { requireAdmin } from "@/lib/auth/require-admin"
-import { getAdminContributionStats, getAdminContributions } from "@/lib/notes/queries"
+import {
+  getAdminContributionStats,
+  getAdminContributions,
+} from "@/lib/notes/queries"
 import { ContributionStats } from "@/components/admin/contributions/contribution-stats"
 import { ContributionFilters } from "@/components/admin/contributions/contribution-filters"
 import { ContributionsTable } from "@/components/admin/contributions/contributions-table"
 import { ContributionsPagination } from "@/components/admin/contributions/contributions-pagination"
 import { RefreshButton } from "@/components/admin/contributions/refresh-button"
-import { contributionFiltersSchema } from "@/validations/contribution-filter";
-import { AdminPageHeader } from "@/components/admin/admin-page-header";
+import { contributionFiltersSchema } from "@/validations/contribution-filter"
+import { AdminPageHeader } from "@/components/admin/admin-page-header"
 
 export const metadata = {
   title: "Contributions | Admin",
@@ -16,7 +19,9 @@ interface PageProps {
   searchParams: Promise<Record<string, string | undefined>>
 }
 
-export default async function AdminContributionsPage({ searchParams }: PageProps) {
+export default async function AdminContributionsPage({
+  searchParams,
+}: PageProps) {
   // Server-side admin gate — redirects to /signin if not an authenticated ADMIN.
   await requireAdmin()
 
@@ -44,7 +49,7 @@ export default async function AdminContributionsPage({ searchParams }: PageProps
           title="Contributions"
           description="Review and manage notes submitted by students and contributors."
         />
-    
+
         <RefreshButton />
       </div>
 

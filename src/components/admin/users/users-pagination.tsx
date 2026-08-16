@@ -1,35 +1,35 @@
-import Link from "next/link";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { ArrowLeft02Icon, ArrowRight02Icon } from "@hugeicons/core-free-icons";
+import Link from "next/link"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { ArrowLeft02Icon, ArrowRight02Icon } from "@hugeicons/core-free-icons"
 
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { Route } from "next";
+import { buttonVariants } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
+import { Route } from "next"
 
 interface UsersPaginationProps {
-  page: number;
-  totalPages: number;
-  total: number;
-  limit: number;
+  page: number
+  totalPages: number
+  total: number
+  limit: number
   /** Current query params (already includes page), used to build page links. */
-  searchParams?: Record<string, string | undefined>;
+  searchParams?: Record<string, string | undefined>
 }
 
 function buildHref(
   page: number,
   searchParams: Record<string, string | undefined> = {}
 ) {
-  const params = new URLSearchParams();
+  const params = new URLSearchParams()
   for (const [key, value] of Object.entries(searchParams)) {
-    if (value) params.set(key, value);
+    if (value) params.set(key, value)
   }
   if (page > 1) {
-    params.set("page", String(page));
+    params.set("page", String(page))
   } else {
-    params.delete("page");
+    params.delete("page")
   }
-  const query = params.toString();
-  return query ? `/admin/users?${query}` : "/admin/users";
+  const query = params.toString()
+  return query ? `/admin/users?${query}` : "/admin/users"
 }
 
 export function UsersPagination({
@@ -39,27 +39,27 @@ export function UsersPagination({
   limit,
   searchParams = {},
 }: UsersPaginationProps) {
-  if (total === 0) return null;
+  if (total === 0) return null
 
-  const start = (page - 1) * limit + 1;
-  const end = Math.min(page * limit, total);
+  const start = (page - 1) * limit + 1
+  const end = Math.min(page * limit, total)
 
-  const hasPrevious = page > 1;
-  const hasNext = page < totalPages;
+  const hasPrevious = page > 1
+  const hasNext = page < totalPages
 
   // Show a small, centered window of page numbers around the current page.
-  const windowSize = 5;
-  let windowStart = Math.max(1, page - Math.floor(windowSize / 2));
-  const windowEnd = Math.min(totalPages, windowStart + windowSize - 1);
-  windowStart = Math.max(1, windowEnd - windowSize + 1);
+  const windowSize = 5
+  let windowStart = Math.max(1, page - Math.floor(windowSize / 2))
+  const windowEnd = Math.min(totalPages, windowStart + windowSize - 1)
+  windowStart = Math.max(1, windowEnd - windowSize + 1)
   const pageNumbers = Array.from(
     { length: windowEnd - windowStart + 1 },
     (_, index) => windowStart + index
-  );
+  )
 
   const linkBase =
-    "inline-flex h-9 min-w-9 items-center justify-center rounded-md px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
-  const disabledClasses = "pointer-events-none opacity-50";
+    "inline-flex h-9 min-w-9 items-center justify-center rounded-md px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+  const disabledClasses = "pointer-events-none opacity-50"
 
   return (
     <nav
@@ -136,5 +136,5 @@ export function UsersPagination({
         </Link>
       </div>
     </nav>
-  );
+  )
 }

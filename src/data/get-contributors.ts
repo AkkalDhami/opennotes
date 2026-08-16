@@ -1,5 +1,5 @@
-import { mockContributors } from "@/data/contributors";
-import { Contributor } from "@/types/contributor";
+import { mockContributors } from "@/data/contributors"
+import { Contributor } from "@/types/contributor"
 
 /**
  * Returns the contributors shown on the homepage.
@@ -22,5 +22,5 @@ import { Contributor } from "@/types/contributor";
 export async function getFeaturedContributors(
   limit = 4
 ): Promise<Contributor[]> {
-  return mockContributors.slice(0, limit);
+  return mockContributors.slice(0, limit)
 }

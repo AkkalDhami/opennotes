@@ -1,18 +1,18 @@
-"use client";
+"use client"
 
-import toast from "react-hot-toast";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Share08Icon } from "@hugeicons/core-free-icons";
-import { Button } from "@/components/ui/button";
-import { PublicNote } from "@/types/note";
+import toast from "react-hot-toast"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { Share08Icon } from "@hugeicons/core-free-icons"
+import { Button } from "@/components/ui/button"
+import { PublicNote } from "@/types/note"
 
 interface NoteShareButtonProps {
-  note: PublicNote;
+  note: PublicNote
 }
 
 export function NoteShareButton({ note }: NoteShareButtonProps) {
   async function handleShare() {
-    const url = window.location.href;
+    const url = window.location.href
 
     if (navigator.share) {
       try {
@@ -20,21 +20,21 @@ export function NoteShareButton({ note }: NoteShareButtonProps) {
           title: note.title,
           text: `Check out ${note.title} on OpenNotes`,
           url,
-        });
+        })
       } catch (error) {
         // AbortError is thrown when the user cancels the share sheet — not an error.
         if ((error as DOMException)?.name !== "AbortError") {
-          toast.error("Couldn't share this note.");
+          toast.error("Couldn't share this note.")
         }
       }
-      return;
+      return
     }
 
     try {
-      await navigator.clipboard.writeText(url);
-      toast.success("Link copied!");
+      await navigator.clipboard.writeText(url)
+      toast.success("Link copied!")
     } catch {
-      toast.error("Couldn't copy the link.");
+      toast.error("Couldn't copy the link.")
     }
   }
 
@@ -49,5 +49,5 @@ export function NoteShareButton({ note }: NoteShareButtonProps) {
       />
       Share
     </Button>
-  );
+  )
 }

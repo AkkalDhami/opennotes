@@ -7,23 +7,16 @@
  * in this feature imports from this file, so this is the one place to fix.
  */
 
-export type NoteStatus = "DRAFT" | "PUBLISHED" | "ARCHIVED";
+export type NoteStatus = "DRAFT" | "PUBLISHED" | "ARCHIVED"
 
-
-
-export type NoteSortOption =
-  | "relevance"
-  | "downloads"
-  | "newest"
-  | "oldest";
+export type NoteSortOption = "relevance" | "downloads" | "newest" | "oldest"
 
 export const NOTE_SORT_OPTIONS: { value: NoteSortOption; label: string }[] = [
   { value: "relevance", label: "Most relevant" },
   { value: "downloads", label: "Most downloaded" },
   { value: "newest", label: "Newest" },
   { value: "oldest", label: "Oldest" },
-];
-
+]
 
 export interface PublicNote {
   id: string
@@ -47,37 +40,37 @@ export interface PublicNote {
 }
 
 export interface PublicContributor {
-  id: string;
-  name: string;
-  username: string;
-  avatarUrl: string | null;
-  publishedNoteCount?: number;
+  id: string
+  name: string
+  username: string
+  avatarUrl: string | null
+  publishedNoteCount?: number
 }
 
 export interface NoteFilterState {
-  q?: string;
-  subject?: string;
-  grade?: string;
-  educationLevel?: string;
-  topic?: string;
-  institution?: string;
-  academicYear?: string;
-  contributor?: string;
-  tags?: string[];
-  sort?: NoteSortOption;
-  page?: number;
+  q?: string
+  subject?: string
+  grade?: string
+  educationLevel?: string
+  topic?: string
+  institution?: string
+  academicYear?: string
+  contributor?: string
+  tags?: string[]
+  sort?: NoteSortOption
+  page?: number
 }
 
 export interface SearchNotesParams extends NoteFilterState {
-  pageSize?: number;
+  pageSize?: number
 }
 
 export interface SearchNotesResult {
-  notes: PublicNote[];
-  total: number;
-  page: number;
-  pageSize: number;
-  totalPages: number;
+  notes: PublicNote[]
+  total: number
+  page: number
+  pageSize: number
+  totalPages: number
 }
 
-export const DEFAULT_PAGE_SIZE = 12;
+export const DEFAULT_PAGE_SIZE = 12

@@ -1,10 +1,10 @@
-import { and, eq, sql } from "drizzle-orm";
-import { db } from "@/db";
-import { notes, users } from "@/db";
-import { PublicNote } from "@/types/note";
+import { and, eq, sql } from "drizzle-orm"
+import { db } from "@/db"
+import { notes, users } from "@/db"
+import { PublicNote } from "@/types/note"
 
 export async function getPublishedNoteBySlug(
-  slug: string,
+  slug: string
 ): Promise<PublicNote | null> {
   const [row] = await db
     .select({
@@ -37,9 +37,9 @@ export async function getPublishedNoteBySlug(
     .from(notes)
     .innerJoin(users, eq(notes.contributorId, users.id))
     .where(and(eq(notes.slug, slug), eq(notes.status, "PUBLISHED")))
-    .limit(1);
+    .limit(1)
 
-  if (!row) return null;
+  if (!row) return null
 
   return {
     id: row.id,
@@ -58,9 +58,7 @@ export async function getPublishedNoteBySlug(
     filePath: row.filePath,
     // viewCount: row.viewCount,
     downloadCount: row.downloadCount,
-    publishedAt: row.publishedAt
-      ? new Date(row.publishedAt)
-      : new Date(),
+    publishedAt: row.publishedAt ? new Date(row.publishedAt) : new Date(),
     contributor: {
       id: row.contributorId,
       name: row.contributorName,
@@ -68,5 +66,5 @@ export async function getPublishedNoteBySlug(
       avatarUrl: row.contributorAvatarUrl,
       publishedNoteCount: row.contributorPublishedCount,
     },
-  };
+  }
 }

@@ -1,6 +1,7 @@
 "use client"
 
 import { motion, useReducedMotion, type Variants } from "motion/react"
+import { Suspense } from "react"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { BookOpen02Icon, Share05Icon } from "@hugeicons/core-free-icons"
 
@@ -123,7 +124,9 @@ export function HeroSection({ className }: HeroSectionProps) {
           </motion.p>
 
           <motion.div variants={item} className="w-full max-w-2xl">
-            <HeroSearch placeholder="Search notes, subjects, topics, courses, and contributors" />
+            <Suspense fallback={<div className="h-14" />}>
+              <HeroSearch placeholder="Search notes, subjects, topics, courses, and contributors" />
+            </Suspense>
           </motion.div>
 
           <motion.div

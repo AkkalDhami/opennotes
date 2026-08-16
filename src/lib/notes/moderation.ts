@@ -35,5 +35,4 @@ export function getRevalidatePaths(noteId: string): string[] {
 }
 
 export type ActionResult =
-  | { success: true; message: string }
-  | { success: false; error: string }
+  { success: true; message: string } | { success: false; error: string }

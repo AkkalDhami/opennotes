@@ -92,15 +92,19 @@ export function AdminProfile({ user }: { user: UserType }) {
             <DropdownMenuSeparator />
 
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={() => open("update-profile", {
-                profile: {
-                  id: user.id,
-                  name: user.name,
-                  bio: user.bio,
-                  username: user.username,
-                  avatar: user.avatar
+              <DropdownMenuItem
+                onClick={() =>
+                  open("update-profile", {
+                    profile: {
+                      id: user.id,
+                      name: user.name,
+                      bio: user.bio,
+                      username: user.username,
+                      avatar: user.avatar,
+                    },
+                  })
                 }
-              })}>
+              >
                 <HugeiconsIcon icon={UserIcon} strokeWidth={2} />
                 Profile
               </DropdownMenuItem>

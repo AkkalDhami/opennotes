@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton"
 
 export function ProfileHeaderSkeleton() {
   return (
@@ -18,7 +18,7 @@ export function ProfileHeaderSkeleton() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 export function ProfileStatsSkeleton() {
@@ -31,7 +31,7 @@ export function ProfileStatsSkeleton() {
         </div>
       ))}
     </div>
-  );
+  )
 }
 
 export function ProfileContributionsSkeleton() {
@@ -48,5 +48,5 @@ export function ProfileContributionsSkeleton() {
         ))}
       </div>
     </div>
-  );
+  )
 }

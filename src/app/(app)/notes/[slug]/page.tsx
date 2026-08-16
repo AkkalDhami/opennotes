@@ -1,4 +1,4 @@
-import type { Metadata, Route } from "next"
+import { Metadata, Route } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { HugeiconsIcon } from "@hugeicons/react"

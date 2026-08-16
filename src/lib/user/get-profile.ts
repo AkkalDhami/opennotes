@@ -1,11 +1,11 @@
-import "server-only";
-import { count, eq, sql } from "drizzle-orm";
+import "server-only"
+import { count, eq, sql } from "drizzle-orm"
 
-import { db } from "@/db";
-import { notes, users } from "@/db";
-import { getCurrentUser } from "@/lib/auth/get-current-user";
+import { db } from "@/db"
+import { notes, users } from "@/db"
+import { getCurrentUser } from "@/lib/auth/get-current-user"
 
-import type { ProfileData } from "@/types/profile";
+import { ProfileData } from "@/types/profile"
 
 /**
  * Returns the authenticated user's profile, including aggregate
@@ -15,10 +15,10 @@ import type { ProfileData } from "@/types/profile";
  * Returns null if there is no authenticated user.
  */
 export async function getCurrentUserProfile(): Promise<ProfileData | null> {
-  const currentUser = await getCurrentUser();
+  const currentUser = await getCurrentUser()
 
   if (!currentUser) {
-    return null;
+    return null
   }
 
   const [profileRow] = await db
@@ -34,10 +34,10 @@ export async function getCurrentUserProfile(): Promise<ProfileData | null> {
     })
     .from(users)
     .where(eq(users.id, currentUser.id))
-    .limit(1);
+    .limit(1)
 
   if (!profileRow) {
-    return null;
+    return null
   }
 
   const [aggregate] = await db
@@ -46,10 +46,10 @@ export async function getCurrentUserProfile(): Promise<ProfileData | null> {
       published: count(sql`CASE WHEN ${notes.status} = 'PUBLISHED' THEN 1 END`),
     })
     .from(notes)
-    .where(eq(notes.contributorId, currentUser.id));
+    .where(eq(notes.contributorId, currentUser.id))
 
-  const totalContributions = aggregate?.total ?? 0;
-  const publishedContributions = aggregate?.published ?? 0;
+  const totalContributions = aggregate?.total ?? 0
+  const publishedContributions = aggregate?.published ?? 0
 
   return {
     id: profileRow.id,
@@ -62,5 +62,5 @@ export async function getCurrentUserProfile(): Promise<ProfileData | null> {
     createdAt: profileRow.createdAt,
     totalContributions,
     publishedContributions,
-  };
+  }
 }

@@ -4,9 +4,9 @@ import { NoteCard } from "./note-card"
 import { NoteGridPagination } from "./note-grid-pagination"
 import { Button } from "@/components/ui/button"
 import { hasActiveFilters } from "@/lib/notes/note-filters"
-import type { NoteFilterState, SearchNotesResult } from "@/types/note"
+import { NoteFilterState, SearchNotesResult } from "@/types/note"
 import Link from "next/link"
-import { Route } from "next";
+import { Route } from "next"
 
 interface NoteGridProps {
   result: SearchNotesResult

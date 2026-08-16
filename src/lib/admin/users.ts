@@ -1,40 +1,40 @@
-import "server-only";
+import "server-only"
 
-import { and, count, desc, eq, ilike, or } from "drizzle-orm";
+import { and, count, desc, eq, ilike, or } from "drizzle-orm"
 
-import { db, users } from "@/db";
+import { db, users } from "@/db"
 
 export type UserRole = "USER" | "MODERATOR" | "ADMIN"
 
 export interface AdminUser {
-  id: string;
-  name: string | null;
-  username: string | null;
-  bio: string | null;
-  email: string;
-  emailVerified: boolean | null;
-  avatar: string | null;
-  role: UserRole;
-  createdAt: Date;
+  id: string
+  name: string | null
+  username: string | null
+  bio: string | null
+  email: string
+  emailVerified: boolean | null
+  avatar: string | null
+  role: UserRole
+  createdAt: Date
 }
 
 export interface GetUsersParams {
-  search?: string;
-  role?: UserRole;
-  verified?: boolean;
-  page?: number;
-  limit?: number;
+  search?: string
+  role?: UserRole
+  verified?: boolean
+  page?: number
+  limit?: number
 }
 
 export interface GetUsersResult {
-  users: AdminUser[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
+  users: AdminUser[]
+  total: number
+  page: number
+  limit: number
+  totalPages: number
 }
 
-export const DEFAULT_USERS_PAGE_SIZE = 20;
+export const DEFAULT_USERS_PAGE_SIZE = 20
 
 export async function getUsers({
   search,
@@ -43,33 +43,33 @@ export async function getUsers({
   page = 1,
   limit = DEFAULT_USERS_PAGE_SIZE,
 }: GetUsersParams = {}): Promise<GetUsersResult> {
-  const conditions = [];
+  const conditions = []
 
-  const trimmedSearch = search?.trim();
+  const trimmedSearch = search?.trim()
   if (trimmedSearch) {
-    const term = `%${trimmedSearch}%`;
+    const term = `%${trimmedSearch}%`
     conditions.push(
       or(
         ilike(users.name, term),
         ilike(users.username, term),
         ilike(users.email, term)
       )
-    );
+    )
   }
 
   if (role) {
-    conditions.push(eq(users.role, role));
+    conditions.push(eq(users.role, role))
   }
 
   if (verified !== undefined) {
-    conditions.push(eq(users.emailVerified, verified));
+    conditions.push(eq(users.emailVerified, verified))
   }
 
-  const where = conditions.length > 0 ? and(...conditions) : undefined;
+  const where = conditions.length > 0 ? and(...conditions) : undefined
 
-  const safePage = Math.max(1, Math.floor(page));
-  const safeLimit = Math.max(1, Math.floor(limit));
-  const offset = (safePage - 1) * safeLimit;
+  const safePage = Math.max(1, Math.floor(page))
+  const safeLimit = Math.max(1, Math.floor(limit))
+  const offset = (safePage - 1) * safeLimit
 
   const [rows, totalRows] = await Promise.all([
     db
@@ -89,13 +89,10 @@ export async function getUsers({
       .orderBy(desc(users.createdAt))
       .limit(safeLimit)
       .offset(offset),
-    db
-      .select({ value: count() })
-      .from(users)
-      .where(where),
-  ]);
+    db.select({ value: count() }).from(users).where(where),
+  ])
 
-  const total = totalRows[0]?.value ?? 0;
+  const total = totalRows[0]?.value ?? 0
 
   return {
     users: rows,
@@ -103,5 +100,5 @@ export async function getUsers({
     page: safePage,
     limit: safeLimit,
     totalPages: Math.max(1, Math.ceil(total / safeLimit)),
-  };
+  }
 }

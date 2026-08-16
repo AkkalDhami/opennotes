@@ -1,8 +1,8 @@
 import imagekitClient from "@/configs/imagekit"
 import { NOTES_IMAGEKIT_FOLDER } from "@/constants/notes.constants"
-import { slugify } from "@/utils/slug";
+import { slugify } from "@/utils/slug"
 import { toFile } from "@imagekit/nodejs"
-import { randomUUID } from "node:crypto";
+import { randomUUID } from "node:crypto"
 
 export interface UploadOptions {
   folder: string
@@ -16,7 +16,6 @@ export interface ImageKitUploadResult {
   filePath: string
   title: string
 }
-
 
 export const uploadToImageKit = async (
   buffer: Buffer,

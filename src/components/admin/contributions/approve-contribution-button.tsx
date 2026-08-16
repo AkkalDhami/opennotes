@@ -5,7 +5,7 @@ import toast from "react-hot-toast"
 import { Button } from "@/components/ui/button"
 import { CheckmarkCircle02Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { approveContribution } from "@/lib/admin/contributions";
+import { approveContribution } from "@/lib/admin/contributions"
 
 export function ApproveContributionButton({
   noteId,
@@ -37,7 +37,13 @@ export function ApproveContributionButton({
       onClick={handleApprove}
       disabled={isPending}
     >
-      <HugeiconsIcon icon={CheckmarkCircle02Icon} size={16} strokeWidth={2} className="size-4" aria-hidden="true" />
+      <HugeiconsIcon
+        icon={CheckmarkCircle02Icon}
+        size={16}
+        strokeWidth={2}
+        className="size-4"
+        aria-hidden="true"
+      />
       {isPending ? "Approving..." : label}
     </Button>
   )

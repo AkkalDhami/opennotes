@@ -1,10 +1,7 @@
 import { Suspense } from "react"
-import type { Metadata } from "next"
+import { Metadata } from "next"
 import { NoteSearch } from "@/components/notes/note-search"
-import {
-  NoteFilters,
-  type NoteFilterOptions,
-} from "@/components/notes/note-filters"
+import { NoteFilters, NoteFilterOptions } from "@/components/notes/note-filters"
 import { NoteSort } from "@/components/notes/note-sort"
 import { NoteGrid } from "@/components/notes/note-grid"
 import { NoteCardSkeletonGrid } from "@/components/notes/note-card-skeleton"

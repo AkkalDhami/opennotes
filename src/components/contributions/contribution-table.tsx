@@ -19,12 +19,11 @@ import {
 } from "@/components/contributions/contribution-details-sheet"
 import { ContributionListItem } from "@/types/contribution"
 import { slugToTitle } from "@/utils/slug"
-import { formatDate } from "@/utils/format-date";
+import { formatDate } from "@/utils/format-date"
 
 interface ContributionTableProps {
   contributions: ContributionListItem[]
 }
-
 
 export function ContributionTable({ contributions }: ContributionTableProps) {
   const details = useContributionDetailsSheet()
@@ -70,7 +69,7 @@ export function ContributionTable({ contributions }: ContributionTableProps) {
               <TableCell>
                 <StatusBadge status={contribution.status} />
               </TableCell>
-              <TableCell className="text-sm text-center text-muted-foreground">
+              <TableCell className="text-center text-sm text-muted-foreground">
                 <span className="flex items-center gap-1">
                   <HugeiconsIcon
                     icon={Download01Icon}

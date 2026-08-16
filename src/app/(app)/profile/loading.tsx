@@ -2,7 +2,7 @@ import {
   ProfileHeaderSkeleton,
   ProfileStatsSkeleton,
   ProfileContributionsSkeleton,
-} from "@/components/profile/profile-skeletons";
+} from "@/components/profile/profile-skeletons"
 
 export default function ProfileLoading() {
   return (
@@ -11,5 +11,5 @@ export default function ProfileLoading() {
       <ProfileStatsSkeleton />
       <ProfileContributionsSkeleton />
     </div>
-  );
+  )
 }

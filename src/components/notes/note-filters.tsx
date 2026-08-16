@@ -29,6 +29,7 @@ export interface NoteFilterOptions {
   grades: SelectOption[]
   subjects: SelectOption[]
   topics: SelectOption[]
+  courses: SelectOption[]
   academicYears: SelectOption[]
   contributors: SelectOption[]
   tags: SelectOption[]

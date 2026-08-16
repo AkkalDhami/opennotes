@@ -12,7 +12,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import Idea01Icon from "@hugeicons/core-free-icons/Idea01Icon";
+import Idea01Icon from "@hugeicons/core-free-icons/Idea01Icon"
 
 const guidelines = [
   {

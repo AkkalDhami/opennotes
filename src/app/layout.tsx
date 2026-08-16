@@ -8,6 +8,8 @@ import { Toaster } from "react-hot-toast"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { DialogProvider } from "@/components/providers/dialog-provider"
 import { Analytics } from "@vercel/analytics/next"
+import { Metadata } from "next"
+import { APP_NAME } from "@/constants/app.constants"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 
@@ -20,6 +22,15 @@ const fontHeading = Geist({
   subsets: ["latin"],
   variable: "--font-heading",
 })
+
+export const metadata: Metadata = {
+  title: {
+    default: `${APP_NAME}`,
+    template: `%s | ${APP_NAME}`,
+  },
+  description:
+    "A platform for students to learn and share educational materials.",
+}
 
 export default function RootLayout({
   children,

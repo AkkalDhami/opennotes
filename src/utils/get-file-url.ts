@@ -1,6 +1,6 @@
-import { env } from "@/configs/env";
-import { db, notes } from "@/db";
-import { eq } from "drizzle-orm";
+import { env } from "@/configs/env"
+import { db, notes } from "@/db"
+import { eq } from "drizzle-orm"
 
 export function getFileUrl(filePath: string) {
   return `${env.IMAGEKIT_URL_ENDPOINT}${env.IMAGEKIT_ID}${filePath}`

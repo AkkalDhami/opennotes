@@ -1,6 +1,6 @@
-import { ContributorCardSkeleton } from "@/components/contributors/contributor-card-skeleton";
-import { Heading } from "../ui/heading";
-import { SubHeading } from "../ui/sub-heading";
+import { ContributorCardSkeleton } from "@/components/contributors/contributor-card-skeleton"
+import { Heading } from "../ui/heading"
+import { SubHeading } from "../ui/sub-heading"
 
 export function ContributorsSectionFallback() {
   return (

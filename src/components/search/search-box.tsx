@@ -26,7 +26,13 @@ export function CommandMenu() {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)} variant="outline" className={"font-normal text-muted-foreground hover:text-foreground rounded-full px-3"}>
+      <Button
+        onClick={() => setOpen(true)}
+        variant="outline"
+        className={
+          "rounded-full px-3 font-normal text-muted-foreground hover:text-foreground"
+        }
+      >
         <HugeiconsIcon
           icon={Search01Icon}
           size={24}

@@ -1,4 +1,4 @@
-import { env } from "@/configs/env";
+import { env } from "@/configs/env"
 import crypto from "node:crypto"
 
 export function generateHashDownloader(value: string) {

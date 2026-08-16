@@ -1,8 +1,9 @@
-import { eq, isNotNull, sql } from "drizzle-orm";
-import type { AnyPgColumn } from "drizzle-orm/pg-core";
-import { db } from "@/db";
-import { notes, users } from "@/db";
-import type { NoteFilterOptions } from "@/components/notes/note-filters";
+import { eq, isNotNull, sql } from "drizzle-orm"
+import { AnyPgColumn } from "drizzle-orm/pg-core"
+import { db } from "@/db"
+import { notes, users } from "@/db"
+import { NoteFilterOptions } from "@/components/notes/note-filters"
+import { slugToTitle } from "@/utils/slug"
 
 const EDUCATION_LEVEL_LABELS: Record<string, string> = {
   primary: "Primary",
@@ -11,37 +12,29 @@ const EDUCATION_LEVEL_LABELS: Record<string, string> = {
   undergraduate: "Undergraduate",
   postgraduate: "Postgraduate",
   other: "Other",
-};
+}
 
 async function distinctColumn<T extends AnyPgColumn>(
-  column: T,
+  column: T
 ): Promise<{ value: string; label: string }[]> {
   const rows = await db
     .selectDistinct({ value: column })
     .from(notes)
     .where(sql`${eq(notes.status, "PUBLISHED")} AND ${isNotNull(column)}`)
-    .orderBy(column);
+    .orderBy(column)
 
   return rows
     .filter((row) => Boolean(row.value))
-    .map((row) => ({ value: String(row.value), label: String(row.value) }));
+    .map((row) => ({ value: String(row.value), label: String(row.value) }))
 }
 
-/**
- * Populates the filter dropdowns from real, currently-in-use values on
- * published notes, so the UI never offers a filter combination that
- * returns zero results. Cache this at the route/data layer (e.g. with
- * `unstable_cache` or a short revalidate window) once wired into a real
- * deployment — it's a cheap set of DISTINCT queries but doesn't need to
- * run on every request.
- */
 export async function getNoteFilterOptions(): Promise<NoteFilterOptions> {
   const [
     educationLevels,
     grades,
     subjects,
     topics,
-    institutions,
+    courses,
     academicYears,
     contributorRows,
     tagRows,
@@ -62,24 +55,39 @@ export async function getNoteFilterOptions(): Promise<NoteFilterOptions> {
       .select({ tag: sql<string>`unnest(${notes.tags})` })
       .from(notes)
       .where(eq(notes.status, "PUBLISHED")),
-  ]);
+  ])
 
-  const uniqueTags = Array.from(new Set(tagRows.map((row) => row.tag))).sort();
+  const uniqueTags = Array.from(new Set(tagRows.map((row) => row.tag))).sort()
 
   return {
     educationLevels: educationLevels.map((option) => ({
-      value: option.value,
-      label: EDUCATION_LEVEL_LABELS[option.value] ?? option.label,
+      id: option.value,
+      name: slugToTitle(EDUCATION_LEVEL_LABELS[option.value] ?? option.label),
     })),
-    grades,
-    subjects,
-    topics,
-    institutions,
-    academicYears,
+    grades: grades.map((option) => ({
+      id: option.value,
+      name: slugToTitle(option.label),
+    })),
+    subjects: subjects.map((option) => ({
+      id: option.value,
+      name: slugToTitle(option.label),
+    })),
+    topics: topics.map((option) => ({
+      id: option.value,
+      name: slugToTitle(option.label),
+    })),
+    courses: courses.map((option) => ({
+      id: option.value,
+      name: slugToTitle(option.label),
+    })),
+    academicYears: academicYears.map((option) => ({
+      id: option.value,
+      name: option.label,
+    })),
     contributors: contributorRows.map((row) => ({
-      value: row.username,
-      label: row.name,
+      id: row.username,
+      name: row.name,
     })),
-    tags: uniqueTags.map((tag) => ({ value: tag, label: `#${tag}` })),
-  };
+    tags: uniqueTags.map((tag) => ({ id: tag, name: `#${tag}` })),
+  }
 }

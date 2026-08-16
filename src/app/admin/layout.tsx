@@ -38,7 +38,7 @@ export default async function AdminLayout({
         }}
       />
       <SidebarInset>
-        <header className="sticky top-0 z-50 bg-background right-0 left-0 flex h-16 shrink-0 items-center justify-between gap-2 border-b pr-6">
+        <header className="sticky top-0 right-0 left-0 z-50 flex h-16 shrink-0 items-center justify-between gap-2 border-b bg-background pr-6">
           <div className="flex items-center gap-4 px-3">
             <SidebarTrigger />
             <Separator orientation="vertical" className="mt-2 h-4" />

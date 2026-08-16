@@ -7,8 +7,8 @@ import { ContributionCardList } from "@/components/contributions/contribution-ca
 import { ContributionEmptyState } from "@/components/contributions/contribution-empty-state"
 import { ContributionPagination } from "@/components/contributions/contribution-pagination"
 import { ContributionListResult } from "@/types/contribution"
-import { Heading } from "../ui/heading";
-import { SubHeading } from "../ui/sub-heading";
+import { Heading } from "../ui/heading"
+import { SubHeading } from "../ui/sub-heading"
 
 interface ProfileContributionsProps {
   result: ContributionListResult
@@ -28,9 +28,7 @@ export function ProfileContributions({
   return (
     <section className="space-y-6">
       <div className="space-y-2">
-        <Heading>
-          My Contributions
-        </Heading>
+        <Heading>My Contributions</Heading>
         <SubHeading>
           Manage and track the notes you&apos;ve shared with the OpenNotes
           community.

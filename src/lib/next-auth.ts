@@ -44,11 +44,10 @@ export const authOptions: AuthOptions = {
 
           console.log("Authenticated user:", user)
 
-          const { accessToken, refreshToken } =
-            await createAuthSession({
-              email: userInfo.email,
-              userId: user.id,
-            })
+          const { accessToken, refreshToken } = await createAuthSession({
+            email: userInfo.email,
+            userId: user.id,
+          })
 
           await setAuthCookie({ accessToken, refreshToken })
 

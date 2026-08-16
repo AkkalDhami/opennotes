@@ -6,7 +6,7 @@ import { ArrowRight02Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { ContributorRanking } from "@/lib/contributors/contributors-ranking"
 import { TopContributorCard } from "./top-contributor-card"
-import { Route } from "next";
+import { Route } from "next"
 
 export function TopContributors({
   contributors,

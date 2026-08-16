@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+import { Metadata } from "next"
 
 import { LegalPage } from "@/components/legal/legal-page"
 
@@ -60,8 +60,8 @@ export default function GuidelinesPage() {
             <p>
               Only submit material that you created yourself or have permission
               to redistribute. Do not upload copyrighted textbooks, paid course
-              materials, private institutional documents, or another person&lsquo;s
-              work without appropriate permission.
+              materials, private institutional documents, or another
+              person&lsquo;s work without appropriate permission.
             </p>
           ),
         },

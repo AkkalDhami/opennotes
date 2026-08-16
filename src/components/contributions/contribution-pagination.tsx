@@ -1,31 +1,34 @@
-"use client";
+"use client"
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
-import { Button } from "@/components/ui/button";
-import { Route } from "next";
+import { Button } from "@/components/ui/button"
+import { Route } from "next"
 
 interface ContributionPaginationProps {
-  page: number;
-  totalPages: number;
+  page: number
+  totalPages: number
 }
 
-export function ContributionPagination({ page, totalPages }: ContributionPaginationProps) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+export function ContributionPagination({
+  page,
+  totalPages,
+}: ContributionPaginationProps) {
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
 
-  if (totalPages <= 1) return null;
+  if (totalPages <= 1) return null
 
   const goToPage = (nextPage: number) => {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams.toString())
     if (nextPage <= 1) {
-      params.delete("page");
+      params.delete("page")
     } else {
-      params.set("page", String(nextPage));
+      params.set("page", String(nextPage))
     }
-    router.push(`${pathname}?${params.toString()}` as Route);
-  };
+    router.push(`${pathname}?${params.toString()}` as Route)
+  }
 
   return (
     <div className="flex items-center justify-between pt-2">
@@ -49,5 +52,5 @@ export function ContributionPagination({ page, totalPages }: ContributionPaginat
         Next
       </Button>
     </div>
-  );
+  )
 }

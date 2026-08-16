@@ -10,9 +10,7 @@ interface TrendingNotesProps {
   notes: PublicNote[]
 }
 
-export function TrendingNoteContent({
-  notes,
-}: TrendingNotesProps) {
+export function TrendingNoteContent({ notes }: TrendingNotesProps) {
   return (
     <Section
       id="trending-notes"

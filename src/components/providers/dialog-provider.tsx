@@ -1,7 +1,5 @@
-import { UpdateProfileDialog } from "@/components/dialogs/update-profile-dialog";
+import { UpdateProfileDialog } from "@/components/dialogs/update-profile-dialog"
 
-export function DialogProvider() { 
-  return (
-    <UpdateProfileDialog />
-  )
+export function DialogProvider() {
+  return <UpdateProfileDialog />
 }
