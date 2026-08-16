@@ -12,6 +12,7 @@ import {
 } from "@/validations/contribution"
 import { generateUniqueSlug } from "@/utils/slug"
 import { db, NewNoteType, notes } from "@/db"
+import { PDFDocument } from "pdf-lib"
 
 export type CreateNoteErrorCode =
   | "VALIDATION_ERROR"
@@ -76,17 +77,17 @@ export const createNoteFromFormData = async ({
     grade: formData.get("grade") || undefined,
     topic: formData.get("topic") || undefined,
     academicYear: formData.get("academicYear") || undefined,
+    tags: formData.get("tags") || undefined,
   }
 
   const parsedFields = ContributionFieldsSchema.safeParse(rawFields)
   if (!parsedFields.success) {
+    console.error(
+      "[createNoteFromFormData] Validation errors:",
+      parsedFields.error.flatten()
+    )
 
-     console.error(
-       "[createNoteFromFormData] Validation errors:",
-       parsedFields.error.flatten()
-     )
-
-     console.error("[createNoteFromFormData] Raw fields:", rawFields)
+    console.error("[createNoteFromFormData] Raw fields:", rawFields)
 
     throw new CreateNoteError(
       "VALIDATION_ERROR",
@@ -113,6 +114,10 @@ export const createNoteFromFormData = async ({
   const buffer = Buffer.from(arrayBuffer)
   const fileSizeBytes = buffer.byteLength
   const fileHash = createHash("sha256").update(buffer).digest("hex")
+
+  const pdf = await PDFDocument.load(arrayBuffer)
+
+  const pageCount = pdf.getPageCount()
 
   // 4. Duplicate detection, before any upload happens.
   const existing = await db
@@ -186,12 +191,13 @@ export const createNoteFromFormData = async ({
     fileKey: uploaded.fileId,
     fileHash,
     fileSizeBytes,
-    pageCount: null,
+    pageCount: pageCount,
 
     processingStatus: "PROCESSING",
     status: "PENDING_REVIEW",
 
     downloadCount: 0,
+    tags: fields?.tags?.split(",").map((tag) => tag.trim()) || null,
   }
 
   try {
