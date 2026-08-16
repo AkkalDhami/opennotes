@@ -22,63 +22,90 @@ export function ContributorPagination({
   return (
     <nav
       aria-label="Contributors pagination"
-      className="flex items-center justify-center gap-2"
+      className="flex w-full items-center justify-center gap-2"
     >
-      <Button variant="outline" size="sm" disabled={!hasPrev}>
-        {hasPrev ? (
-          <Link href={buildHref(page - 1) as Route} aria-label="Previous page">
-            <HugeiconsIcon
-              icon={ArrowLeft01Icon}
-              size={21}
-              strokeWidth={2}
-              className="size-4"
-              aria-hidden="true"
-            />
-            Previous
-          </Link>
-        ) : (
-          <span aria-disabled="true">
-            <HugeiconsIcon
-              icon={ArrowLeft01Icon}
-              size={21}
-              strokeWidth={2}
-              className="size-4"
-              aria-hidden="true"
-            />
-            Previous
-          </span>
-        )}
-      </Button>
+      {hasPrev ? (
+        <Button
+          variant="outline"
+          disabled={!hasPrev}
+          nativeButton={false}
+          render={
+            <Link
+              href={buildHref(page - 1) as Route}
+              aria-label="Previous page"
+            >
+              <HugeiconsIcon
+                icon={ArrowLeft01Icon}
+                size={21}
+                strokeWidth={2}
+                className="size-4"
+                aria-hidden="true"
+              />
+              Previous
+            </Link>
+          }
+        ></Button>
+      ) : (
+        <Button
+          variant="outline"
+          disabled={!hasPrev}
+          nativeButton={false}
+          render={
+            <span aria-disabled="true">
+              <HugeiconsIcon
+                icon={ArrowLeft01Icon}
+                size={21}
+                strokeWidth={2}
+                className="size-4"
+                aria-hidden="true"
+              />
+              Previous
+            </span>
+          }
+        ></Button>
+      )}
 
       <span className="px-2 text-sm text-muted-foreground">
         Page {page} of {totalPages}
       </span>
 
-      <Button variant="outline" size="sm" disabled={!hasNext}>
-        {hasNext ? (
-          <Link href={buildHref(page + 1) as Route} aria-label="Next page">
-            Next
-            <HugeiconsIcon
-              icon={ArrowRight01Icon}
-              size={21}
-              strokeWidth={2}
-              className="size-4"
-              aria-hidden="true"
-            />
-          </Link>
-        ) : (
-          <span aria-disabled="true">
-            <HugeiconsIcon
-              icon={ArrowRight01Icon}
-              size={21}
-              strokeWidth={2}
-              className="size-4"
-              aria-hidden="true"
-            />
-            Next
-          </span>
-        )}
-      </Button>
+      {hasNext ? (
+        <Button
+          variant="outline"
+          disabled={!hasNext}
+          nativeButton={false}
+          render={
+            <Link href={buildHref(page + 1) as Route} aria-label="Next page">
+              Next
+              <HugeiconsIcon
+                icon={ArrowRight01Icon}
+                size={21}
+                strokeWidth={2}
+                className="size-4"
+                aria-hidden="true"
+              />
+            </Link>
+          }
+        ></Button>
+      ) : (
+        <Button
+          variant="outline"
+          nativeButton={false}
+          render={
+            <span aria-disabled="true">
+              <HugeiconsIcon
+                icon={ArrowRight01Icon}
+                size={21}
+                strokeWidth={2}
+                className="size-4"
+                aria-hidden="true"
+              />
+              Next
+            </span>
+          }
+          disabled={!hasNext}
+        ></Button>
+      )}
     </nav>
   )
 }

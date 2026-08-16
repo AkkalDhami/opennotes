@@ -16,7 +16,7 @@ export function ContributorStatsSection({
 }) {
   const items = [
     { label: "Contributors", value: stats.totalContributors },
-    { label: "Notes Shared", value: stats.totalNotesShared },
+    { label: "Published Notes", value: stats.totalNotesShared },
     { label: "Subjects Covered", value: stats.totalSubjects },
   ]
 

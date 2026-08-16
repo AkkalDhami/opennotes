@@ -3,8 +3,10 @@ import { ContributorListItem } from "@/lib/admin/queries"
 
 export function ContributorsGrid({
   contributors,
+  admin = false,
 }: {
   contributors: ContributorListItem[]
+  admin?: boolean
 }) {
   return (
     <div className="flex flex-wrap items-center gap-4">
@@ -16,6 +18,7 @@ export function ContributorsGrid({
           username={c.username}
           avatarUrl={c.avatarUrl}
           publishedNoteCount={c.publishedNoteCount}
+          admin={admin}
         />
       ))}
     </div>
