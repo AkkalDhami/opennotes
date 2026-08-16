@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/tooltip"
 import {
   Calendar03Icon,
+  Download01Icon,
   EllipsisVerticalIcon,
   File01Icon,
   FileEditIcon,
@@ -37,7 +38,7 @@ import { formatFullDate, formatRelativeTime } from "@/utils/format-date"
 import { AdminContributionRow } from "@/lib/notes/queries"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { getInitials } from "@/components/admin/contributors/utils"
+import { getInitials } from "@/utils/get-initials"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import Link from "next/link"
 import { getNoteBySlug } from "@/utils/get-file-url"
@@ -68,7 +69,7 @@ export function ContributionsTable({
               <TableHead>Note</TableHead>
               <TableHead>Contributor</TableHead>
               <TableHead>Subject</TableHead>
-              {/* <TableHead className="hidden lg:table-cell">Education</TableHead> */}
+              <TableHead className="">Downloads</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="hidden lg:table-cell">Submitted</TableHead>
               <TableHead className="text-right">Actions</TableHead>
@@ -91,11 +92,11 @@ export function ContributionsTable({
                         href={`/admin/contributions/${note.id}`}
                         className="truncate font-medium text-foreground underline-offset-2 hover:underline"
                       >
-                        {note.title}
+                        {sliceContent(note.title)}
                       </Link>
                       {note.description && (
                         <p className="truncate text-xs text-muted-foreground">
-                          {sliceContent(note.description)}
+                          {note.description}
                         </p>
                       )}
                     </div>
@@ -122,13 +123,21 @@ export function ContributionsTable({
                 </TableCell>
 
                 <TableCell className="text-sm text-foreground">
-                  {note.subject}
+                  {sliceContent(note.subject)}
                 </TableCell>
 
-                {/* <TableCell className="hidden text-sm text-muted-foreground lg:table-cell">
-                  {note.educationLevel ?? "—"}
-                  {note.grade ? ` · ${note.grade}` : ""}
-                </TableCell> */}
+                <TableCell className="text-sm text-muted-foreground">
+                  <span className="flex items-center gap-1">
+                    <HugeiconsIcon
+                      icon={Download01Icon}
+                      size={14}
+                      color="currentColor"
+                      strokeWidth={2}
+                      className="size-3.5 text-muted-foreground"
+                    />
+                    {note.downloadCount.toLocaleString()}
+                  </span>
+                </TableCell>
 
                 <TableCell>
                   <ContributionStatusBadge status={note.status} />
@@ -158,7 +167,7 @@ export function ContributionsTable({
                         variant: "outline",
                         className: "size-8",
                       }),
-                      "rounded-full mr-2"
+                      "mr-2 rounded-full"
                     )}
                   >
                     <HugeiconsIcon

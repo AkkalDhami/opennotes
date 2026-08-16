@@ -5,10 +5,10 @@ import { motion, useReducedMotion, type Variants } from "motion/react"
 
 import { Button } from "@/components/ui/button"
 import { TopContributors } from "@/components/admin/contributors/top-contributors"
-import { ContributorListItem } from "@/lib/admin/queries"
+import { ContributorRanking } from "@/lib/contributors/contributors-ranking"
 
 interface ContributorsSectionContentProps {
-  contributors: ContributorListItem[]
+  contributors: ContributorRanking[]
   admin?: boolean
   home?: boolean
 }
@@ -68,5 +68,7 @@ export function ContributorsSectionContent({
     )
   }
 
-  return <TopContributors contributors={contributors} home={home} admin={admin} />
+  return (
+    <TopContributors contributors={contributors} home={home} admin={admin} />
+  )
 }

@@ -40,7 +40,7 @@ import {
 import { useRouter } from "next/navigation"
 import { Spinner } from "@/components/ui/spinner"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { getInitials } from "@/components/admin/contributors/utils"
+import { getInitials } from "@/utils/get-initials"
 
 export function UpdateProfileDialog() {
   const { close, isOpen, type, data } = useModal()

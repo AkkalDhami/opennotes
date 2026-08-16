@@ -52,6 +52,7 @@ export function ContributionDetail({
             <Separator className="mb-2" />
             <MetaRow label="Subject" value={slugToTitle(note.subject)} />
             <MetaRow label="Category" value={slugToTitle(note.category)} />
+            <MetaRow label="Course/Program" value={slugToTitle(note.course)} />
             <MetaRow
               label="Education Level"
               value={slugToTitle(note.educationLevel ?? "")}

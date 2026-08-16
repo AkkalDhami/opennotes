@@ -14,22 +14,15 @@ import { EmailStatus } from "@/components/admin/users/email-status"
 import { UserRowActions } from "@/components/admin/users/user-row-actions"
 import { AdminUser } from "@/lib/admin/users"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { CheckmarkBadge01Icon } from "@hugeicons/core-free-icons"
+import {
+  CheckmarkBadge01Icon,
+  UserIcon,
+  UserSettings01Icon,
+} from "@hugeicons/core-free-icons"
 import { formatDate } from "@/utils/format-date"
 
 interface UsersTableProps {
   users: AdminUser[]
-}
-
-const dateFormatter = new Intl.DateTimeFormat("en-US", {
-  month: "short",
-  day: "numeric",
-  year: "numeric",
-  timeZone: "UTC",
-})
-
-function formatJoinedDate(date: Date) {
-  return dateFormatter.format(date)
 }
 
 export function UsersTable({ users }: UsersTableProps) {
@@ -95,7 +88,29 @@ export function UsersTable({ users }: UsersTableProps) {
 
                 <TableCell>
                   <Badge variant={user.role === "ADMIN" ? "brand" : "outline"}>
-                    {user.role === "ADMIN" ? "Admin" : "User"}
+                    {user.role === "ADMIN" ? (
+                      <div className="flex items-center gap-1">
+                        <HugeiconsIcon
+                          icon={UserSettings01Icon}
+                          size={24}
+                          color="currentColor"
+                          strokeWidth={1.5}
+                          className="size-4"
+                        />
+                        Admin
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1">
+                        <HugeiconsIcon
+                          icon={UserIcon}
+                          size={24}
+                          color="currentColor"
+                          strokeWidth={1.5}
+                          className="size-4"
+                        />
+                        User
+                      </div>
+                    )}
                   </Badge>
                 </TableCell>
 
