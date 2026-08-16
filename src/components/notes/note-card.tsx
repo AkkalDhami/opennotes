@@ -1,103 +1,144 @@
-import Link from "next/link";
+import Link from "next/link"
+import { HugeiconsIcon } from "@hugeicons/react"
 import {
-  File01Icon,
-  ViewIcon,
-  TradeUpIcon,
+  CheckmarkBadge01Icon,
   Download01Icon,
-} from "@hugeicons/core-free-icons";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Note } from "@/data/notes";
-import { HugeiconsIcon } from "@hugeicons/react";
+  File02Icon,
+} from "@hugeicons/core-free-icons"
+import { PublicNote } from "@/types/note"
+import { formatFileSize, formatCompactNumber } from "@/lib/notes/format"
+import { slugToTitle } from "@/utils/slug"
+import { formatDate } from "@/utils/format-date"
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
+import { getInitials } from "@/utils/get-initials"
+import { cn } from "@/lib/utils"
+import { DownloadNoteButton } from "@/components/shared/download-note-button"
+import { buttonVariants } from "@/components/ui/button"
+import { Route } from "next"
 
 interface NoteCardProps {
-  note: Note;
+  note: PublicNote
+  from?: "contributor"
 }
 
-function initials(name: string) {
-  return name
-    .split(" ")
-    .map((part) => part[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
-}
-
-function formatCount(count: number) {
-  if (count >= 1000) {
-    return `${(count / 1000).toFixed(1).replace(/\.0$/, "")}k`;
-  }
-  return count.toString();
-}
-
-export function NoteCard({ note }: NoteCardProps) {
+export function NoteCard({ note, from }: NoteCardProps) {
   return (
-    <Link
-      href={`/notes/${note.slug}`}
-      aria-label={`${note.title}, ${[note.level, note.subject]
-        .filter(Boolean)
-        .join(" · ")}, by ${note.contributor.name}`}
-      className="group flex flex-col gap-4 rounded-lg border border-border bg-card p-5 text-card-foreground transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none"
-    >
-      <div className="flex items-center justify-between">
-        <span className="inline-flex items-center gap-1.5 rounded-md bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
-          <HugeiconsIcon
-            icon={File01Icon}
-            size={24}
-            color="currentColor"
-            strokeWidth={2}
-            className="size-3.5"
-          />
-          PDF
-        </span>
+    <div className="group flex h-full flex-col space-y-2 rounded-lg border bg-card p-4 transition-colors hover:border-primary/30 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
+      <Link
+        href={`/notes/${note.slug}`}
+        className="line-clamp-2 text-lg leading-snug font-medium text-foreground underline-offset-2 hover:text-primary hover:underline"
+      >
+        {slugToTitle(note.title)}
+      </Link>
 
-        {note.trending ? (
-          <span className="inline-flex items-center gap-1 text-xs font-medium text-green-500">
-            <HugeiconsIcon
-              icon={TradeUpIcon}
-              size={24}
-              color="currentColor"
-              strokeWidth={2}
-              className="size-3.5"
-            />
-          </span>
-        ) : null}
-      </div>
+      <p className="text-sm font-medium text-muted-foreground">
+        {slugToTitle(note.educationLevel || "")} {" · "}
+        {slugToTitle(note.course || "")}
+        {note.grade ? ` · ${slugToTitle(note.grade)}` : ""}
+        {" · "}
+        {slugToTitle(note.subject)}
+      </p>
 
-      <div className="space-y-1.5">
-        <h3 className="line-clamp-2 leading-snug font-medium text-foreground">
-          {note.title}
-        </h3>
-        <p className="text-sm text-muted-foreground">
-          {[note.level, note.subject].filter(Boolean).join(" · ")}
-        </p>
-      </div>
-
-      <div className="mt-auto flex items-center justify-between border-t border-border pt-4">
-        <div className="flex min-w-0 items-center gap-2">
-          <Avatar className="size-6 shrink-0">
-            <AvatarImage src={note.contributor.avatarUrl} alt="" />
-            <AvatarFallback className="text-[10px]">
-              {initials(note.contributor.name)}
-            </AvatarFallback>
-          </Avatar>
-          <span className="truncate text-sm text-muted-foreground">
-            {note.contributor.name}
-          </span>
-        </div>
-
-        <div className="flex shrink-0 items-center gap-3 text-xs text-muted-foreground">
+      <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-muted-foreground">
+        <div className="flex items-center gap-3">
           <span className="inline-flex items-center gap-1">
             <HugeiconsIcon
               icon={Download01Icon}
-              size={24}
+              size={14}
               color="currentColor"
               strokeWidth={2}
-              className="size-3.5"
+              className="size-4"
             />
-            {formatCount(note.downloads)}
+            {formatCompactNumber(note.downloadCount)}
           </span>
+
+          {note.fileSizeBytes != null && (
+            <span className="inline-flex items-center gap-1">
+              <HugeiconsIcon
+                icon={File02Icon}
+                size={14}
+                color="currentColor"
+                strokeWidth={2}
+                className="size-4"
+              />
+              {formatFileSize(note.fileSizeBytes)}
+            </span>
+          )}
         </div>
+
+        <span className="text-sm text-muted-foreground">
+          {formatDate(note.publishedAt)}
+        </span>
       </div>
-    </Link>
+
+      {from !== "contributor" && (
+        <div className="mt-2 flex items-center gap-2">
+          <div className="relative">
+            <Avatar className="size-10 border">
+              <AvatarImage
+                src={note.contributor.avatarUrl ?? undefined}
+                alt={`${note.contributor.name}'s avatar`}
+              />
+              <AvatarFallback className="text-lg">
+                {getInitials(note.contributor.name)}
+              </AvatarFallback>
+            </Avatar>
+            <HugeiconsIcon
+              icon={CheckmarkBadge01Icon}
+              size={14}
+              color="currentColor"
+              strokeWidth={2}
+              className={cn(
+                "size-4 fill-blue-600 stroke-blue-600 text-white",
+                "absolute -right-0.5 bottom-0.5 flex items-center justify-center rounded-full bg-background"
+              )}
+            />
+          </div>
+          <div className="flex flex-col">
+            <Link
+              href={`/contributors/${note.contributor.username}` as Route}
+              className="text-base font-medium text-foreground underline-offset-2 hover:underline"
+            >
+              {note.contributor.name}
+            </Link>
+            <p className="text-xs text-muted-foreground">
+              @{note.contributor.username}
+            </p>
+          </div>
+        </div>
+      )}
+      <div className="mt-2 grid w-full items-center gap-2 sm:grid-cols-2">
+        <DownloadNoteButton
+          noteId={note.id}
+          className="inline-flex items-center gap-1 text-sm font-normal"
+        >
+          <HugeiconsIcon
+            icon={Download01Icon}
+            size={14}
+            color="currentColor"
+            strokeWidth={2}
+            className="size-4"
+          />
+          Download PDF
+        </DownloadNoteButton>
+
+        <Link
+          href={`/notes/${note.slug}`}
+          className={cn(
+            buttonVariants({ variant: "outline" }),
+            "inline-flex items-center gap-2 text-sm font-normal"
+          )}
+        >
+          <HugeiconsIcon
+            icon={File02Icon}
+            size={14}
+            color="currentColor"
+            strokeWidth={2}
+            className="size-4"
+          />
+          View Note
+        </Link>
+      </div>
+    </div>
   )
 }
