@@ -9,10 +9,11 @@ import { HeroSearch } from "@/components/search/hero-search"
 import { Section } from "@/components/ui/section"
 // import { LiquidEther } from "@/components/ui/liquid-ether"
 // import { SideRays } from "@/components/ui/siderays"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
 import { LiquidEther } from "@/components/ui/liquid-ether"
 import { SideRays } from "@/components/ui/siderays"
 import Link from "next/link"
+import { Route } from "next"
 
 interface HeroSectionProps {
   className?: string
@@ -122,16 +123,21 @@ export function HeroSection({ className }: HeroSectionProps) {
           </motion.p>
 
           <motion.div variants={item} className="w-full max-w-2xl">
-            <HeroSearch />
+            <HeroSearch placeholder="Search notes, subjects, topics, courses, and contributors" />
           </motion.div>
 
           <motion.div
             variants={item}
             className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:gap-4"
           >
-            <Button
-              variant={"brand"}
-              className={"rounded-lg px-4 py-5.5 text-base font-normal"}
+            <Link
+              href={"/notes" as Route}
+              className={cn(
+                buttonVariants({
+                  variant: "brand",
+                }),
+                "rounded-lg px-4 py-5.5 text-base font-normal"
+              )}
             >
               <HugeiconsIcon
                 icon={BookOpen02Icon}
@@ -139,7 +145,7 @@ export function HeroSection({ className }: HeroSectionProps) {
                 aria-hidden="true"
               />
               Browse Notes
-            </Button>
+            </Link>
             <Link
               href="/contribution"
 
