@@ -213,6 +213,8 @@ export const NOTES_CATEGORIES = [
   { id: "jee", name: "JEE" },
   { id: "lok-sewa", name: "Lok Sewa" },
   { id: "teaching-license", name: "Teaching License" },
+  { id: "ioe", name: "I.O.E" },
+  { id: "cee", name: "C.E.E" },
 
   // Professional
   { id: "certification", name: "Certification" },

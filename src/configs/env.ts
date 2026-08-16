@@ -8,6 +8,8 @@ export const envSchema = z.object({
 
   IMAGEKIT_ID: z.string(),
 
+  NEXT_API_URL: z.string(),
+
   CRYPTO_SECRET: z.string(),
 
   DOWNLOADER_HASH_SECRET: z.string(),
