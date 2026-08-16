@@ -32,7 +32,7 @@ export const uploadToImageKit = async (
       folder: options.folder || "/uploads",
     })
 
-    console.log({ result});
+    // console.log({ result});
 
     return {
       url: result.url || "",
