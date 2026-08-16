@@ -3,10 +3,23 @@ import { verifyAccessToken } from "./lib/jwt"
 import { refreshAccessToken } from "./features/auth/auth.service"
 import { ACCESS_TOKEN_TTL } from "./features/auth/auth.cookie"
 
-const PUBLIC_ROUTES = ["/", "/signin", "/contributors", "/privacy", "/terms"]
+const PUBLIC_ROUTES = [
+  "/",
+  "/signin",
+  "/contributors",
+  "/privacy",
+  "/terms",
+  "/guidelines",
+  "/community",
+  "/notes",
+]
 
 function isPublicRoute(pathname: string) {
-  if (PUBLIC_ROUTES.includes(pathname)) {
+  if (
+    PUBLIC_ROUTES.includes(pathname) ||
+    pathname.startsWith("/notes/") ||
+    pathname.startsWith("/contributors/")
+  ) {
     return true
   }
 
@@ -17,7 +30,6 @@ function isPublicRoute(pathname: string) {
 
   return false
 }
-
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
