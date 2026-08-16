@@ -33,7 +33,7 @@ export interface SelectOption {
 
 interface SearchSelectProps {
   options: SelectOption[]
-  value: string | string[]
+  value: string | string[] | undefined
   onChange: (value: string | string[]) => void
   disabled?: boolean
   id?: string

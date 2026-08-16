@@ -12,6 +12,8 @@ import {
   type Rank,
 } from "@/components/shared/rank-medal"
 import { cn } from "@/lib/utils"
+import { Heading } from "../ui/heading";
+import { SubHeading } from "../ui/sub-heading";
 
 const REMAINING_RANKS: Rank[] = [4, 5, 6, 7, 8, 9, 10]
 
@@ -34,14 +36,14 @@ export function ContributorMedalShowcase({
         transition={{ duration: 0.5, ease: "easeOut" }}
         className="flex max-w-xl flex-col items-center gap-3"
       >
-        <h2 className="text-3xl font-semibold tracking-tight text-foreground">
+        <Heading>
           Become a Contributor
-        </h2>
-        <p className="text-muted-foreground">
+        </Heading>
+        <SubHeading>
           Every note you share helps someone else learn faster. Publish your
           notes, climb the leaderboard, and earn your place among our top
           contributors.
-        </p>
+        </SubHeading>
       </motion.div>
 
       <Link

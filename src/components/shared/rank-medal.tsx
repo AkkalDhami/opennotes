@@ -1,8 +1,9 @@
 "use client"
 
 import { motion, type Variants } from "motion/react"
+import { useId } from "react";
 
-export type Rank = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
+export type Rank = number
 
 export const RANK_TEXT: Record<Rank, string> = {
   1: "1st place contributor",
@@ -91,16 +92,21 @@ function buildBranch(
   r: number
 ): Leaf[] {
   const leaves: Leaf[] = []
+
+  const round = (value: number) => Number(value.toFixed(6))
+
   for (let i = 0; i < count; i++) {
     const t = count === 1 ? 0 : i / (count - 1)
     const deg = startDeg + (endDeg - startDeg) * t
     const rad = (deg * Math.PI) / 180
+
     leaves.push({
-      cx: 100 + r * Math.cos(rad),
-      cy: 100 + r * Math.sin(rad),
-      rotation: deg,
+      cx: round(100 + r * Math.cos(rad)),
+      cy: round(100 + r * Math.sin(rad)),
+      rotation: round(deg),
     })
   }
+
   return leaves
 }
 
@@ -141,10 +147,12 @@ function PodiumIcon({
   className = "",
 }: IconProps) {
   const tone = PODIUM_TONES[rank as PodiumRank]
-  const gradId = `face-${rank}`
-  const ringId = `ring-${rank}`
-  const clipId = `clip-${rank}`
-  const glowId = `glow-${rank}`
+  const id = useId()
+
+  const gradId = `${id}-face`
+  const ringId = `${id}-ring`
+  const clipId = `${id}-clip`
+  const glowId = `${id}-glow`
 
   return (
     <motion.svg
