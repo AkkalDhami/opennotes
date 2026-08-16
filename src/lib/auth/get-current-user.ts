@@ -29,6 +29,7 @@ export async function getCurrentUser() {
         emailVerified: users.emailVerified,
         bio: users.bio,
         avatar: users.avatarUrl,
+        avatarId: users.avatarId,
         role: users.role,
         username: users.username,
       })
