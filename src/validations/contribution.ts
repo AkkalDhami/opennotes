@@ -54,6 +54,9 @@ export const ContributionFieldsSchema = z.object({
     .max(NOTE_ACADEMIC_YEAR_MAX_LENGTH)
     .optional()
     .or(z.literal("")),
+
+  // tags is optionl (i get like t, t, t)
+  tags: z.string().optional(),
 })
 
 export type ContributionFieldValues = z.infer<typeof ContributionFieldsSchema>
