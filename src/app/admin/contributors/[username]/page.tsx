@@ -7,11 +7,12 @@ import {
   getContributorByUsername,
   getContributorPublishedNotes,
 } from "@/lib/admin/queries"
-import { getInitials } from "@/components/admin/contributors/utils"
+import { getInitials } from "@/utils/get-initials"
 import { APP_NAME } from "@/constants/app.constants"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
   Calendar04Icon,
+  ChampionIcon,
   CheckmarkBadge01Icon,
   NotebookIcon,
 } from "@hugeicons/core-free-icons"
@@ -20,6 +21,18 @@ import { formatDate } from "@/utils/format-date"
 import { cn } from "@/lib/utils"
 import { Separator } from "@/components/ui/separator"
 import { CopyButton } from "@/components/shared/copy-button"
+import { Heading } from "@/components/ui/heading"
+import Link from "next/link"
+
+import { buttonVariants } from "@/components/ui/button"
+import {
+  getContributorRecentActivity,
+  getContributorStats,
+} from "@/lib/admin/contributors"
+import { getContributionActivity } from "@/lib/contributions/get-contribution-activity"
+import { ContributorOverview } from "@/components/admin/contributors/contributor-overview"
+import { getContributorRank } from "@/lib/contributors/get-contributor-rank"
+import { RankMedal } from "@/components/shared/rank-medal"
 
 interface ContributorDetailPageProps {
   params: Promise<{ username: string }>
@@ -59,10 +72,21 @@ export default async function ContributorDetailPage({
     page
   )
 
+  const [stats, contributionActivity, recentActivity, contributorRank] =
+    await Promise.all([
+      getContributorStats(contributor.id),
+      getContributionActivity({
+        contributorId: contributor.id,
+      }),
+      getContributorRecentActivity(contributor.id),
+      getContributorRank(contributor.id),
+    ])
+
   return (
     <div className="flex flex-col gap-6">
+      <Heading>Contributor Profile</Heading>
       <section className="space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="relative flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <div className="relative">
               <Avatar className="size-18 border">
@@ -101,25 +125,34 @@ export default async function ContributorDetailPage({
               </div>
             </div>
           </div>
-          <div className="flex flex-col">
-            <div className="flex items-center gap-2">
-              <h4 className="font-medium text-muted-foreground">Id:</h4>
-              <div className="relative my-0 flex items-center space-x-2">
-                <p className="text-brand">{contributor.id}</p>
-                <CopyButton text={contributor.id} className="relative" />
-              </div>
-            </div>
 
-            <div className="flex items-center gap-2">
-              <h4 className="font-medium text-muted-foreground">Email:</h4>
-              <div className="relative my-0 flex items-center space-x-2">
-                <p className="text-brand">{contributor.email}</p>
-                <CopyButton text={contributor.email} className="relative" />
-              </div>
+          {contributorRank?.rank && (
+            <RankMedal
+              size={140}
+              rank={contributorRank?.rank}
+              showLabel={false}
+              className="to absolute right-0"
+            />
+          )}
+        </div>
+
+        <div className="flex flex-wrap items-center gap-4">
+          <div className="flex items-center gap-2">
+            <h4 className="font-medium text-muted-foreground">Id:</h4>
+            <div className="relative my-0 flex items-center space-x-2">
+              <p className="text-brand">{contributor.id}</p>
+              <CopyButton text={contributor.id} className="relative" />
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <h4 className="font-medium text-muted-foreground">Email:</h4>
+            <div className="relative my-0 flex items-center space-x-2">
+              <p className="text-brand">{contributor.email}</p>
+              <CopyButton text={contributor.email} className="relative" />
             </div>
           </div>
         </div>
-
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2">
             <HugeiconsIcon
@@ -133,7 +166,7 @@ export default async function ContributorDetailPage({
               {contributor.publishedNoteCount.toLocaleString()}{" "}
               {contributor.publishedNoteCount === 1
                 ? "Note Shared"
-                : "Notes Shared"}
+                : "Published Notes"}
             </p>
           </div>
           <Separator orientation="vertical" />
@@ -146,18 +179,38 @@ export default async function ContributorDetailPage({
               className="size-4 text-muted-foreground"
             />
 
-            <p className="hidden sm:block text-muted-foreground">
+            <p className="hidden text-muted-foreground sm:block">
               Member since{" "}
               {formatDate(contributor.joinedAt, {
                 dateStyle: "full",
-                timeStyle: "full",
+                timeStyle: "medium",
               })}
             </p>
-            <p className="sm:hidden text-muted-foreground">
+            <p className="text-muted-foreground sm:hidden">
               Member since{" "}
               {formatDate(contributor.joinedAt, {
                 dateStyle: "medium",
               })}
+            </p>
+          </div>
+
+          <Separator orientation="vertical" />
+          <div className="flex items-center gap-2">
+            <HugeiconsIcon
+              icon={ChampionIcon}
+              size={24}
+              color="currentColor"
+              strokeWidth={2}
+              className="size-4 text-muted-foreground"
+            />
+
+            <p className="text-muted-foreground">
+              Total contribution points:{" "}
+              <span className="font-medium text-foreground">
+                {contributorRank?.score
+                  ? contributorRank.score.toLocaleString()
+                  : "N/A"}
+              </span>
             </p>
           </div>
         </div>
@@ -170,6 +223,19 @@ export default async function ContributorDetailPage({
             </p>
           </div>
         )}
+
+        <Link
+          href={`/contributors/${contributor.username}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={cn(
+            buttonVariants({
+              variant: "brand",
+            })
+          )}
+        >
+          View Public Profile
+        </Link>
 
         {contributor.subjects.length > 0 && (
           <div className="space-y-1">
@@ -187,6 +253,12 @@ export default async function ContributorDetailPage({
           </div>
         )}
       </section>
+
+      <ContributorOverview
+        stats={stats}
+        contributionActivity={contributionActivity}
+        recentActivity={recentActivity}
+      />
 
       <section className="space-y-4">
         <h2 className="text-lg font-semibold text-foreground">

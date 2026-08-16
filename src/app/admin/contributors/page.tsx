@@ -8,7 +8,6 @@ import {
   ContributorSort,
   getContributors,
   getContributorStats,
-  getTopContributors,
 } from "@/lib/admin/queries"
 import { Heading } from "@/components/ui/heading"
 import { SubHeading } from "@/components/ui/sub-heading"
@@ -16,6 +15,7 @@ import { Metadata } from "next"
 import { APP_NAME } from "@/constants/app.constants"
 import { VALID_SORTS } from "@/app/(app)/contributors/page"
 import { ContributorStatsSection } from "@/components/admin/contributors/contributor-stats"
+import { getContributorsRanking } from "@/lib/contributors/contributors-ranking"
 
 export const metadata: Metadata = {
   title: "Contributors ",
@@ -40,7 +40,7 @@ export default async function page({ searchParams }: ContributorsPageProps) {
 
   const [stats, topContributors, contributorsResult] = await Promise.all([
     getContributorStats(),
-    getTopContributors(),
+    getContributorsRanking(),
     getContributors({ search, sort, page }),
   ])
 
@@ -92,7 +92,7 @@ export default async function page({ searchParams }: ContributorsPageProps) {
               {contributors.length === 0 ? (
                 <ContributorsEmptyState variant="no-results" />
               ) : (
-                <ContributorsGrid contributors={contributors} />
+                <ContributorsGrid contributors={contributors} admin />
               )}
             </div>
 

@@ -10,6 +10,7 @@ import { UsersFilters } from "@/components/admin/users/users-filters"
 import { UsersTable } from "@/components/admin/users/users-table"
 import { UsersPagination } from "@/components/admin/users/users-pagination"
 import { UsersEmptyState } from "@/components/admin/users/users-empty-state"
+import { RefreshButton } from "@/components/admin/contributions/refresh-button";
 
 export const metadata = {
   title: "Users · Admin",
@@ -63,8 +64,10 @@ export default async function AdminUsersPage({
 
   return (
     <div className="flex flex-col gap-6">
-
-      <UsersPageHeader total={total} />
+      <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+        <UsersPageHeader total={total} />
+        <RefreshButton />
+      </div>
 
       <UsersFilters
         search={search ?? ""}
