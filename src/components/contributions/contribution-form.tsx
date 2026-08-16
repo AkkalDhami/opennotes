@@ -254,6 +254,7 @@ export function ContributionForm() {
                   disabled={isSubmitting}
                   rows={4}
                   aria-invalid={fieldState.invalid}
+                  className="resize-none"
                 />
 
                 <div className="flex items-center justify-between">
