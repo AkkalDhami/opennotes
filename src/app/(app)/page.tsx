@@ -1,4 +1,4 @@
-import { TrendingNotes } from "@/components/landing/trending-notes"
+import { TrendingNotesSection } from "@/components/landing/trending-notes"
 import { HeroSection } from "@/components/landing/hero-section"
 import { Container } from "@/components/ui/container"
 import { ContributorsSection } from "@/components/landing/contributors-section"
@@ -8,10 +8,9 @@ export default function Page() {
   return (
     <Container className="border-edge space-y-2 border-x pb-6">
       <HeroSection />
-      <TrendingNotes />
+      <TrendingNotesSection />
       <ContributorsSection />
-      {/* <ContributorsCta /> */}
-      <ContributorMedalShowcase />
+      <ContributorMedalShowcase className="mt-4" />
     </Container>
   )
 }
