@@ -1,9 +1,5 @@
 import { requireAdmin } from "@/lib/auth/require-admin"
-import {
-  getUsers,
-  DEFAULT_USERS_PAGE_SIZE,
-  type UserRole,
-} from "@/lib/admin/users"
+import { getUsers, DEFAULT_USERS_PAGE_SIZE, UserRole } from "@/lib/admin/users"
 
 import { UsersPageHeader } from "@/components/admin/users/users-page-header"
 import { UsersFilters } from "@/components/admin/users/users-filters"
@@ -14,6 +10,7 @@ import { RefreshButton } from "@/components/admin/contributions/refresh-button"
 
 export const metadata = {
   title: "Users · Admin",
+  description: "Manage users",
 }
 
 interface AdminUsersPageProps {
