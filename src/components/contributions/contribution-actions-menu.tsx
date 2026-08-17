@@ -46,8 +46,8 @@ export function ContributionActionsMenu({
           </Button>
         }
       ></DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-48">
-        <DropdownMenuItem onSelect={() => onViewDetails(contribution)}>
+      <DropdownMenuContent align="end" className="w-55">
+        <DropdownMenuItem onClick={() => onViewDetails(contribution)}>
           <HugeiconsIcon
             icon={ViewIcon}
             size={16}
@@ -111,7 +111,7 @@ export function ContributionActionsMenu({
         ) : null}
 
         {contribution.status === "PENDING_REVIEW" ? (
-          <DropdownMenuItem onSelect={() => onViewDetails(contribution)}>
+          <DropdownMenuItem onClick={() => onViewDetails(contribution)}>
             <HugeiconsIcon
               icon={ViewIcon}
               size={16}
@@ -128,7 +128,7 @@ export function ContributionActionsMenu({
             <DropdownMenuSeparator />
             <DropdownMenuItem
               variant="destructive"
-              onSelect={() => {
+              onClick={() => {
                 // Deletion should go through a confirmation dialog + server action.
                 // Left as a TODO integration point.
               }}

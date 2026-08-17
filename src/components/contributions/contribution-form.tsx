@@ -7,7 +7,13 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import toast from "react-hot-toast"
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 
@@ -39,6 +45,10 @@ import {
 import { handleConfetti } from "@/components/ui/confetti"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { CheckmarkCircle02Icon } from "@hugeicons/core-free-icons"
+import { NoteSourceType } from "@/db"
+import { Checkbox } from "@/components/ui/checkbox"
+import { cn } from "@/lib/utils"
+import { APP_NAME } from "@/constants/app.constants"
 
 interface ApiResponse {
   success: boolean
@@ -48,6 +58,37 @@ interface ApiResponse {
     status: string
   }
 }
+
+interface INoteSourceOptions {
+  value: NoteSourceType
+  label: string
+  description: string
+}
+
+const NOTE_SOURCE_OPTIONS: INoteSourceOptions[] = [
+  {
+    value: "ORIGINAL",
+    label: "I created this note",
+    description: "This is my own work and I have the right to share it.",
+  },
+  {
+    value: "PERMISSION_GRANTED",
+    label: "I have permission to share it",
+    description: "The original creator has given me permission to publish it.",
+  },
+  {
+    value: "OPEN_LICENSE",
+    label: "It has an open license",
+    description:
+      "The material is licensed for sharing, such as under Creative Commons.",
+  },
+  {
+    value: "PUBLIC_DOMAIN",
+    label: "It is public domain",
+    description:
+      "The material is free to use and share because it is in the public domain.",
+  },
+] as const
 
 export function ContributionForm() {
   const router = useRouter()
@@ -68,6 +109,12 @@ export function ContributionForm() {
       topic: "",
       course: "",
       academicYear: "",
+
+      sourceType: "ORIGINAL",
+      originalAuthor: "",
+      sourceUrl: "",
+      shareConfirmation: false,
+
       file: undefined as unknown as File,
       tags: "",
     },
@@ -85,6 +132,11 @@ export function ContributionForm() {
     control: form.control,
     name: "educationLevel",
   })
+  const sourceType = useWatch({
+    control: form.control,
+    name: "sourceType",
+  })
+
   const handleFileSelect = (file: File | null) => {
     setUploadError(undefined)
     setUploadStatus("idle")
@@ -101,6 +153,8 @@ export function ContributionForm() {
   const gradeOptions = GRADES.filter(
     (grade) => grade.level === educationLevel || ""
   )
+
+  const requiresSourceDetails = sourceType !== "ORIGINAL"
 
   const onSubmit = async (values: ContributionFormValues) => {
     if (isSubmitting) return // guard against double submission
@@ -119,9 +173,16 @@ export function ContributionForm() {
       formData.append("course", values.course)
       formData.append("grade", values.grade ?? "")
       formData.append("topic", values.topic ?? "")
+      formData.append("sourceType", values.sourceType)
+      formData.append("originalAuthor", values.originalAuthor ?? "")
+      formData.append("sourceUrl", values.sourceUrl ?? "")
       formData.append("academicYear", values.academicYear ?? "")
       formData.append("file", values.file)
       formData.append("tags", values.tags ?? "")
+
+      if (values.shareConfirmation) {
+        formData.append("shareConfirmation", "true")
+      }
 
       const result = await submitWithProgress(formData, setUploadProgress)
       console.log({ result })
@@ -160,7 +221,7 @@ export function ContributionForm() {
     >
       <Card className="bg-background">
         <CardHeader>
-          <CardTitle>Note Information</CardTitle>
+          <CardTitle className="text-lg">Note Information</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-4 sm:grid-cols-3">
@@ -419,7 +480,7 @@ export function ContributionForm() {
 
       <Card className="bg-background">
         <CardHeader>
-          <CardTitle>
+          <CardTitle className="text-lg">
             Upload your PDF <span className="text-destructive">*</span>
           </CardTitle>
         </CardHeader>
@@ -441,6 +502,196 @@ export function ContributionForm() {
                 <FieldDescription>
                   Every submission is reviewed before being published.
                 </FieldDescription>
+
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
+            )}
+          />
+        </CardContent>
+      </Card>
+
+      <Card className="bg-background">
+        <CardHeader>
+          <CardTitle className="text-lg">Sharing & Attribution</CardTitle>
+
+          <CardDescription>
+            Tell us where this note came from. This helps us respect the
+            original creator&apos;s work and rights.
+          </CardDescription>
+        </CardHeader>
+
+        <CardContent className="space-y-6">
+          <Controller
+            name="sourceType"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel className="text-base">
+                  How can you share this note?
+                  <span className="text-destructive">*</span>
+                </FieldLabel>
+
+                <div className="grid gap-3 md:grid-cols-2">
+                  {NOTE_SOURCE_OPTIONS.map((option) => {
+                    const selected = field.value === option.value
+
+                    return (
+                      <button
+                        key={option.value}
+                        type="button"
+                        disabled={isSubmitting}
+                        onClick={() => {
+                          field.onChange(option.value)
+
+                          if (option.value === "ORIGINAL") {
+                            form.setValue("originalAuthor", "")
+                            form.setValue("sourceUrl", "")
+                          }
+                        }}
+                        className={cn(
+                          "rounded-lg border p-4 text-left transition-colors",
+                          "hover:bg-muted/50",
+                          selected &&
+                            "border-primary bg-primary/5 ring-1 ring-primary",
+                          isSubmitting && "cursor-not-allowed opacity-50"
+                        )}
+                      >
+                        <div className="flex items-start gap-3">
+                          <div
+                            className={cn(
+                              "mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full border",
+                              selected && "border-primary bg-primary"
+                            )}
+                          >
+                            {selected && (
+                              <div className="size-1.5 rounded-full bg-primary-foreground" />
+                            )}
+                          </div>
+
+                          <div className="space-y-1">
+                            <p className="font-medium">{option.label}</p>
+
+                            <p className="text-sm text-muted-foreground">
+                              {option.description}
+                            </p>
+                          </div>
+                        </div>
+                      </button>
+                    )
+                  })}
+                </div>
+
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
+            )}
+          />
+
+          {/* Original Author + Source URL */}
+          {requiresSourceDetails && (
+            <div className="grid gap-6 sm:grid-cols-2">
+              <Controller
+                name="originalAuthor"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="original-author">
+                      Original Author
+                      {sourceType !== "PUBLIC_DOMAIN" && (
+                        <span className="text-destructive">*</span>
+                      )}
+                    </FieldLabel>
+
+                    <Input
+                      {...field}
+                      id="original-author"
+                      placeholder="e.g. John Doe"
+                      disabled={isSubmitting}
+                      aria-invalid={fieldState.invalid}
+                    />
+
+                    <FieldDescription>
+                      Who originally created this note?
+                    </FieldDescription>
+
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+
+              <Controller
+                name="sourceUrl"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="source-url">
+                      Source URL
+                      {(sourceType === "OPEN_LICENSE" ||
+                        sourceType === "PUBLIC_DOMAIN") && (
+                        <span className="text-destructive">*</span>
+                      )}
+                    </FieldLabel>
+
+                    <Input
+                      {...field}
+                      id="source-url"
+                      type="url"
+                      placeholder="https://example.com/..."
+                      disabled={isSubmitting}
+                      aria-invalid={fieldState.invalid}
+                    />
+
+                    <FieldDescription>
+                      Where did you find this material?
+                    </FieldDescription>
+
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+            </div>
+          )}
+
+          <Controller
+            name="shareConfirmation"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field
+                data-invalid={fieldState.invalid}
+                className="rounded-lg border bg-muted/30 p-4"
+              >
+                <div className="flex items-start gap-3">
+                  <Checkbox
+                    id="share-confirmation"
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    disabled={isSubmitting}
+                    aria-invalid={fieldState.invalid}
+                  />
+
+                  <div className="space-y-1">
+                    <FieldLabel
+                      htmlFor="share-confirmation"
+                      className="cursor-pointer leading-5"
+                    >
+                      I confirm that I have the right to share this material
+                      publicly on {APP_NAME}.
+                    </FieldLabel>
+
+                    <FieldDescription>
+                      I understand that I should only upload material I created,
+                      have permission to share, or that is legally available for
+                      public sharing.
+                    </FieldDescription>
+                  </div>
+                </div>
 
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />

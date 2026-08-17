@@ -29,7 +29,7 @@ export function ContributionTable({ contributions }: ContributionTableProps) {
   const details = useContributionDetailsSheet()
 
   return (
-    <div className="hidden overflow-hidden rounded-xl border md:block">
+    <div className="hidden overflow-hidden rounded-lg border p-4 md:block">
       <Table>
         <TableHeader>
           <TableRow>

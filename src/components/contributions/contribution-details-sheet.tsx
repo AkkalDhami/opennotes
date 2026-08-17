@@ -16,6 +16,7 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { StatusBadge } from "@/components/profile/status-badge"
 import { ContributionListItem } from "@/types/contribution"
+import { slugToTitle } from "@/utils/slug"
 
 interface ContributionDetailsSheetProps {
   contribution: ContributionListItem
@@ -52,9 +53,11 @@ export function ContributionDetailsSheet({
 }: ContributionDetailsSheetProps) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full overflow-y-auto sm:max-w-md">
-        <SheetHeader>
-          <SheetTitle>{contribution.title}</SheetTitle>
+      <SheetContent className="max-w-200 overflow-y-auto p-4">
+        <SheetHeader className="p-0">
+          <SheetTitle className={"text-lg font-medium"}>
+            {contribution.title}
+          </SheetTitle>
           {contribution.description ? (
             <SheetDescription>{contribution.description}</SheetDescription>
           ) : null}
@@ -80,15 +83,27 @@ export function ContributionDetailsSheet({
 
         <Separator className="my-4" />
 
-        <div className="divide-y">
-          <DetailRow label="Subject" value={contribution.subject} />
-          <DetailRow label="Category" value={contribution.category} />
+        <div className="space-y-2 divide-y">
+          <DetailRow
+            label="Subject"
+            value={slugToTitle(contribution.subject)}
+          />
+          <DetailRow
+            label="Category"
+            value={slugToTitle(contribution.category)}
+          />
           <DetailRow
             label="Educational Level"
-            value={contribution.educationLevel}
+            value={slugToTitle(contribution.educationLevel)}
           />
-          <DetailRow label="Course" value={contribution.course} />
-          <DetailRow label="Grade" value={contribution.grade} />
+          <DetailRow
+            label="Course"
+            value={slugToTitle(contribution.course || "")}
+          />
+          <DetailRow
+            label="Grade"
+            value={slugToTitle(contribution.grade || "")}
+          />
           <DetailRow label="Topic" value={contribution.topic} />
           <DetailRow label="Academic Year" value={contribution.academicYear} />
           <DetailRow
@@ -106,7 +121,7 @@ export function ContributionDetailsSheet({
         </div>
 
         {contribution?.tags && contribution?.tags?.length > 0 ? (
-          <div className="mt-4 flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-1.5">
             {contribution?.tags.map((tag) => (
               <Badge
                 key={tag}
@@ -134,7 +149,7 @@ export function ContributionDetailsSheet({
                 View Note
               </a>
             }
-            className="mt-6 w-full gap-2"
+            className="w-full gap-2"
           ></Button>
         ) : null}
       </SheetContent>
