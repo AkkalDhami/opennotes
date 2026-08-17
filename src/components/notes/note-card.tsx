@@ -28,7 +28,7 @@ export function NoteCard({ note, from }: NoteCardProps) {
         href={`/notes/${note.slug}`}
         className="line-clamp-2 text-lg leading-snug font-medium text-foreground underline-offset-2 hover:text-primary hover:underline"
       >
-        {slugToTitle(note.title)}
+        {note.title}
       </Link>
 
       <p className="text-sm font-medium text-muted-foreground">

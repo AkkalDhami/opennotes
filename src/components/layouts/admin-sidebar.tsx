@@ -16,6 +16,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
   FileStarIcon,
+  Home03Icon,
   LayoutBottomIcon,
   UserGroup03Icon,
 } from "@hugeicons/core-free-icons"
@@ -35,7 +36,7 @@ const data = {
     {
       title: "Home",
       url: "/",
-      icon: <HugeiconsIcon icon={DashboardSquare02Icon} strokeWidth={2} />,
+      icon: <HugeiconsIcon icon={Home03Icon} strokeWidth={2} />,
     },
     {
       title: "Dashboard",

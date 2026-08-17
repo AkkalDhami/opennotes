@@ -219,12 +219,17 @@ export function NoteFilters({ options }: NoteFiltersProps) {
               </Button>
             }
           />
-          <SheetContent side="bottom" className="max-h-[85vh] overflow-y-auto">
-            <SheetHeader>
-              <SheetTitle>Filter notes</SheetTitle>
+          <SheetContent
+            side="bottom"
+            className="max-h-[85vh] overflow-y-auto p-4"
+          >
+            <SheetHeader className="p-0">
+              <SheetTitle className={"text-lg font-medium"}>
+                Filter notes
+              </SheetTitle>
             </SheetHeader>
-            <div className="py-4">{fields}</div>
-            <SheetFooter className="flex-row gap-2">
+            <div className="">{fields}</div>
+            <SheetFooter className="flex-row gap-2 p-0">
               {filtersActive && (
                 <Button variant="ghost" onClick={clearAll} className="flex-1">
                   Clear filters
