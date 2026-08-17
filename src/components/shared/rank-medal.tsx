@@ -362,7 +362,7 @@ export function RankMedal({
   rank,
   size,
   delay = 0,
-  showLabel = true,
+  showLabel = false,
   className = "",
 }: RankMedalWithRankProps) {
   const podium = isPodium(rank)

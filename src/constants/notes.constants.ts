@@ -170,6 +170,7 @@ export const NOTES_CATEGORIES = [
   { id: "reading-material", name: "Reading Material" },
 
   // Exam Preparation
+  { id: "interview-preparation-notes", name: "Interview Preparation Notes" },
   { id: "exam-notes", name: "Exam Notes" },
   { id: "revision-notes", name: "Revision Notes" },
   { id: "quick-revision", name: "Quick Revision" },

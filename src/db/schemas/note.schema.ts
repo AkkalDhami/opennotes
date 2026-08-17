@@ -26,6 +26,15 @@ export const noteStatusEnum = pgEnum("note_status", [
   "REMOVED",
 ])
 
+export const NOTE_SOURCES = [
+  "ORIGINAL",
+  "PERMISSION_GRANTED",
+  "OPEN_LICENSE",
+  "PUBLIC_DOMAIN",
+] as const
+
+export const noteSourceTypeEnum = pgEnum("note_source_type", NOTE_SOURCES)
+
 export const notes = pgTable(
   "notes",
   {
@@ -38,6 +47,12 @@ export const notes = pgTable(
       .references(() => users.id, { onDelete: "cascade" }),
     subject: varchar("subject").notNull(),
     category: varchar("category").notNull(),
+
+    sourceType: noteSourceTypeEnum("source_type").notNull().default("ORIGINAL"),
+    originalAuthor: varchar("original_author", {
+      length: 255,
+    }),
+    sourceUrl: text("source_url"),
 
     educationLevel: varchar("education_level", { length: 64 }).notNull(),
     course: varchar("course", { length: 64 }).notNull().default("Unknown"),
@@ -79,3 +94,6 @@ export const notes = pgTable(
 export type NoteType = typeof notes.$inferSelect
 export type NewNoteType = typeof notes.$inferInsert
 export type NoteStatus = NoteType["status"]
+export type ProcessingStatus = NoteType["processingStatus"]
+
+export type NoteSourceType = NoteType["sourceType"]

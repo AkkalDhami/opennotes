@@ -114,24 +114,28 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
               <p className="text-xs text-muted-foreground">Published</p>
             </div>
           </div>
-          <Button variant="outline" size="sm" className="gap-2">
+          <Button
+            onClick={() =>
+              open("update-profile", {
+                profile: {
+                  id: profile.id,
+                  name: profile.name,
+                  username: profile.username,
+                  avatar: profile.avatarUrl,
+                  bio: profile.bio,
+                },
+              })
+            }
+            variant="outline"
+            size="sm"
+            className="gap-2"
+          >
             <HugeiconsIcon
               icon={Edit02Icon}
               size={16}
               color="currentColor"
               strokeWidth={2}
               className="size-4"
-              onClick={() =>
-                open("update-profile", {
-                  profile: {
-                    id: profile.id,
-                    name: profile.name,
-                    username: profile.username,
-                    avatar: profile.avatarUrl,
-                    bio: profile.bio,
-                  },
-                })
-              }
             />
             Edit Profile
           </Button>
