@@ -25,6 +25,7 @@ import { slugToTitle } from "@/utils/slug"
 import { Heading } from "@/components/ui/heading"
 import { formatDate } from "@/utils/format-date"
 import { getRelatedNotesByContributor } from "@/lib/notes/get-related-notes"
+import { NoteSourceInfo } from "@/components/notes/note-source-info"
 
 interface NoteDetailPageProps {
   params: Promise<{ slug: string }>
@@ -78,6 +79,8 @@ export default async function NoteDetailPage({ params }: NoteDetailPageProps) {
     contributorId: note.contributor.id,
   })
 
+  const filteredNotes = contributorNotes.filter((n) => n.slug !== note.slug)
+
   return (
     <div className="flex w-full flex-col gap-6 lg:flex-row">
       <div className="flex-1 space-y-4">
@@ -97,7 +100,6 @@ export default async function NoteDetailPage({ params }: NoteDetailPageProps) {
           />{" "}
           All Notes
         </Link>
-
         <Heading>Title: {note.title}</Heading>
         <div className="flex flex-wrap items-center gap-2 text-base font-medium text-muted-foreground">
           <span>{slugToTitle(note.educationLevel)}</span>
@@ -120,11 +122,9 @@ export default async function NoteDetailPage({ params }: NoteDetailPageProps) {
           <span aria-hidden="true">·</span>
           <span>{slugToTitle(note.course)}</span>
         </div>
-
         {note.description && (
           <p className="text-base text-muted-foreground">{note.description}</p>
         )}
-
         <p className="flex items-center gap-2 text-base text-muted-foreground">
           <HugeiconsIcon
             icon={Calendar04Icon}
@@ -138,9 +138,7 @@ export default async function NoteDetailPage({ params }: NoteDetailPageProps) {
             dateStyle: "full",
           })}
         </p>
-
         <Separator className="my-6" />
-
         <dl className="grid grid-cols-2 gap-4 sm:grid-cols-3">
           <Stat
             icon={Download01Icon}
@@ -166,9 +164,7 @@ export default async function NoteDetailPage({ params }: NoteDetailPageProps) {
             }
           />
         </dl>
-
         <NoteActions note={note} fileUrl={fileUrl} />
-
         {note.tags.length > 0 && (
           <div className="flex flex-wrap gap-3">
             {note.tags.map((tag) => (
@@ -186,17 +182,21 @@ export default async function NoteDetailPage({ params }: NoteDetailPageProps) {
             ))}
           </div>
         )}
-
+        {note.sourceType !== "ORIGINAL" && (
+          <NoteSourceInfo
+            sourceType={note.sourceType}
+            originalAuthor={note.originalAuthor}
+            sourceUrl={note.sourceUrl}
+          />
+        )}
         <Separator className="my-8" />
-
         <NotePdfViewer note={note} fileUrl={fileUrl} />
-
         <RelatedNotes note={note} />
       </div>
-      <div className="sticky top-20 h-auto w-100">
+      <div className="sticky top-20 h-auto max-w-80 sm:w-100">
         <ContributorPreview
           contributor={note.contributor}
-          notes={contributorNotes}
+          notes={filteredNotes}
         />
       </div>
     </div>

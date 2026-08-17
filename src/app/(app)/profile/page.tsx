@@ -1,13 +1,3 @@
-// import { ProfileCard } from "@/components/auth/profile-card"
-
-// export default function Page() {
-//   return (
-//     <div className={"flex h-screen w-full items-center justify-center"}>
-//       <ProfileCard />
-//     </div>
-//   )
-// }
-
 import { Metadata } from "next"
 import { redirect } from "next/navigation"
 
@@ -24,10 +14,10 @@ import {
   getUserContributions,
   getUserContributionStats,
 } from "@/lib/user/get-contributions"
-import { APP_NAME } from "@/constants/app.constants"
 
 export const metadata: Metadata = {
-  title: `My Profile | ${APP_NAME}`,
+  title: `My Profile`,
+  description: "View and manage your profile.",
 }
 
 interface ProfilePageProps {

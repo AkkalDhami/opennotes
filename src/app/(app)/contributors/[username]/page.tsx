@@ -228,7 +228,7 @@ export default async function ContributorDetailPage({
 
       <NoteContributionGraph
         initialData={contributionActivity.days}
-        className="w-225"
+        className="max-w-225"
       />
 
       <section className="space-y-4">
