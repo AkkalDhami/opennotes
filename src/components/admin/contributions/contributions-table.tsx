@@ -10,7 +10,6 @@ import {
   Sheet,
   SheetContent,
   SheetDescription,
-  SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
@@ -49,6 +48,7 @@ import { RemoveContributionDialog } from "./remove-contribution-dialog"
 import { RejectContributionDialog } from "./reject-contribution-dialog"
 import { sliceContent } from "@/utils/slice-content"
 import { cn } from "@/lib/utils"
+import { slugToTitle } from "@/utils/slug"
 
 export function ContributionsTable({
   items,
@@ -123,7 +123,7 @@ export function ContributionsTable({
                 </TableCell>
 
                 <TableCell className="text-sm text-foreground">
-                  {sliceContent(note.subject)}
+                  {slugToTitle(note.subject)}
                 </TableCell>
 
                 <TableCell className="text-sm text-muted-foreground">
@@ -287,9 +287,8 @@ export async function ContributionSheet({
       <SheetContent className="w-full p-0 sm:max-w-xl">
         <ScrollArea className="h-full">
           <div className="flex min-h-full flex-col">
-            {/* Header */}
-            <SheetHeader className="border-b px-6 py-5">
-              <div className="flex items-start justify-between gap-4">
+            <div className="mt-8 space-y-7 px-6 py-6">
+              <div className="flex items-start justify-between gap-4 border-b pb-4">
                 <div className="min-w-0 space-y-1">
                   <SheetTitle className="text-xl leading-tight">
                     Contribution details
@@ -302,10 +301,6 @@ export async function ContributionSheet({
 
                 <ContributionStatusBadge status={note.status} />
               </div>
-            </SheetHeader>
-
-            <div className="space-y-7 px-6 py-6">
-              {/* Note */}
               <section className="space-y-4">
                 <div className="flex items-start gap-3">
                   <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">

@@ -81,8 +81,7 @@ export function ContributionFilters() {
     if (!searchParams.get("status")) {
       updateParams({ status: "ALL" })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [searchParams, updateParams])
 
   const status = searchParams.get("status") ?? "ALL"
   const educationLevel = searchParams.get("educationLevel") ?? ""

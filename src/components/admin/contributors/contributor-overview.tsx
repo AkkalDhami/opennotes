@@ -158,12 +158,12 @@ export function ContributorOverview({
         <NoteContributionGraph initialData={contributionActivity.days} />
 
         {/* Recent activity */}
-        <Card className="p-0">
+        <Card className="p-4">
           <CardHeader>
             <CardTitle>Recent Activity</CardTitle>
           </CardHeader>
 
-          <CardContent>
+          <CardContent className="px-0">
             {recentActivity.length === 0 ? (
               <div className="flex min-h-48 items-center justify-center text-sm text-muted-foreground">
                 No recent activity.
