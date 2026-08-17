@@ -11,13 +11,13 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { UserAvatar } from "@/components/admin/users/user-avatar"
 import { EmailStatus } from "@/components/admin/users/email-status"
-import { UserRowActions } from "@/components/admin/users/user-row-actions"
 import { AdminUser } from "@/lib/admin/users"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
   CheckmarkBadge01Icon,
   UserIcon,
   UserSettings01Icon,
+  ViewIcon,
 } from "@hugeicons/core-free-icons"
 import { formatDate } from "@/utils/format-date"
 
@@ -120,13 +120,20 @@ export function UsersTable({ users }: UsersTableProps) {
 
                 <TableCell className="text-muted-foreground">
                   {formatDate(user.createdAt, {
-                    dateStyle: "long",
+                    dateStyle: "medium",
                     timeStyle: "medium",
                   })}
                 </TableCell>
 
                 <TableCell>
-                  <UserRowActions userId={user.id} userName={user.name} />
+                  <Link href={`/admin/users/${user.username}`}>
+                    <HugeiconsIcon
+                      icon={ViewIcon}
+                      size={16}
+                      strokeWidth={2}
+                      aria-hidden="true"
+                    />
+                  </Link>
                 </TableCell>
               </TableRow>
             )

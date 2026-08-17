@@ -1,8 +1,6 @@
 "use client"
 
-import { useSession } from "next-auth/react"
-import { signIn } from "next-auth/react"
-import { redirect } from "next/navigation"
+import { signIn, useSession } from "next-auth/react"
 
 import { Button } from "@/components/ui/button"
 import { APP_NAME } from "@/constants/app.constants"
@@ -10,10 +8,6 @@ import Link from "next/link"
 
 export function GoogleAndGitHubSignin() {
   const { status } = useSession()
-
-  if (status === "authenticated") {
-    redirect("/profile")
-  }
 
   return (
     <div className="flex min-h-svh w-full items-center justify-center bg-background px-4 py-8">
