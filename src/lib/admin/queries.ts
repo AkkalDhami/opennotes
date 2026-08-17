@@ -325,6 +325,10 @@ export async function getContributorPublishedNotes(
         contributorName: users.name,
         contributorUsername: users.username,
         contributorAvatarUrl: users.avatarUrl,
+
+        sourceType: notes.sourceType,
+        sourceUrl: notes.sourceUrl,
+        originalAuthor: notes.originalAuthor,
       })
       .from(notes)
       .innerJoin(users, eq(notes.contributorId, users.id))
@@ -369,6 +373,9 @@ export async function getContributorPublishedNotes(
       description: r.description,
       filePath: r.filePath,
       topic: r.topic,
+      originalAuthor: r.originalAuthor,
+      sourceType: r.sourceType,
+      sourceUrl: r.sourceUrl,
       contributor: {
         id: r.contributorId,
         name: r.contributorName,
