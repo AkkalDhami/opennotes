@@ -1,17 +1,47 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { and, eq, sql } from "drizzle-orm"
 
 import { db, downloads, notes } from "@/db"
 import { getFileUrl } from "@/utils/get-file-url"
 import { generateHashDownloader } from "@/helpers/token.helper"
+import {
+  checkRateLimit,
+  getClientIP,
+  RATE_LIMIT_MAX_REQUESTS,
+  RATE_LIMIT_WINDOW,
+} from "@/lib/custom-rate-limiter"
 
 type DownloadMode = "file" | "url"
 
 export async function GET(
-  request: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const clientIP = getClientIP(request)
+    const rateLimit = checkRateLimit(clientIP)
+
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Too many requests. Please try again later.",
+          error: {
+            retryAfter: RATE_LIMIT_WINDOW / 1000,
+            status: 429,
+          },
+        },
+        {
+          status: 429,
+          headers: {
+            "X-RateLimit-Limit": RATE_LIMIT_MAX_REQUESTS.toString(),
+            "X-RateLimit-Remaining": rateLimit.remaining.toString(),
+            "X-RateLimit-Reset": (Date.now() + RATE_LIMIT_WINDOW).toString(),
+          },
+        }
+      )
+    }
+
     const { id } = await params
 
     const { searchParams } = new URL(request.url)
