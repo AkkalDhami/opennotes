@@ -78,6 +78,11 @@ export const createNoteFromFormData = async ({
     topic: formData.get("topic") || undefined,
     academicYear: formData.get("academicYear") || undefined,
     tags: formData.get("tags") || undefined,
+    sourceType: formData.get("sourceType") || undefined,
+    originalAuthor: formData.get("originalAuthor") || undefined,
+    sourceUrl: formData.get("sourceUrl") || undefined,
+    shareConfirmation:
+      formData.get("shareConfirmation") === "true" || undefined,
   }
 
   const parsedFields = ContributionFieldsSchema.safeParse(rawFields)
@@ -195,6 +200,10 @@ export const createNoteFromFormData = async ({
 
     processingStatus: "PROCESSING",
     status: "PENDING_REVIEW",
+
+    sourceType: fields.sourceType,
+    originalAuthor: fields.originalAuthor || null,
+    sourceUrl: fields.sourceUrl || null,
 
     downloadCount: 0,
     tags: fields?.tags?.split(",").map((tag) => tag.trim()) || null,

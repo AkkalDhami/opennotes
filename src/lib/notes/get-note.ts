@@ -22,13 +22,18 @@ export async function getPublishedNoteBySlug(
       pageCount: notes.pageCount,
       fileSizeBytes: notes.fileSizeBytes,
       filePath: notes.filePath,
-      // viewCount: notes.viewCount,
+
+      sourceType: notes.sourceType,
+      sourceUrl: notes.sourceUrl,
+      originalAuthor: notes.originalAuthor,
+
       downloadCount: notes.downloadCount,
       publishedAt: notes.publishedAt,
       contributorId: users.id,
       contributorName: users.name,
       contributorUsername: users.username,
       contributorAvatarUrl: users.avatarUrl,
+
       contributorPublishedCount: sql<number>`(
         SELECT count(*)::int FROM notes n2
         WHERE n2.contributor_id = ${users.id} AND n2.status = 'PUBLISHED'
@@ -56,7 +61,11 @@ export async function getPublishedNoteBySlug(
     pageCount: row.pageCount,
     fileSizeBytes: row.fileSizeBytes,
     filePath: row.filePath,
-    // viewCount: row.viewCount,
+
+    sourceType: row.sourceType,
+    sourceUrl: row.sourceUrl,
+    originalAuthor: row.originalAuthor,
+
     downloadCount: row.downloadCount,
     publishedAt: row.publishedAt ? new Date(row.publishedAt) : new Date(),
     contributor: {

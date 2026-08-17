@@ -8,6 +8,9 @@ import {
   generateSecureToken,
 } from "@/helpers/token.helper"
 import { signAccessToken, signRefreshToken } from "@/lib/jwt"
+import { verifyRefreshToken } from "@/lib/jwt"
+import { SessionType } from "@/types/auth"
+import { env } from "@/configs/env"
 
 interface OAuthUserInfo {
   name: string
@@ -116,10 +119,6 @@ export async function createAuthSession({
     refreshToken,
   }
 }
-
-import { verifyRefreshToken } from "@/lib/jwt"
-import { SessionType } from "@/types/auth"
-import { env } from "@/configs/env"
 
 export async function refreshAccessToken(refreshToken: string) {
   const payload = verifyRefreshToken(refreshToken)

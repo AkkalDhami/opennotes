@@ -7,6 +7,8 @@
  * in this feature imports from this file, so this is the one place to fix.
  */
 
+import { NoteSourceType } from "@/db"
+
 export type NoteStatus = "DRAFT" | "PUBLISHED" | "ARCHIVED"
 
 export type NoteSortOption = "relevance" | "downloads" | "newest" | "oldest"
@@ -37,6 +39,9 @@ export interface PublicNote {
   downloadCount: number
   publishedAt: Date
   contributor: PublicContributor
+  sourceType: NoteSourceType
+  sourceUrl: string | null
+  originalAuthor: string | null
 }
 
 export interface PublicContributor {

@@ -102,6 +102,9 @@ class PostgresNotesSearchIndex implements NotesSearchIndex {
           fileSizeBytes: notes.fileSizeBytes,
           filePath: notes.filePath,
           // viewCount: notes.viewCount,
+          sourceType: notes.sourceType,
+          sourceUrl: notes.sourceUrl,
+          originalAuthor: notes.originalAuthor,
           downloadCount: notes.downloadCount,
           publishedAt: notes.publishedAt,
           contributorId: users.id,
@@ -140,6 +143,11 @@ class PostgresNotesSearchIndex implements NotesSearchIndex {
       filePath: row.filePath,
       // viewCount: row.viewCount,
       downloadCount: row.downloadCount,
+      originalAuthor: row.originalAuthor,
+
+      sourceType: row.sourceType,
+      sourceUrl: row.sourceUrl,
+
       publishedAt: row.publishedAt ? new Date(row.publishedAt) : new Date(),
       contributor: {
         id: row.contributorId,

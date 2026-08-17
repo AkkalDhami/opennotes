@@ -66,6 +66,10 @@ export async function getRelatedNotes({
       contributorAvatarUrl: users.avatarUrl,
       filePath: notes.filePath,
       score: matchScore,
+
+      sourceType: notes.sourceType,
+      sourceUrl: notes.sourceUrl,
+      originalAuthor: notes.originalAuthor,
     })
     .from(notes)
     .innerJoin(users, eq(notes.contributorId, users.id))
@@ -102,6 +106,9 @@ export async function getRelatedNotes({
     downloadCount: row.downloadCount,
     filePath: row.filePath,
     publishedAt: row.publishedAt ? new Date(row.publishedAt) : new Date(),
+    originalAuthor: row.originalAuthor,
+    sourceType: row.sourceType,
+    sourceUrl: row.sourceUrl,
     contributor: {
       id: row.contributorId,
       name: row.contributorName,
@@ -145,6 +152,10 @@ export async function getRelatedNotesByContributor({
       contributorUsername: users.username,
       contributorAvatarUrl: users.avatarUrl,
       filePath: notes.filePath,
+
+      sourceType: notes.sourceType,
+      sourceUrl: notes.sourceUrl,
+      originalAuthor: notes.originalAuthor,
     })
     .from(notes)
     .innerJoin(users, eq(notes.contributorId, users.id))
@@ -178,5 +189,8 @@ export async function getRelatedNotesByContributor({
       username: row.contributorUsername,
       avatarUrl: row.contributorAvatarUrl,
     },
+    originalAuthor: row.originalAuthor,
+    sourceType: row.sourceType,
+    sourceUrl: row.sourceUrl,
   }))
 }

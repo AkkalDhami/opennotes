@@ -41,7 +41,9 @@ export async function getTrendingNotes(
         contributorName: users.name,
         contributorUsername: users.username,
         contributorAvatarUrl: users.avatarUrl,
-
+        sourceType: notes.sourceType,
+        sourceUrl: notes.sourceUrl,
+        originalAuthor: notes.originalAuthor,
         // Downloads during the last 30 days
         recentDownloads: sql<number>`
           COUNT(${downloads.id})
@@ -95,7 +97,9 @@ export async function getTrendingNotes(
       downloadCount: row.downloadCount,
 
       publishedAt: row.publishedAt ? new Date(row.publishedAt) : new Date(),
-
+      originalAuthor: row.originalAuthor,
+      sourceType: row.sourceType,
+      sourceUrl: row.sourceUrl,
       contributor: {
         id: row.contributorId,
         name: row.contributorName,
