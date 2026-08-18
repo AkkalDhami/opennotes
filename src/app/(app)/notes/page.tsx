@@ -9,16 +9,17 @@ import { searchNotes } from "@/lib/notes/search-notes"
 import { getNoteFilterOptions } from "@/lib/notes/get-filter-options"
 import { parseNoteFilters, resolveDefaultSort } from "@/lib/notes/note-filters"
 import { DEFAULT_PAGE_SIZE } from "@/types/note"
-import { APP_NAME } from "@/constants/app.constants"
 import { Heading } from "@/components/ui/heading"
 import { SubHeading } from "@/components/ui/sub-heading"
 
 export const metadata: Metadata = {
-  title: `Discover Notes | ${APP_NAME}`,
+  title: "Browse Educational Notes",
   description:
-    "Find study notes, lecture materials, summaries, and resources shared by students and educators.",
+    "Browse educational notes, study materials, class notes, and PDF resources by subject, grade, course, topic, and academic level.",
+  alternates: {
+    canonical: "/notes",
+  },
 }
-
 interface NotesPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }

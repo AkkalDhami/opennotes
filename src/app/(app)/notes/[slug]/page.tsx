@@ -26,6 +26,8 @@ import { Heading } from "@/components/ui/heading"
 import { formatDate } from "@/utils/format-date"
 import { getRelatedNotesByContributor } from "@/lib/notes/get-related-notes"
 import { NoteSourceInfo } from "@/components/notes/note-source-info"
+import { absoluteUrl } from "@/lib/seo"
+import { NoteJsonLd } from "@/components/seo/note-json-ld"
 
 interface NoteDetailPageProps {
   params: Promise<{ slug: string }>
@@ -35,30 +37,54 @@ export async function generateMetadata({
   params,
 }: NoteDetailPageProps): Promise<Metadata> {
   const { slug } = await params
+
   const note = await getPublishedNoteBySlug(slug)
 
-  // Unpublished/missing notes must not leak metadata (title, description,
-  // OG tags) — the page itself will 404, so metadata should match.
   if (!note) {
-    return { title: `Note not found | ${APP_NAME}` }
+    return {
+      title: "Note Not Found",
+      description: "The requested educational note could not be found.",
+      robots: {
+        index: false,
+        follow: false,
+      },
+    }
   }
 
-  const title = `${note.title} | ${APP_NAME}`
+  const title = `${note.title} — ${note.subject} ${note.grade} Notes`
+
   const description =
-    note.description ??
-    `${note.title} — ${note.subject}${note.grade ? `, Class ${note.grade}` : ""} published notes on ${APP_NAME}.`
+    note.description?.slice(0, 155) ||
+    `${note.title} — ${note.subject} notes for ${note.grade}. View and download this educational PDF shared by ${note.contributor.name}.`
+
+  const url = absoluteUrl(`/notes/${note.slug}`)
 
   return {
     title,
+
     description,
+
     alternates: {
-      canonical: `/notes/${note.slug}`,
+      canonical: url,
     },
+
     openGraph: {
+      type: "article",
+      siteName: APP_NAME,
       title,
       description,
-      url: `/notes/${note.slug}`,
-      type: "article",
+      url,
+    },
+
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
+
+    robots: {
+      index: true,
+      follow: true,
     },
   }
 }
@@ -82,124 +108,141 @@ export default async function NoteDetailPage({ params }: NoteDetailPageProps) {
   const filteredNotes = contributorNotes.filter((n) => n.slug !== note.slug)
 
   return (
-    <div className="flex w-full flex-col gap-6 lg:flex-row">
-      <div className="flex-1 space-y-4">
-        <Link
-          href={"/notes" as Route}
-          className={cn(
-            buttonVariants({
-              variant: "secondary",
-            })
-          )}
-        >
-          <HugeiconsIcon
-            icon={ArrowLeft02Icon}
-            size={22}
-            color="currentColor"
-            strokeWidth={1.5}
-          />{" "}
-          All Notes
-        </Link>
-        <Heading>Title: {note.title}</Heading>
-        <div className="flex flex-wrap items-center gap-2 text-base font-medium text-muted-foreground">
-          <span>{slugToTitle(note.educationLevel)}</span>
-          <span aria-hidden="true">·</span>
-          <span>{slugToTitle(note.subject)}</span>
-          <span aria-hidden="true">·</span>
-          <span>{slugToTitle(note.course)}</span>
-          {note.grade && (
-            <>
-              <span aria-hidden="true">·</span>
-              <span>{slugToTitle(note.grade)}</span>
-            </>
-          )}
-          {note.topic && (
-            <>
-              <span aria-hidden="true">·</span>
-              <span>{note.topic}</span>
-            </>
-          )}
-          <span aria-hidden="true">·</span>
-          <span>{slugToTitle(note.course)}</span>
-        </div>
-        {note.description && (
-          <p className="text-base text-muted-foreground">{note.description}</p>
-        )}
-        <p className="flex items-center gap-2 text-base text-muted-foreground">
-          <HugeiconsIcon
-            icon={Calendar04Icon}
-            size={24}
-            color="currentColor"
-            strokeWidth={2}
-            className="size-4"
-          />
-          Published{" "}
-          {formatDate(publishedDate, {
-            dateStyle: "full",
-          })}
-        </p>
-        <Separator className="my-6" />
-        <dl className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-          <Stat
-            icon={Download01Icon}
-            label="Downloads"
-            value={formatCompactNumber(note.downloadCount)}
-          />
-
-          <Stat
-            icon={File01Icon}
-            label="File size"
-            value={
-              note.fileSizeBytes != null
-                ? formatFileSize(note.fileSizeBytes)
-                : "—"
-            }
-          />
-
-          <Stat
-            icon={File02Icon}
-            label="Total Pages"
-            value={
-              note.pageCount != null ? formatCompactNumber(note.pageCount) : "-"
-            }
-          />
-        </dl>
-        <NoteActions note={note} fileUrl={fileUrl} />
-        {note.tags.length > 0 && (
-          <div className="flex flex-wrap gap-3">
-            {note.tags.map((tag) => (
-              <Link
-                key={tag}
-                href={`/notes?tags=${encodeURIComponent(tag)}` as Route}
-              >
-                <Badge
-                  variant="outline"
-                  className="text-sm hover:bg-secondary/80"
-                >
-                  #{tag}
-                </Badge>
-              </Link>
-            ))}
+    <>
+      <NoteJsonLd
+        note={{
+          contributor: note.contributor,
+          description: note.description,
+          grade: note.grade || "",
+          publishedAt: note.publishedAt,
+          slug: note.slug,
+          subject: note.subject,
+          title: note.title,
+        }}
+      />
+      <div className="flex w-full flex-col gap-6 lg:flex-row">
+        <div className="flex-1 space-y-4">
+          <Link
+            href={"/notes" as Route}
+            className={cn(
+              buttonVariants({
+                variant: "secondary",
+              })
+            )}
+          >
+            <HugeiconsIcon
+              icon={ArrowLeft02Icon}
+              size={22}
+              color="currentColor"
+              strokeWidth={1.5}
+            />{" "}
+            All Notes
+          </Link>
+          <Heading>Title: {note.title}</Heading>
+          <div className="flex flex-wrap items-center gap-2 text-base font-medium text-muted-foreground">
+            <span>{slugToTitle(note.educationLevel)}</span>
+            <span aria-hidden="true">·</span>
+            <span>{slugToTitle(note.subject)}</span>
+            <span aria-hidden="true">·</span>
+            <span>{slugToTitle(note.course)}</span>
+            {note.grade && (
+              <>
+                <span aria-hidden="true">·</span>
+                <span>{slugToTitle(note.grade)}</span>
+              </>
+            )}
+            {note.topic && (
+              <>
+                <span aria-hidden="true">·</span>
+                <span>{note.topic}</span>
+              </>
+            )}
+            <span aria-hidden="true">·</span>
+            <span>{slugToTitle(note.course)}</span>
           </div>
-        )}
-        {note.sourceType !== "ORIGINAL" && (
-          <NoteSourceInfo
-            sourceType={note.sourceType}
-            originalAuthor={note.originalAuthor}
-            sourceUrl={note.sourceUrl}
+          {note.description && (
+            <p className="text-base text-muted-foreground">
+              {note.description}
+            </p>
+          )}
+          <p className="flex items-center gap-2 text-base text-muted-foreground">
+            <HugeiconsIcon
+              icon={Calendar04Icon}
+              size={24}
+              color="currentColor"
+              strokeWidth={2}
+              className="size-4"
+            />
+            Published{" "}
+            {formatDate(publishedDate, {
+              dateStyle: "full",
+            })}
+          </p>
+          <Separator className="my-6" />
+          <dl className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+            <Stat
+              icon={Download01Icon}
+              label="Downloads"
+              value={formatCompactNumber(note.downloadCount)}
+            />
+
+            <Stat
+              icon={File01Icon}
+              label="File size"
+              value={
+                note.fileSizeBytes != null
+                  ? formatFileSize(note.fileSizeBytes)
+                  : "—"
+              }
+            />
+
+            <Stat
+              icon={File02Icon}
+              label="Total Pages"
+              value={
+                note.pageCount != null
+                  ? formatCompactNumber(note.pageCount)
+                  : "-"
+              }
+            />
+          </dl>
+          <NoteActions note={note} fileUrl={fileUrl} />
+          {note.tags.length > 0 && (
+            <div className="flex flex-wrap gap-3">
+              {note.tags.map((tag) => (
+                <Link
+                  key={tag}
+                  href={`/notes?tags=${encodeURIComponent(tag)}` as Route}
+                >
+                  <Badge
+                    variant="outline"
+                    className="text-sm hover:bg-secondary/80"
+                  >
+                    #{tag}
+                  </Badge>
+                </Link>
+              ))}
+            </div>
+          )}
+          {note.sourceType !== "ORIGINAL" && (
+            <NoteSourceInfo
+              sourceType={note.sourceType}
+              originalAuthor={note.originalAuthor}
+              sourceUrl={note.sourceUrl}
+            />
+          )}
+          <Separator className="my-8" />
+          <NotePdfViewer note={note} fileUrl={fileUrl} />
+          <RelatedNotes note={note} />
+        </div>
+        <div className="sticky top-20 h-auto max-w-80 sm:w-100">
+          <ContributorPreview
+            contributor={note.contributor}
+            notes={filteredNotes}
           />
-        )}
-        <Separator className="my-8" />
-        <NotePdfViewer note={note} fileUrl={fileUrl} />
-        <RelatedNotes note={note} />
+        </div>
       </div>
-      <div className="sticky top-20 h-auto max-w-80 sm:w-100">
-        <ContributorPreview
-          contributor={note.contributor}
-          notes={filteredNotes}
-        />
-      </div>
-    </div>
+    </>
   )
 }
 
