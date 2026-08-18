@@ -53,7 +53,7 @@ export async function generateMetadata({
     }
   }
 
-  const title = `${contributor.displayName}(@${contributor.username}) — Educational Notes Contributor`
+  const title = `${contributor.displayName}(@${contributor.username}) — ${APP_NAME} Contributor`
 
   const description =
     contributor.bio ||

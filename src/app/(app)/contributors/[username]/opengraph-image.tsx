@@ -67,7 +67,6 @@ export default async function OpenGraphImage({ params }: OpenGraphImageProps) {
         color: "#111827",
       }}
     >
-      {/* Brand */}
       <div
         style={{
           display: "flex",
