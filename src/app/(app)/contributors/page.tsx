@@ -19,8 +19,12 @@ import { getContributorsRanking } from "@/lib/contributors/contributors-ranking"
 import { Suspense } from "react"
 
 export const metadata: Metadata = {
-  title: "Contributors ",
-  description: `Meet the students and learners sharing educational notes with the ${APP_NAME} community.`,
+  title: `${APP_NAME} Contributors`,
+  description:
+    "Meet students, teachers, and contributors sharing educational notes and study materials with the learning community.",
+  alternates: {
+    canonical: "/contributors",
+  },
 }
 
 interface ContributorsPageProps {

@@ -29,6 +29,7 @@ import { getContributionActivity } from "@/lib/contributions/get-contribution-ac
 import { NoteContributionGraph } from "@/components/contributions/contribution-graph-content"
 import { RankMedal } from "@/components/shared/rank-medal"
 import { getContributorRank } from "@/lib/contributors/get-contributor-rank"
+import { absoluteUrl } from "@/lib/seo"
 
 interface ContributorDetailPageProps {
   params: Promise<{ username: string }>
@@ -39,16 +40,42 @@ export async function generateMetadata({
   params,
 }: ContributorDetailPageProps): Promise<Metadata> {
   const { username } = await params
+
   const contributor = await getContributorByUsername(username)
+
   if (!contributor) {
-    return { title: `Contributor Not Found | ${APP_NAME}` }
+    return {
+      title: "Contributor Not Found",
+      robots: {
+        index: false,
+        follow: false,
+      },
+    }
   }
 
+  const title = `${contributor.displayName}(@${contributor.username}) — Educational Notes Contributor`
+
+  const description =
+    contributor.bio ||
+    `${contributor.displayName} has shared educational notes and study materials with the ${APP_NAME} learning community.`
+
   return {
-    title: `${contributor.displayName} (@${contributor.username}) | Contributors | ${APP_NAME}`,
-    description: `${contributor.displayName} has shared ${contributor.publishedNoteCount} note${
-      contributor.publishedNoteCount === 1 ? "" : "s"
-    } on ${APP_NAME}.`,
+    title,
+    description,
+
+    alternates: {
+      canonical: `/contributors/${contributor.username}`,
+    },
+
+    openGraph: {
+      type: "profile",
+      title,
+      description,
+      url: absoluteUrl(`/contributors/${contributor.username}`),
+      images: contributor.avatarUrl
+        ? [contributor.avatarUrl]
+        : ["/og-image.png"],
+    },
   }
 }
 
