@@ -10,7 +10,16 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 import { requireAdmin } from "@/lib/auth/require-admin"
+import { Metadata } from "next"
 import { redirect } from "next/navigation"
+
+export const metadata: Metadata = {
+  title: "Admin",
+  robots: {
+    index: false,
+    follow: false,
+  },
+}
 
 export default async function AdminLayout({
   children,
