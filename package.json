@@ -15,7 +15,8 @@
     "db:studio": "drizzle-kit studio",
     "db:push": "npx drizzle-kit push",
     "db:seed": "tsx src/db/seed.ts",
-    "prepare": "husky"
+    "prepare": "husky",
+    "generate:themes": "tsx scripts/generate-theme-css.ts"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [
