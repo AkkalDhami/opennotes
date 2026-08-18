@@ -11,6 +11,8 @@
 # testing
 /coverage
 
+prompt.md
+
 # next.js
 /.next/
 /out/
