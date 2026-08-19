@@ -1,6 +1,4 @@
-import { Geist, Geist_Mono, Inter } from "next/font/google"
-
-import "./globals.css"
+import "./styles/globals.css"
 import { ThemeProvider } from "@/components/providers/theme-provider"
 import { cn } from "@/lib/utils"
 import { SessionProvider } from "@/components/providers/session-provider"
@@ -11,18 +9,9 @@ import { Analytics } from "@vercel/analytics/next"
 import { Metadata } from "next"
 import { APP_NAME, BASE_GITHUB_REPO, SITE_URL } from "@/constants/app.constants"
 import { DEFAULT_DESCRIPTION, DEFAULT_KEYWORDS } from "@/lib/seo"
-
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
-
-const fontMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-})
-
-const fontHeading = Geist({
-  subsets: ["latin"],
-  variable: "--font-heading",
-})
+import { ThemeScript } from "@/components/providers/theme-script"
+import { AppearanceProvider } from "@/components/providers/appearance-provider"
+import { FONT_VARIABLES } from "@/lib/appearance/fonts"
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -111,21 +100,23 @@ export default function RootLayout({
       suppressHydrationWarning
       className={cn(
         "antialiased",
-        fontMono.variable,
-        fontHeading.variable,
-        "font-sans",
-        inter.variable,
-        "selection:bg-brand selection:text-background"
+        FONT_VARIABLES,
+        "selection:bg-muted selection:text-foreground"
       )}
     >
+      <head>
+        <ThemeScript />
+      </head>
       <body>
         <ThemeProvider>
-          <Analytics />
-          <DialogProvider />
-          <Toaster />
-          <SessionProvider>
-            <TooltipProvider>{children}</TooltipProvider>
-          </SessionProvider>
+          <AppearanceProvider>
+            <Analytics />
+            <DialogProvider />
+            <Toaster />
+            <SessionProvider>
+              <TooltipProvider>{children}</TooltipProvider>
+            </SessionProvider>
+          </AppearanceProvider>
         </ThemeProvider>
       </body>
     </html>

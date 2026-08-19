@@ -11,6 +11,7 @@ import { getInitials } from "@/utils/get-initials"
 import { APP_NAME } from "@/constants/app.constants"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
+  ArrowUpRight01Icon,
   Calendar04Icon,
   ChampionIcon,
   CheckmarkBadge01Icon,
@@ -24,7 +25,6 @@ import { CopyButton } from "@/components/shared/copy-button"
 import { Heading } from "@/components/ui/heading"
 import Link from "next/link"
 
-import { buttonVariants } from "@/components/ui/button"
 import {
   getContributorRecentActivity,
   getContributorStats,
@@ -33,6 +33,7 @@ import { getContributionActivity } from "@/lib/contributions/get-contribution-ac
 import { ContributorOverview } from "@/components/admin/contributors/contributor-overview"
 import { getContributorRank } from "@/lib/contributors/get-contributor-rank"
 import { RankMedal } from "@/components/shared/rank-medal"
+import { buttonVariants } from "@/components/ui/button"
 
 interface ContributorDetailPageProps {
   params: Promise<{ username: string }>
@@ -84,7 +85,29 @@ export default async function ContributorDetailPage({
 
   return (
     <div className="flex flex-col gap-6">
-      <Heading>Contributor Profile</Heading>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <Heading>Contributor Profile</Heading>
+
+        <Link
+          href={`/contributors/${contributor.username}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={cn(
+            buttonVariants({
+              variant: "outline",
+            })
+          )}
+        >
+          View Public Profile
+          <HugeiconsIcon
+            icon={ArrowUpRight01Icon}
+            size={24}
+            color="currentColor"
+            strokeWidth={2}
+          />
+        </Link>
+      </div>
+
       <section className="space-y-4">
         <div className="relative flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-2">
@@ -140,7 +163,7 @@ export default async function ContributorDetailPage({
           <div className="flex items-center gap-2">
             <h4 className="font-medium text-muted-foreground">Id:</h4>
             <div className="relative my-0 flex items-center space-x-2">
-              <p className="text-brand">{contributor.id}</p>
+              <p className="text-foreground">{contributor.id}</p>
               <CopyButton text={contributor.id} className="relative" />
             </div>
           </div>
@@ -148,7 +171,7 @@ export default async function ContributorDetailPage({
           <div className="flex items-center gap-2">
             <h4 className="font-medium text-muted-foreground">Email:</h4>
             <div className="relative my-0 flex items-center space-x-2">
-              <p className="text-brand">{contributor.email}</p>
+              <p className="">{contributor.email}</p>
               <CopyButton text={contributor.email} className="relative" />
             </div>
           </div>
@@ -223,19 +246,6 @@ export default async function ContributorDetailPage({
             </p>
           </div>
         )}
-
-        <Link
-          href={`/contributors/${contributor.username}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={cn(
-            buttonVariants({
-              variant: "brand",
-            })
-          )}
-        >
-          View Public Profile
-        </Link>
 
         {contributor.subjects.length > 0 && (
           <div className="space-y-1">
