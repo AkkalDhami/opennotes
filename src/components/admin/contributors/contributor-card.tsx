@@ -40,7 +40,7 @@ export function ContributorCard({
         transition={{ type: "spring", stiffness: 300, damping: 24 }}
         className="h-full"
       >
-        <div className="relative h-full overflow-hidden rounded-lg bg-card p-5 transition-colors group-hover:bg-brand/10">
+        <div className="relative h-full overflow-hidden rounded-lg border bg-card p-5 transition-colors group-hover:bg-muted">
           <div className={cn("relative z-10 mt-0 flex flex-col", "gap-2")}>
             <div className="relative space-y-3">
               <div className="flex items-center gap-4">
@@ -52,7 +52,7 @@ export function ContributorCard({
                     />
                     <AvatarFallback
                       className={
-                        "text-2xl font-semibold text-brand sm:text-3xl"
+                        "text-2xl font-semibold text-foreground sm:text-3xl"
                       }
                     >
                       {getInitials(displayName)}
@@ -78,7 +78,7 @@ export function ContributorCard({
               </div>
 
               <p className="text-base text-foreground">
-                <span className="text-lg font-semibold text-brand">
+                <span className="text-lg font-semibold text-foreground">
                   {publishedNoteCount.toLocaleString()}
                 </span>{" "}
                 {publishedNoteCount === 1 ? "Note Shared" : "Published Notes"}

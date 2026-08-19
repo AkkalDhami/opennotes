@@ -86,7 +86,7 @@ export function TopContributorCard({
         transition={{ type: "spring", stiffness: 300, damping: 24 }}
         className="h-full"
       >
-        <div className="relative h-full overflow-hidden rounded-lg bg-card p-5 transition-colors group-hover:bg-brand/5">
+        <div className="relative h-full overflow-hidden rounded-lg bg-primary/5 p-5 transition-colors group-hover:bg-primary/10">
           {podiumRank && (
             <div
               className={cn(
@@ -113,7 +113,7 @@ export function TopContributorCard({
           {podiumRank && (
             <div
               className={cn(
-                "absolute top-3 right-4 z-10 flex items-center gap-2 font-heading text-sm font-medium"
+                "font-heading absolute top-3 right-4 z-10 flex items-center gap-2 text-sm font-medium"
               )}
             >
               <div className="flex items-center gap-1.5">
@@ -142,7 +142,7 @@ export function TopContributorCard({
                     />
                     <AvatarFallback
                       className={
-                        "text-2xl font-semibold text-brand sm:text-3xl"
+                        "text-2xl font-semibold text-foreground sm:text-3xl"
                       }
                     >
                       {getInitials(name)}

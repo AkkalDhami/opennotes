@@ -37,7 +37,7 @@ export function ContributorStatsSection({
                 icon={Icon}
                 size={21}
                 strokeWidth={2}
-                className="size-16 rounded-[10px] border bg-muted p-4 text-brand"
+                className="size-16 rounded-[10px] border bg-muted p-4 text-foreground"
                 aria-hidden="true"
               />
             )}

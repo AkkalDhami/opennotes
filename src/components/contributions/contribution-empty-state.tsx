@@ -40,7 +40,7 @@ export function ContributionEmptyState({
 
       {!isNoResults ? (
         <Button
-          variant={"brand"}
+          variant={"default"}
           nativeButton={false}
           render={<Link href="/contribution">Share a Note</Link>}
           className="mt-2"

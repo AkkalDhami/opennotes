@@ -32,7 +32,7 @@ export function ContributionActionsMenu({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        nativeButton={false}
+        // nativeButton={false}
         render={
           <Button variant="ghost" size="icon" className="size-8">
             <HugeiconsIcon
@@ -78,6 +78,7 @@ export function ContributionActionsMenu({
 
         {contribution.status === "REJECTED" ? (
           <DropdownMenuItem
+            nativeButton={false}
             render={
               <Link href={`/contribution/${contribution.id}/edit` as Route}>
                 <HugeiconsIcon
@@ -95,6 +96,7 @@ export function ContributionActionsMenu({
 
         {contribution.status === "PUBLISHED" ? (
           <DropdownMenuItem
+            nativeButton={false}
             render={
               <Link href={`/notes/${contribution.slug}`}>
                 <HugeiconsIcon

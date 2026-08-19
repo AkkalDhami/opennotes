@@ -221,6 +221,40 @@ export function ContributionForm() {
     >
       <Card className="bg-background">
         <CardHeader>
+          <CardTitle className="text-lg">
+            Upload your PDF <span className="text-destructive">*</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Controller
+            name="file"
+            control={form.control}
+            render={({ fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <PdfUpload
+                  file={fileValue ?? null}
+                  onFileSelect={handleFileSelect}
+                  status={uploadStatus}
+                  progress={uploadProgress}
+                  errorMessage={uploadError}
+                  disabled={isSubmitting}
+                />
+
+                <FieldDescription>
+                  Every submission is reviewed before being published.
+                </FieldDescription>
+
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
+            )}
+          />
+        </CardContent>
+      </Card>
+
+      <Card className="bg-background">
+        <CardHeader>
           <CardTitle className="text-lg">Note Information</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -475,40 +509,6 @@ export function ContributionForm() {
               )}
             />
           </div>
-        </CardContent>
-      </Card>
-
-      <Card className="bg-background">
-        <CardHeader>
-          <CardTitle className="text-lg">
-            Upload your PDF <span className="text-destructive">*</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Controller
-            name="file"
-            control={form.control}
-            render={({ fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <PdfUpload
-                  file={fileValue ?? null}
-                  onFileSelect={handleFileSelect}
-                  status={uploadStatus}
-                  progress={uploadProgress}
-                  errorMessage={uploadError}
-                  disabled={isSubmitting}
-                />
-
-                <FieldDescription>
-                  Every submission is reviewed before being published.
-                </FieldDescription>
-
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
-          />
         </CardContent>
       </Card>
 

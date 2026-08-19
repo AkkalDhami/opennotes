@@ -255,16 +255,13 @@ function FilterFields({
 export function ContributionFilters(props: ContributionFiltersProps) {
   return (
     <>
-      {/* Desktop / tablet: inline toolbar */}
       <div className="hidden rounded-xl border bg-card p-4 md:block">
         <FilterFields {...props} />
       </div>
 
-      {/* Mobile: collapses into a Sheet */}
       <div className="md:hidden">
         <Sheet>
           <SheetTrigger
-            // nativeButton={false}
             render={
               <Button variant="outline" className="w-full gap-2">
                 <HugeiconsIcon
