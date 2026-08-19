@@ -1,42 +1,98 @@
 import { NextRequest } from "next/server"
 
-export const RATE_LIMIT_WINDOW = 1 * 60 * 1000 // 1 minute
+export type RateLimitConfig = {
+  windowMs: number
+  maxRequests: number
+}
 
-export const RATE_LIMIT_MAX_REQUESTS = 5 as const
+type RateLimitEntry = {
+  count: number
+  resetTime: number
+}
 
-const rateLimitStore = new Map<string, { count: number; resetTime: number }>()
+const rateLimitStore = new Map<string, RateLimitEntry>()
+
+export const RATE_LIMITS = {
+  report: {
+    windowMs: 60 * 60 * 1000, // 1 hour
+    maxRequests: 5, // 5 reports per hour
+  },
+
+  feedback: {
+    windowMs: 60 * 60 * 1000,
+    maxRequests: 5,
+  },
+
+  contact: {
+    windowMs: 60 * 60 * 1000,
+    maxRequests: 5,
+  },
+
+  upload: {
+    windowMs: 60 * 60 * 1000,
+    maxRequests: 10,
+  },
+
+  search: {
+    windowMs: 60 * 1000,
+    maxRequests: 30,
+  },
+
+  download: {
+    windowMs: 60 * 1000, // 1 minute
+    maxRequests: 20,
+  },
+} satisfies Record<string, RateLimitConfig>
 
 export function getClientIP(request: NextRequest): string {
   return (
-    request.headers.get("x-forwarded-for")?.split(",")[0].trim() ||
-    request.headers.get("x-real-ip") ||
-    request.headers.get("cf-connecting-ip") ||
+    request.headers.get("cf-connecting-ip") ??
+    request.headers.get("x-real-ip") ??
+    request.headers.get("x-forwarded-for")?.split(",")[0].trim() ??
     "unknown"
   )
 }
 
-export function checkRateLimit(clientIP: string) {
+export function checkRateLimit(key: string, config: RateLimitConfig) {
   const now = Date.now()
-  const data = rateLimitStore.get(clientIP)
+  const existing = rateLimitStore.get(key)
 
-  if (!data || now > data.resetTime) {
-    rateLimitStore.set(clientIP, {
+  if (!existing || now >= existing.resetTime) {
+    const resetTime = now + config.windowMs
+
+    rateLimitStore.set(key, {
       count: 1,
-      resetTime: now + RATE_LIMIT_WINDOW,
+      resetTime,
     })
-    return { allowed: true, remaining: RATE_LIMIT_MAX_REQUESTS - 1 }
+
+    return {
+      allowed: true,
+      remaining: config.maxRequests - 1,
+      resetTime,
+    }
   }
 
-  if (data.count >= RATE_LIMIT_MAX_REQUESTS) {
-    return { allowed: false, remaining: 0 }
+  if (existing.count >= config.maxRequests) {
+    return {
+      allowed: false,
+      remaining: 0,
+      resetTime: existing.resetTime,
+    }
   }
 
-  data.count++
-  rateLimitStore.set(clientIP, data)
+  existing.count++
 
-  return { allowed: true, remaining: RATE_LIMIT_MAX_REQUESTS - data.count }
+  return {
+    allowed: true,
+    remaining: config.maxRequests - existing.count,
+    resetTime: existing.resetTime,
+  }
 }
 
-export function resetRateLimit(clientIP: string) {
-  rateLimitStore.delete(clientIP)
-}
+// const ip = getClientIP(request)
+
+// const rateLimit = checkRateLimit(`search:ip:${ip}`, RATE_LIMITS.search)
+
+// const ip = getClientIP(request)
+
+// const rateLimit = checkRateLimit(`search:ip:${ip}`, RATE_LIMITS.search)
