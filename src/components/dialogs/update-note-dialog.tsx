@@ -1,9 +1,8 @@
-/* eslint-disable react-hooks/incompatible-library */
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
-import { useForm } from "react-hook-form"
+import { useForm, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { toast } from "react-hot-toast"
@@ -123,9 +122,24 @@ export function UpdateNoteDialog() {
     },
   })
 
-  const educationLevel = form.watch("educationLevel")
-  const status = form.watch("status")
-  const tags = form.watch("tags") ?? []
+  const educationLevel = useWatch({
+    control: form.control,
+    name: "educationLevel",
+  })
+  const status = useWatch({
+    control: form.control,
+    name: "status",
+  })
+  const tags =
+    useWatch({
+      control: form.control,
+      name: "tags",
+    }) || []
+
+  const subjects = useWatch({
+    control: form.control,
+    name: "subject",
+  })
 
   const filteredPrograms = useMemo(() => {
     if (!educationLevel) return []
@@ -314,7 +328,7 @@ export function UpdateNoteDialog() {
                     <FieldContent>
                       <SearchSelect
                         options={SUBJECTS}
-                        value={form.watch("subject")}
+                        value={subjects}
                         onChange={(value) =>
                           form.setValue("subject", value as string, {
                             shouldDirty: true,

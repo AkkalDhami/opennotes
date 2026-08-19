@@ -14,6 +14,7 @@ import {
   getRecentActivity,
 } from "@/lib/admin/dashboard/get-recent-activity"
 import { formatRelativeTime } from "@/lib/admin/dashboard/format-relative-time"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 const EVENT_META: Record<
   ActivityEvent["type"],
@@ -79,32 +80,34 @@ export async function RecentActivitySection() {
           No platform activity yet.
         </p>
       ) : (
-        <ul className="space-y-4">
-          {activity.map((event) => {
-            const meta = EVENT_META[event.type]
-            return (
-              <li key={event.id} className="flex items-start gap-3">
-                <div className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full border border-border bg-muted/40">
-                  <HugeiconsIcon
-                    icon={meta.icon}
-                    size={14}
-                    color="currentColor"
-                    strokeWidth={2}
-                    className="size-3.5 text-muted-foreground"
-                  />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm text-foreground">
-                    {meta.render(event)}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {formatRelativeTime(event.timestamp)}
-                  </p>
-                </div>
-              </li>
-            )
-          })}
-        </ul>
+        <ScrollArea className={"h-80 scroll-fade scroll-auto"}>
+          <ul className="space-y-4">
+            {activity.map((event) => {
+              const meta = EVENT_META[event.type]
+              return (
+                <li key={event.id} className="flex items-start gap-3">
+                  <div className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full border border-border bg-muted/40">
+                    <HugeiconsIcon
+                      icon={meta.icon}
+                      size={14}
+                      color="currentColor"
+                      strokeWidth={2}
+                      className="size-3.5 text-muted-foreground"
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm text-foreground">
+                      {meta.render(event)}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {formatRelativeTime(event.timestamp)}
+                    </p>
+                  </div>
+                </li>
+              )
+            })}
+          </ul>
+        </ScrollArea>
       )}
     </div>
   )

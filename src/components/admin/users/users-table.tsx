@@ -87,7 +87,9 @@ export function UsersTable({ users }: UsersTableProps) {
                 </TableCell>
 
                 <TableCell>
-                  <Badge variant={user.role === "ADMIN" ? "brand" : "outline"}>
+                  <Badge
+                    variant={user.role === "ADMIN" ? "default" : "outline"}
+                  >
                     {user.role === "ADMIN" ? (
                       <div className="flex items-center gap-1">
                         <HugeiconsIcon

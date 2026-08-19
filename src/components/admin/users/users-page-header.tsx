@@ -9,7 +9,7 @@ export function UsersPageHeader({ total }: UsersPageHeaderProps) {
     <div className="flex flex-col gap-3">
       <h1 className="relative inline text-2xl font-medium tracking-tight text-foreground sm:text-3xl">
         Users{" "}
-        <span className="absolute top-0 left-22 flex size-6 items-center justify-center rounded-full bg-brand p-1 text-sm text-background">
+        <span className="absolute top-0 left-22 flex size-6 items-center justify-center rounded-full bg-foreground p-1 text-sm text-accent">
           {numberFormatter.format(total)}
         </span>
       </h1>
