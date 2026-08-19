@@ -14,12 +14,11 @@ import { Heading } from "@/components/ui/heading"
 import { SubHeading } from "@/components/ui/sub-heading"
 import { Metadata } from "next"
 import { ContributorMedalShowcase } from "@/components/shared/medal-showcase"
-import { APP_NAME } from "@/constants/app.constants"
 import { getContributorsRanking } from "@/lib/contributors/contributors-ranking"
 import { Suspense } from "react"
 
 export const metadata: Metadata = {
-  title: `${APP_NAME} Contributors`,
+  title: `Contributors`,
   description:
     "Meet students, teachers, and contributors sharing educational notes and study materials with the learning community.",
   alternates: {

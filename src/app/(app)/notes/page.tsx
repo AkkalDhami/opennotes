@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     canonical: "/notes",
   },
 }
-interface NotesPageProps {
+export interface NotesPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }
 

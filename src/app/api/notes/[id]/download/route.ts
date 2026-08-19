@@ -7,9 +7,9 @@ import { generateHashDownloader } from "@/helpers/token.helper"
 import {
   checkRateLimit,
   getClientIP,
-  RATE_LIMIT_MAX_REQUESTS,
-  RATE_LIMIT_WINDOW,
+  RATE_LIMITS,
 } from "@/lib/custom-rate-limiter"
+import { getCurrentUser } from "@/lib/auth/get-current-user"
 
 type DownloadMode = "file" | "url"
 
@@ -18,25 +18,31 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const clientIP = getClientIP(request)
-    const rateLimit = checkRateLimit(clientIP)
+    const ip = getClientIP(request)
+
+    const user = await getCurrentUser()
+
+    const key = user ? `download:user:${user.id}` : `download:ip:${ip}`
+
+    const rateLimit = checkRateLimit(key, RATE_LIMITS.download)
 
     if (!rateLimit.allowed) {
       return NextResponse.json(
         {
           success: false,
           message: "Too many requests. Please try again later.",
-          error: {
-            retryAfter: RATE_LIMIT_WINDOW / 1000,
-            status: 429,
-          },
         },
         {
           status: 429,
           headers: {
-            "X-RateLimit-Limit": RATE_LIMIT_MAX_REQUESTS.toString(),
+            "X-RateLimit-Limit": RATE_LIMITS.download.maxRequests.toString(),
             "X-RateLimit-Remaining": rateLimit.remaining.toString(),
-            "X-RateLimit-Reset": (Date.now() + RATE_LIMIT_WINDOW).toString(),
+            "X-RateLimit-Reset": (
+              Date.now() + RATE_LIMITS.download.windowMs
+            ).toString(),
+            "Retry-After": String(
+              Math.ceil((rateLimit.resetTime - Date.now()) / 1000)
+            ),
           },
         }
       )
@@ -56,13 +62,6 @@ export async function GET(
         { status: 400 }
       )
     }
-
-    const forwardedFor = request.headers.get("x-forwarded-for")
-
-    const ip =
-      forwardedFor?.split(",")[0]?.trim() ||
-      request.headers.get("x-real-ip") ||
-      "unknown"
 
     const [note] = await db
       .select({

@@ -8,38 +8,13 @@ import { getCurrentUser } from "@/lib/auth/get-current-user"
 import {
   checkRateLimit,
   getClientIP,
-  RATE_LIMIT_MAX_REQUESTS,
-  RATE_LIMIT_WINDOW,
+  RATE_LIMITS,
 } from "@/lib/custom-rate-limiter"
 
 export async function POST(request: NextRequest) {
   let userId: string
 
   try {
-    const clientIP = getClientIP(request)
-    const rateLimit = checkRateLimit(clientIP)
-
-    if (!rateLimit.allowed) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Too many requests. Please try again later.",
-          error: {
-            retryAfter: RATE_LIMIT_WINDOW / 1000,
-            status: 429,
-          },
-        },
-        {
-          status: 429,
-          headers: {
-            "X-RateLimit-Limit": RATE_LIMIT_MAX_REQUESTS.toString(),
-            "X-RateLimit-Remaining": rateLimit.remaining.toString(),
-            "X-RateLimit-Reset": (Date.now() + RATE_LIMIT_WINDOW).toString(),
-          },
-        }
-      )
-    }
-
     const user = await getCurrentUser()
 
     if (!user) {
@@ -49,6 +24,43 @@ export async function POST(request: NextRequest) {
           message: "You must be signed in to contribute notes.",
         },
         { status: 401 }
+      )
+    }
+
+    const clientIP = getClientIP(request)
+
+    const uploadConfig = RATE_LIMITS.upload
+
+    const ipLimit = checkRateLimit(`upload:ip:${clientIP}`, uploadConfig)
+
+    const userLimit = checkRateLimit(`upload:user:${user.id}`, uploadConfig)
+
+    if (!ipLimit.allowed || !userLimit.allowed) {
+      const resetTime = Math.max(ipLimit.resetTime, userLimit.resetTime)
+
+      return NextResponse.json(
+        {
+          success: false,
+          message: "You've reached the upload limit. Please try again later.",
+          error: {
+            status: 429,
+            retryAfter: Math.ceil((resetTime - Date.now()) / 1000),
+          },
+        },
+        {
+          status: 429,
+          headers: {
+            "X-RateLimit-Limit": uploadConfig.maxRequests.toString(),
+
+            "X-RateLimit-Remaining": "0",
+
+            "X-RateLimit-Reset": Math.ceil(resetTime / 1000).toString(),
+
+            "Retry-After": Math.ceil(
+              (resetTime - Date.now()) / 1000
+            ).toString(),
+          },
+        }
       )
     }
 
