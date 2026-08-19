@@ -213,52 +213,56 @@ export function UpdateProfileDialog() {
             </DialogDescription>
           </DialogHeader>
           <form id="update-profile" onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="flex flex-col items-center gap-3 pb-4">
-              <div className="relative">
-                <Avatar className="size-20 border border-border">
-                  <AvatarImage
-                    src={avatarSrc}
-                    alt={profile?.name ? `${profile.name}'s avatar` : "Avatar"}
-                  />
-                  <AvatarFallback className="text-lg">
-                    {getInitials(profile?.name ?? "")}
-                  </AvatarFallback>
-                </Avatar>
-
-                {avatarFile && (
-                  <button
-                    type="button"
-                    onClick={handleCancelAvatar}
-                    disabled={loading}
-                    aria-label="Cancel avatar change"
-                    className="absolute -top-1 -right-1 flex size-6 items-center justify-center rounded-full border border-border bg-background text-muted-foreground shadow-sm transition-colors hover:text-foreground disabled:cursor-not-allowed"
-                  >
-                    <HugeiconsIcon
-                      icon={Cancel01Icon}
-                      size={14}
-                      color="currentColor"
-                      strokeWidth={2}
+            <div className="flex flex-col gap-3 pb-4">
+              <div className="flex items-center gap-2">
+                <div className="relative">
+                  <Avatar className="size-20 border border-border">
+                    <AvatarImage
+                      src={avatarSrc}
+                      alt={
+                        profile?.name ? `${profile.name}'s avatar` : "Avatar"
+                      }
                     />
-                  </button>
-                )}
-              </div>
+                    <AvatarFallback className="text-lg">
+                      {getInitials(profile?.name ?? "")}
+                    </AvatarFallback>
+                  </Avatar>
 
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                disabled={loading}
-                onClick={() => fileInputRef.current?.click()}
-                className="gap-2"
-              >
-                <HugeiconsIcon
-                  icon={CameraIcon}
-                  size={16}
-                  color="currentColor"
-                  strokeWidth={2}
-                />
-                Change Avatar
-              </Button>
+                  {avatarFile && (
+                    <button
+                      type="button"
+                      onClick={handleCancelAvatar}
+                      disabled={loading}
+                      aria-label="Cancel avatar change"
+                      className="absolute -top-1 -right-1 flex size-6 items-center justify-center rounded-full border border-border bg-background text-muted-foreground shadow-sm transition-colors hover:text-foreground disabled:cursor-not-allowed"
+                    >
+                      <HugeiconsIcon
+                        icon={Cancel01Icon}
+                        size={14}
+                        color="currentColor"
+                        strokeWidth={2}
+                      />
+                    </button>
+                  )}
+                </div>
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={loading}
+                  onClick={() => fileInputRef.current?.click()}
+                  className="gap-2"
+                >
+                  <HugeiconsIcon
+                    icon={CameraIcon}
+                    size={16}
+                    color="currentColor"
+                    strokeWidth={2}
+                  />
+                  Change Avatar
+                </Button>
+              </div>
 
               <input
                 ref={fileInputRef}
@@ -273,7 +277,7 @@ export function UpdateProfileDialog() {
               )}
             </div>
 
-            <FieldGroup>
+            <FieldGroup className="gap-4">
               <Controller
                 name="name"
                 control={form.control}

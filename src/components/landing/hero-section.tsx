@@ -8,8 +8,6 @@ import { BookOpen02Icon, Share05Icon } from "@hugeicons/core-free-icons"
 import { cn } from "@/lib/utils"
 import { HeroSearch } from "@/components/search/hero-search"
 import { Section } from "@/components/ui/section"
-// import { LiquidEther } from "@/components/ui/liquid-ether"
-// import { SideRays } from "@/components/ui/siderays"
 import { buttonVariants } from "@/components/ui/button"
 import { LiquidEther } from "@/components/ui/liquid-ether"
 import { SideRays } from "@/components/ui/siderays"
@@ -98,29 +96,25 @@ export function HeroSection({ className }: HeroSectionProps) {
         >
           <motion.p
             variants={item}
-            className="font-heading text-xs font-medium tracking-[0.14em] text-brand uppercase sm:text-sm"
+            className="font-heading text-xs font-medium tracking-[0.14em] text-muted-foreground uppercase sm:text-sm"
           >
-            THE OPEN STUDY LIBRARY
+            BUILT BY LEARNERS, SHARED WITH EVERYONE
           </motion.p>
 
           <motion.h1
             variants={item}
-            className="text-5xl leading-[1.05] font-medium tracking-tight sm:text-6xl lg:text-7xl"
+            className="text-5xl leading-[1.08] font-medium tracking-tight sm:text-6xl lg:text-7xl"
           >
-            Built by students, <br />
-            for students.
-            {/* Knowledge shouldn&lsquo;t be locked in a drive. */}
-            {/* Study together.
-            <br />
-            Share knowledge. */}
+            Share what you know. <br /> Find what you need.
           </motion.h1>
 
           <motion.p
             variants={item}
             className="mx-auto max-w-150 text-base leading-relaxed text-muted-foreground sm:max-w-170 sm:text-lg"
           >
-            A free, open library of notes and study materials — search what
-            others shared, or add your own.
+            Discover notes and study materials shared by students and educators.
+            Upload your own notes, build your contributor profile, and help
+            others learn.
           </motion.p>
 
           <motion.div variants={item} className="w-full max-w-2xl">
@@ -137,7 +131,7 @@ export function HeroSection({ className }: HeroSectionProps) {
               href={"/notes" as Route}
               className={cn(
                 buttonVariants({
-                  variant: "brand",
+                  variant: "default",
                 }),
                 "rounded-lg px-4 py-5.5 text-base font-normal"
               )}
