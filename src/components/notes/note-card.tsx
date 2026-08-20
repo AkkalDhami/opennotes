@@ -1,8 +1,10 @@
 import Link from "next/link"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
+  ArrowUpRight01Icon,
   CheckmarkBadge01Icon,
   Download01Icon,
+  File01Icon,
   File02Icon,
 } from "@hugeicons/core-free-icons"
 import { PublicNote } from "@/types/note"
@@ -23,10 +25,10 @@ interface NoteCardProps {
 
 export function NoteCard({ note, from }: NoteCardProps) {
   return (
-    <div className="group flex h-full flex-col space-y-2 rounded-lg border bg-card p-4 transition-colors hover:border-primary/30 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
+    <div className="group flex h-full flex-col space-y-2 rounded-lg border bg-card p-4 transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
       <Link
         href={`/notes/${note.slug}`}
-        className="line-clamp-2 text-lg leading-snug font-medium text-foreground underline-offset-2 hover:text-primary hover:underline"
+        className="line-clamp-2 text-lg leading-snug font-medium text-foreground underline-offset-2 hover:underline"
       >
         {note.title}
       </Link>
@@ -51,6 +53,19 @@ export function NoteCard({ note, from }: NoteCardProps) {
             />
             {formatCompactNumber(note.downloadCount)}
           </span>
+          {note.pageCount && (
+            <span className="inline-flex items-center gap-1">
+              <HugeiconsIcon
+                icon={File01Icon}
+                size={14}
+                color="currentColor"
+                strokeWidth={2}
+                className="size-4"
+              />
+              {formatCompactNumber(note.pageCount)}
+              {note.pageCount === 1 ? " page" : " pages"}
+            </span>
+          )}
 
           {note.fileSizeBytes != null && (
             <span className="inline-flex items-center gap-1">
@@ -130,7 +145,7 @@ export function NoteCard({ note, from }: NoteCardProps) {
           )}
         >
           <HugeiconsIcon
-            icon={File02Icon}
+            icon={ArrowUpRight01Icon}
             size={14}
             color="currentColor"
             strokeWidth={2}

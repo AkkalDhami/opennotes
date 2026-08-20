@@ -75,7 +75,7 @@ export function ContributorPreview({
           href={`/contributors/${contributor.username}`}
           className={cn(
             buttonVariants({
-              variant: "brand",
+              variant: "default",
             }),
             "w-full"
           )}
