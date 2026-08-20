@@ -36,11 +36,7 @@ export function AdminBreadcrumb() {
           const href = "/" + segments.slice(0, index + 1).join("/")
           const isLast = index === segments.length - 1
 
-          const label =
-            labelMap[segment] ??
-            segment
-              .replace(/-/g, " ")
-              .replace(/\b\w/g, (char) => char.toUpperCase())
+          const label = labelMap[segment] ?? segment
 
           return (
             <div key={href} className="contents">
