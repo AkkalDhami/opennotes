@@ -9,12 +9,15 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
-import { requireAdmin } from "@/lib/auth/require-admin"
+import { getCurrentUser } from "@/lib/auth/get-current-user"
 import { Metadata } from "next"
 import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
-  title: "User",
+  title: {
+    default: "Profile",
+    template: "%s | Profile",
+  },
   robots: {
     index: false,
     follow: false,
@@ -26,7 +29,7 @@ export default async function UserLayout({
 }: {
   children: React.ReactNode
 }) {
-  const user = await requireAdmin()
+  const user = await getCurrentUser()
 
   if (!user || !user.name || !user.username) {
     return redirect("/signin")
