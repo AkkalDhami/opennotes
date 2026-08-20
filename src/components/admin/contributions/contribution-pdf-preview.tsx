@@ -5,10 +5,10 @@ import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
   ArrowUpRight01Icon,
-  Download01Icon,
   FileNotFoundIcon,
 } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { DownloadNoteButton } from "@/components/shared/download-note-button"
 
 export function ContributionPdfPreview({
   fileUrl,
@@ -39,10 +39,6 @@ export function ContributionPdfPreview({
     )
   }
 
-  // // ImageKit supports forcing a download via this query param, avoiding a
-  // // second upload/copy of the file for moderation purposes.
-  // const downloadUrl = `${fileUrl}${fileUrl.includes("?") ? "&" : "?"}ik-attachment=true`
-
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-end gap-2">
@@ -63,22 +59,8 @@ export function ContributionPdfPreview({
             </a>
           }
         ></Button>
-        <Button
-          size="sm"
-          variant="outline"
-          render={
-            <a href={`/api/notes/${noteId}/download`}>
-              <HugeiconsIcon
-                icon={Download01Icon}
-                size={16}
-                strokeWidth={2}
-                className="size-4"
-                aria-hidden="true"
-              />
-              Download
-            </a>
-          }
-        ></Button>
+
+        <DownloadNoteButton noteId={noteId} />
       </div>
 
       <div className="relative aspect-3/4 w-full overflow-hidden rounded-lg border border-border bg-muted sm:aspect-4/3">

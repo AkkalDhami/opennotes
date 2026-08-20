@@ -178,7 +178,7 @@ export default async function NoteDetailPage({ params }: NoteDetailPageProps) {
               dateStyle: "full",
             })}
           </p>
-          <Separator className="my-6" />
+          <Separator className="my-4" />
           <dl className="grid grid-cols-2 gap-4 sm:grid-cols-3">
             <Stat
               icon={Download01Icon}
@@ -231,7 +231,7 @@ export default async function NoteDetailPage({ params }: NoteDetailPageProps) {
               sourceUrl={note.sourceUrl}
             />
           )}
-          <Separator className="my-8" />
+          <Separator className="my-4" />
           <NotePdfViewer note={note} fileUrl={fileUrl} />
           <RelatedNotes note={note} />
         </div>

@@ -4,9 +4,9 @@ import {
   Clock01Icon,
   Flag02Icon,
   UserGroupIcon,
-  BookOpen01Icon,
   File01Icon,
   ArrowUpRight01Icon,
+  Settings01Icon,
 } from "@hugeicons/core-free-icons"
 
 import { Button } from "@/components/ui/button"
@@ -28,9 +28,21 @@ const ACTIONS: { icon: IconSvgElement; label: string; href: string }[] = [
     label: "Manage Contributors",
     href: "/admin/contributors",
   },
-  { icon: BookOpen01Icon, label: "Manage Subjects", href: "/admin/subjects" },
-  { icon: File01Icon, label: "View All Notes", href: "/admin/notes" },
-  { icon: ArrowUpRight01Icon, label: "View Platform", href: "/" },
+  {
+    icon: File01Icon,
+    label: "View Contributions",
+    href: "/admin/contributions",
+  },
+  {
+    icon: Settings01Icon,
+    label: "View Settings",
+    href: "/admin/settings",
+  },
+  {
+    icon: ArrowUpRight01Icon,
+    label: "View Platform",
+    href: "/",
+  },
 ]
 
 export function QuickActions() {

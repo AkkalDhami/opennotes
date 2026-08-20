@@ -15,6 +15,7 @@ import {
 } from "@/lib/admin/dashboard/get-recent-activity"
 import { formatRelativeTime } from "@/lib/admin/dashboard/format-relative-time"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { cn } from "@/lib/utils"
 
 const EVENT_META: Record<
   ActivityEvent["type"],
@@ -62,6 +63,15 @@ const EVENT_META: Record<
   },
 }
 
+const COLORS: Record<ActivityEvent["type"], string> = {
+  USER_JOINED: "text-blue-500 bg-blue-500/10 border-blue-500/20",
+  NOTE_SUBMITTED: "text-amber-500 bg-amber-500/10 border-amber-500/20",
+  NOTE_PUBLISHED: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20",
+  NOTE_REJECTED: "text-red-500 bg-red-500/10 border-red-500/20",
+  NOTE_REMOVED: "text-zinc-500 bg-zinc-500/10 border-zinc-500/20",
+  REPORT_SUBMITTED: "text-orange-500 bg-orange-500/10 border-orange-500/20",
+}
+
 export async function RecentActivitySection() {
   let activity: ActivityEvent[]
 
@@ -86,13 +96,18 @@ export async function RecentActivitySection() {
               const meta = EVENT_META[event.type]
               return (
                 <li key={event.id} className="flex items-start gap-3">
-                  <div className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full border border-border bg-muted/40">
+                  <div
+                    className={cn(
+                      "mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-lg border",
+                      COLORS[event.type]
+                    )}
+                  >
                     <HugeiconsIcon
                       icon={meta.icon}
                       size={14}
                       color="currentColor"
                       strokeWidth={2}
-                      className="size-3.5 text-muted-foreground"
+                      className="size-3.5"
                     />
                   </div>
                   <div className="min-w-0 flex-1">

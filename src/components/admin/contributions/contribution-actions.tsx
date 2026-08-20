@@ -30,7 +30,7 @@ export function ContributionActions({
             <Button
               size="sm"
               variant="ghost"
-              nativeButton={false}
+              // nativeButton={false}
               render={
                 <Link
                   href={`/admin/contributions/${noteId}`}

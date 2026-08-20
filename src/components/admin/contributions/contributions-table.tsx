@@ -311,19 +311,21 @@ export async function ContributionSheet({
                     />
                   </div>
 
-                  <div className="min-w-0">
+                  <div className="flex flex-col space-y-1">
                     <Link
                       href={note?.fileUrl as Route}
-
                       target="_blank"
                       className="text-base leading-tight font-semibold underline-offset-2 hover:underline"
                     >
                       {contribution.title}
                     </Link>
 
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      /notes/{contribution.slug}
-                    </p>
+                    <Link
+                      href={`/admin/contributions/${contribution.id}`}
+                      className="text-sm text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+                    >
+                      View Details
+                    </Link>
                   </div>
                 </div>
 
@@ -351,25 +353,25 @@ export async function ContributionSheet({
                   <InfoItem
                     icon={GraduationScrollIcon}
                     label="Subject"
-                    value={contribution.subject}
+                    value={slugToTitle(contribution.subject)}
                   />
 
                   <InfoItem
                     icon={LegalDocument01Icon}
                     label="Category"
-                    value={contribution.category}
+                    value={slugToTitle(contribution.category)}
                   />
 
                   <InfoItem
                     icon={GraduationScrollIcon}
                     label="Education level"
-                    value={contribution.educationLevel}
+                    value={slugToTitle(contribution.educationLevel ?? "")}
                   />
 
                   <InfoItem
                     icon={GraduationScrollIcon}
                     label="Grade / Year"
-                    value={contribution.grade}
+                    value={slugToTitle(contribution.grade ?? "")}
                   />
                 </div>
               </section>

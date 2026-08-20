@@ -8,13 +8,6 @@ import {
 } from "@hugeicons/core-free-icons"
 
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardFooter,
-} from "@/components/ui/card"
-import {
   Table,
   TableBody,
   TableCell,
@@ -36,7 +29,7 @@ import {
   RecentNote,
 } from "@/lib/admin/dashboard/get-recent-notes"
 import { Route } from "next"
-import { slugToTitle } from "@/utils/slug"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 
 export async function RecentNotesSection() {
   let notes: RecentNote[]
@@ -56,13 +49,12 @@ export async function RecentNotesSection() {
           No notes submitted yet.
         </p>
       ) : (
-        <div className="overflow-x-auto">
+        <ScrollArea className="w-full scroll-fade">
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Title</TableHead>
                 <TableHead>Contributor</TableHead>
-                <TableHead>Subject</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Downloads</TableHead>
                 <TableHead>Created</TableHead>
@@ -79,9 +71,6 @@ export async function RecentNotesSection() {
                   </TableCell>
                   <TableCell className="text-muted-foreground">
                     {note.contributorName}
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {slugToTitle(note.subject)}
                   </TableCell>
                   <TableCell>
                     <NoteStatusBadge status={note.status} />
@@ -164,7 +153,8 @@ export async function RecentNotesSection() {
               ))}
             </TableBody>
           </Table>
-        </div>
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
       )}
       <div className="flex justify-end">
         <Button

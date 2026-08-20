@@ -18,7 +18,7 @@ export function DashboardHeader() {
       <Button
         variant="outline"
         render={
-          <Link href="/" className="gap-2">
+          <Link href="/" target="_blank" className="gap-2">
             View platform
             <HugeiconsIcon
               icon={ArrowUpRight01Icon}
