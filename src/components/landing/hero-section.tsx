@@ -105,7 +105,7 @@ export function HeroSection({ className }: HeroSectionProps) {
 
           <motion.h1
             variants={item}
-            className="text-5xl leading-[1.08] font-medium tracking-tight sm:text-6xl lg:text-7xl"
+            className="text-5xl leading-[1.09] font-medium tracking-tight sm:text-6xl lg:text-7xl"
           >
             Share what you know. <br /> Find what you need.
           </motion.h1>
