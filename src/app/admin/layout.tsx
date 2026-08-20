@@ -14,7 +14,10 @@ import { Metadata } from "next"
 import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
-  title: "Admin",
+  title: {
+    default: "Admin",
+    template: "%s | Admin",
+  },
   robots: {
     index: false,
     follow: false,

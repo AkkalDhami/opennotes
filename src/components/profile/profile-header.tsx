@@ -14,15 +14,15 @@ import { ProfileData } from "@/types/profile"
 import { cn } from "@/lib/utils"
 import { getInitials } from "@/utils/get-initials"
 import { formatDate } from "@/utils/format-date"
-import { Button } from "@/components/ui/button"
-import { useModal } from "@/hooks/use-modal-store"
+import { buttonVariants } from "@/components/ui/button"
+import Link from "next/link"
 
 interface ProfileHeaderProps {
   profile: ProfileData
 }
 
 export function ProfileHeader({ profile }: ProfileHeaderProps) {
-  const { open } = useModal()
+  // const { open } = useModal()
 
   return (
     <div className="rounded-lg border bg-card p-4 sm:p-6">
@@ -53,11 +53,11 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
 
             <div className="space-y-2">
               <div className="flex flex-wrap items-center gap-2">
-                <h3 className="text-xl font-medium text-brand">
+                <h3 className="text-xl font-medium text-foreground">
                   {profile.name}
                 </h3>
                 {profile.role && profile.role.toLowerCase() !== "user" ? (
-                  <Badge variant="brand" className="rounded-full capitalize">
+                  <Badge variant="default" className="rounded-full capitalize">
                     {profile.role.toLowerCase()}
                   </Badge>
                 ) : null}
@@ -114,31 +114,53 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
               <p className="text-xs text-muted-foreground">Published</p>
             </div>
           </div>
-          <Button
-            onClick={() =>
-              open("update-profile", {
-                profile: {
-                  id: profile.id,
-                  name: profile.name,
-                  username: profile.username,
-                  avatar: profile.avatarUrl,
-                  bio: profile.bio,
-                },
-              })
-            }
-            variant="outline"
-            size="sm"
-            className="gap-2"
-          >
-            <HugeiconsIcon
-              icon={Edit02Icon}
-              size={16}
-              color="currentColor"
-              strokeWidth={2}
-              className="size-4"
-            />
-            Edit Profile
-          </Button>
+          <div className="flex items-center gap-3">
+            {/* <Button
+              onClick={() =>
+                open("update-profile", {
+                  profile: {
+                    id: profile.id,
+                    name: profile.name,
+                    username: profile.username,
+                    avatar: profile.avatarUrl,
+                    bio: profile.bio,
+                  },
+                })
+              }
+              variant="default"
+              size="sm"
+              className="gap-2"
+            >
+              <HugeiconsIcon
+                icon={Edit02Icon}
+                size={16}
+                color="currentColor"
+                strokeWidth={2}
+                className="size-4"
+              />
+              Edit Profile
+            </Button> */}
+            {profile.publishedContributions > 0 && (
+              <Link
+                href={`/contributors/${profile.username}`}
+                className={cn(
+                  buttonVariants({
+                    variant: "outline",
+                  }),
+                  "gap-2"
+                )}
+              >
+                <HugeiconsIcon
+                  icon={Edit02Icon}
+                  size={16}
+                  color="currentColor"
+                  strokeWidth={2}
+                  className={cn("size-4")}
+                />
+                View Contributor Profile
+              </Link>
+            )}
+          </div>
         </div>
       </div>
     </div>

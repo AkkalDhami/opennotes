@@ -1,4 +1,3 @@
-import { APP_NAME } from "@/constants/app.constants"
 import { Menu01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import Link from "next/link"
@@ -15,10 +14,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Logo } from "@/components/shared/logo"
 const links = [
   { href: "/notes", label: "Notes" },
-  // { href: "/subjects", label: "Subjects" },
   { href: "/contributors", label: "Contributors" },
+  { href: "/settings", label: "Settings" },
 ]
 
 export async function Navbar() {
@@ -28,16 +28,7 @@ export async function Navbar() {
     <header className="sticky top-0 z-40 border-b bg-background backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 border-x px-4">
         <div className="flex items-center gap-6">
-          <Link href="/" className="flex items-center gap-2 font-medium">
-            <span className="text-xl text-brand">{APP_NAME}</span>
-            {/* <HugeiconsIcon
-                icon={Books01Icon}
-                size={24}
-                color="currentColor"
-                strokeWidth={1.5}
-                className="size-4"
-              /> */}
-          </Link>
+          <Logo />
 
           <nav className="hidden items-center gap-6 font-medium md:flex">
             {links.map((l) => (
@@ -76,7 +67,7 @@ export async function Navbar() {
               href="/signin"
               className={cn(
                 buttonVariants({
-                  variant: "brand",
+                  variant: "default",
                 }),
                 "hidden rounded-full px-4 md:flex"
               )}

@@ -13,18 +13,12 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import { HugeiconsIcon } from "@hugeicons/react"
-import {
-  FileStarIcon,
-  Flag02Icon,
-  Home03Icon,
-  UserGroup03Icon,
-} from "@hugeicons/core-free-icons"
+import { FileStarIcon, Home03Icon } from "@hugeicons/core-free-icons"
 import { AdminProfile } from "@/components/admin/admin-profile"
 
 import {
   DashboardSquare02Icon,
   File01Icon,
-  UserGroupIcon,
   Settings02Icon,
 } from "@hugeicons/core-free-icons"
 import { UserType } from "@/types/auth"
@@ -38,44 +32,29 @@ const data = {
       icon: <HugeiconsIcon icon={Home03Icon} strokeWidth={2} />,
     },
     {
-      title: "Dashboard",
-      url: "/admin/dashboard",
+      title: "Overview",
+      url: "/profile/dashboard",
       icon: <HugeiconsIcon icon={DashboardSquare02Icon} strokeWidth={2} />,
     },
     {
-      title: "All Notes",
-      url: "/admin/notes",
+      title: "Shared Notes",
+      url: "/profile/notes",
       icon: <HugeiconsIcon icon={File01Icon} strokeWidth={2} />,
     },
     {
       title: "Contributions",
-      url: "/admin/contributions",
+      url: "/profile/contributions",
       icon: <HugeiconsIcon icon={FileStarIcon} strokeWidth={2} />,
     },
     {
-      title: "Users",
-      url: "/admin/users",
-      icon: <HugeiconsIcon icon={UserGroupIcon} strokeWidth={2} />,
-    },
-    {
-      title: "Contributors",
-      url: "/admin/contributors",
-      icon: <HugeiconsIcon icon={UserGroup03Icon} strokeWidth={2} />,
-    },
-    {
-      title: "Reports",
-      url: "/admin/reports",
-      icon: <HugeiconsIcon icon={Flag02Icon} strokeWidth={2} />,
-    },
-    {
       title: "Settings",
-      url: "/admin/settings",
+      url: "/profile/settings",
       icon: <HugeiconsIcon icon={Settings02Icon} strokeWidth={2} />,
     },
   ],
 }
 
-export function AdminSidebar({
+export function UserSidebar({
   user,
   ...props
 }: React.ComponentProps<typeof Sidebar> & { user: UserType }) {

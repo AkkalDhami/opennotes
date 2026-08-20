@@ -29,7 +29,7 @@ export function Footer() {
               <Link
                 key={link.href}
                 href={link.href as Route}
-                className="underline-offset-2 hover:underline"
+                className="underline-offset-2 hover:text-foreground hover:underline"
               >
                 {link.label}
               </Link>
