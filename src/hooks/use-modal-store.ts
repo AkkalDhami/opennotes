@@ -3,11 +3,12 @@ import { UpdateNoteFormValues } from "@/validations/note"
 import { create } from "zustand"
 import { devtools } from "zustand/middleware"
 
-export type ModalType = "update-profile" | "update-note"
+export type ModalType = "update-profile" | "update-note" | "report-note"
 
 export interface ModalData {
   profile?: Omit<UserType, "role" | "emailVerified" | "email">
   note?: UpdateNoteFormValues & { id: string }
+  reportNoteId?: string
 }
 
 export interface ModalStore {
