@@ -1,81 +1,14 @@
-// "use client"
-
-// import { useTransition } from "react"
-// import { toast } from "react-hot-toast"
-
-// import { Button } from "@/components/ui/button"
-// import { cn } from "@/lib/utils"
-// import { downloadNote } from "@/lib/notes/download-note"
-// import { Spinner } from "@/components/ui/spinner"
-
-// interface DownloadNoteButtonProps {
-//   noteId: string
-//   variant?: React.ComponentProps<typeof Button>["variant"]
-//   size?: React.ComponentProps<typeof Button>["size"]
-//   className?: string
-//   children?: React.ReactNode
-// }
-
-// export function DownloadNoteButton({
-//   noteId,
-//   variant = "brand",
-//   size,
-//   className,
-//   children,
-// }: DownloadNoteButtonProps) {
-//   const [isPending, startTransition] = useTransition()
-
-//   const handleDownload = () => {
-//     startTransition(async () => {
-//       const result = await downloadNote(noteId)
-
-//       if (!result.success || !result.url) {
-//         toast.error(result.message ?? "Unable to download note.")
-//         return
-//       }
-
-//       const link = document.createElement("a")
-
-//       link.href = result.url
-//       link.download = result.fileName ?? "notes.pdf"
-//       link.target = "_blank"
-//       link.rel = "noopener noreferrer"
-
-//       document.body.appendChild(link)
-//       link.click()
-//       link.remove()
-//     })
-//   }
-
-//   return (
-//     <Button
-//       type="button"
-//       variant={variant}
-//       size={size}
-//       onClick={handleDownload}
-//       disabled={isPending}
-//       className={cn(className)}
-//     >
-//       {isPending ? (
-//         <>
-//           <Spinner />
-//           Downloading...
-//         </>
-//       ) : (
-//         (children ?? "Download PDF")
-//       )}
-//     </Button>
-//   )
-// }
-
 "use client"
 
 import { useTransition } from "react"
 import { toast } from "react-hot-toast"
+import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { Download01Icon } from "@hugeicons/core-free-icons"
 
 interface DownloadNoteButtonProps {
   noteId: string
@@ -87,12 +20,13 @@ interface DownloadNoteButtonProps {
 
 export function DownloadNoteButton({
   noteId,
-  variant = "brand",
+  variant = "default",
   size,
   className,
   children,
 }: DownloadNoteButtonProps) {
   const [isPending, startTransition] = useTransition()
+  const router = useRouter()
 
   const handleDownload = () => {
     startTransition(async () => {
@@ -119,6 +53,8 @@ export function DownloadNoteButton({
         link.remove()
 
         URL.revokeObjectURL(url)
+
+        router.refresh()
       } catch {
         toast.error("Unable to download note.")
       }
@@ -140,7 +76,18 @@ export function DownloadNoteButton({
           Downloading...
         </>
       ) : (
-        (children ?? "Download PDF")
+        (children ?? (
+          <>
+            <HugeiconsIcon
+              icon={Download01Icon}
+              size={16}
+              strokeWidth={2}
+              className="size-4"
+              aria-hidden="true"
+            />{" "}
+            Download PDF
+          </>
+        ))
       )}
     </Button>
   )

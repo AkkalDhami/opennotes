@@ -94,17 +94,17 @@ export function LegalPage({
         ))}
       </div>
 
-      <footer className="rounded-lg border border-blue-500/30 bg-blue-500/10 p-5">
+      <footer className="rounded-lg border border-primary/30 bg-primary/10 p-5">
         <div className="flex gap-3">
           <HugeiconsIcon
             icon={ArrowRight01Icon}
             size={18}
             color="currentColor"
             strokeWidth={2}
-            className="mt-1 shrink-0 text-blue-500"
+            className="mt-1 shrink-0 text-primary"
           />
 
-          <p className="text-base leading-6 text-blue-500">
+          <p className="text-base leading-6 text-primary">
             If you have questions about this policy, please contact the
             OpenNotes team through the contact method provided on the platform.
           </p>

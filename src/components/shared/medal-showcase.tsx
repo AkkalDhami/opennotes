@@ -8,14 +8,12 @@ import {
   GoldMedal,
   SilverMedal,
   BronzeMedal,
-  RankMedal,
-  type Rank,
 } from "@/components/shared/rank-medal"
 import { cn } from "@/lib/utils"
 import { Heading } from "../ui/heading"
 import { SubHeading } from "../ui/sub-heading"
-
-const REMAINING_RANKS: Rank[] = [4, 5, 6, 7, 8, 9, 10]
+import { ArrowRight02Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 
 export function ContributorMedalShowcase({
   className,
@@ -57,7 +55,7 @@ export function ContributorMedalShowcase({
           <BronzeMedal delay={0.2} showLabel={false} />
         </div>
 
-        <div className="flex flex-wrap items-start justify-center gap-6">
+        {/* <div className="flex flex-wrap items-start justify-center gap-6">
           {REMAINING_RANKS.map((rank, i) => (
             <RankMedal
               key={rank}
@@ -66,15 +64,29 @@ export function ContributorMedalShowcase({
               delay={0.3 + i * 0.06}
             />
           ))}
-        </div>
+        </div> */}
       </Link>
 
       <Button
-        variant={"brand"}
         nativeButton={false}
-        render={<Link href="/contribution">Share Your Notes</Link>}
-        size="lg"
-        className="rounded-full px-8 py-6"
+        variant="default"
+        render={
+          <Link href="/contribution">
+            <div className="absolute right-[calc(100%-44px)] left-1 flex size-10 items-center justify-center rounded-full bg-accent text-foreground transition-all duration-500 group-hover:left-[calc(100%-44px)] group-hover:-rotate-45">
+              <HugeiconsIcon
+                icon={ArrowRight02Icon}
+                size={24}
+                color="currentColor"
+                strokeWidth={2}
+              />
+            </div>
+
+            <span className="absolute left-14 whitespace-nowrap transition-all duration-500 group-hover:left-4">
+              Share Your Notes
+            </span>
+          </Link>
+        }
+        className="group relative h-12 w-48 overflow-hidden rounded-full p-1 ps-14 pe-4 text-sm font-medium transition-all duration-500 group-hover:ps-0 group-hover:pe-14"
       ></Button>
     </section>
   )

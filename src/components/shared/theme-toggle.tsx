@@ -5,9 +5,11 @@ import { Button } from "@/components/ui/button"
 import { useTheme } from "next-themes"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Moon02Icon, Sun03Icon } from "@hugeicons/core-free-icons"
+import { useAppearanceStore } from "@/hooks/use-appearance-store"
 
 export function ThemeToggle({ className }: { className?: string }) {
   const { theme, setTheme } = useTheme()
+  const setMode = useAppearanceStore((s) => s.setMode)
 
   return (
     <div className={cn("flex items-center justify-center gap-2", className)}>
@@ -15,7 +17,10 @@ export function ThemeToggle({ className }: { className?: string }) {
         variant="ghost"
         size="icon"
         className="md:size-8"
-        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+        onClick={() => {
+          setTheme(theme === "dark" ? "light" : "dark")
+          setMode(theme === "dark" ? "light" : "dark")
+        }}
       >
         <HugeiconsIcon
           icon={Sun03Icon}

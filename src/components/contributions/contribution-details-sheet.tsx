@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { ViewIcon } from "@hugeicons/core-free-icons"
+import { Edit03Icon, Link04Icon } from "@hugeicons/core-free-icons"
 
 import {
   Sheet,
@@ -17,6 +17,7 @@ import { Separator } from "@/components/ui/separator"
 import { StatusBadge } from "@/components/profile/status-badge"
 import { ContributionListItem } from "@/types/contribution"
 import { slugToTitle } from "@/utils/slug"
+import Link from "next/link"
 
 interface ContributionDetailsSheetProps {
   contribution: ContributionListItem
@@ -29,7 +30,7 @@ function formatDate(date: Date | null) {
   return new Intl.DateTimeFormat("en-US", { dateStyle: "medium" }).format(date)
 }
 
-function DetailRow({
+export function DetailRow({
   label,
   value,
 }: {
@@ -63,7 +64,7 @@ export function ContributionDetailsSheet({
           ) : null}
         </SheetHeader>
 
-        <div className="mt-4 flex items-center justify-between">
+        <div className="flex items-center justify-between">
           <StatusBadge status={contribution.status} />
           {contribution.status === "REJECTED" && contribution.rejectionReason
             ? null
@@ -71,7 +72,7 @@ export function ContributionDetailsSheet({
         </div>
 
         {contribution.status === "REJECTED" && contribution.rejectionReason ? (
-          <div className="mt-4 rounded-lg border border-destructive/20 bg-destructive/5 p-3">
+          <div className="mt-1 rounded-lg border border-destructive/20 bg-destructive/5 p-3">
             <p className="text-xs font-medium text-destructive">
               Rejection reason
             </p>
@@ -81,7 +82,7 @@ export function ContributionDetailsSheet({
           </div>
         ) : null}
 
-        <Separator className="my-4" />
+        <Separator className="mt-2 mb-1" />
 
         <div className="space-y-2 divide-y">
           <DetailRow
@@ -125,7 +126,7 @@ export function ContributionDetailsSheet({
             {contribution?.tags.map((tag) => (
               <Badge
                 key={tag}
-                variant="secondary"
+                variant="outline"
                 className="rounded-full font-normal"
               >
                 {tag}
@@ -134,24 +135,43 @@ export function ContributionDetailsSheet({
           </div>
         ) : null}
 
-        {contribution.status === "PUBLISHED" ? (
+        <div className="grid gap-2 sm:grid-cols-2">
+          {contribution.status === "PUBLISHED" ? (
+            <Button
+              nativeButton={false}
+              render={
+                <Link href={`/notes/${contribution.slug}`}>
+                  <HugeiconsIcon
+                    icon={Link04Icon}
+                    size={16}
+                    color="currentColor"
+                    strokeWidth={2}
+                    className="size-4"
+                  />
+                  View Note
+                </Link>
+              }
+              className="w-full gap-2"
+            ></Button>
+          ) : null}
           <Button
             nativeButton={false}
+            variant="outline"
             render={
-              <a href={`/notes/${contribution.slug}`}>
+              <Link href={`/contribution/${contribution.id}/edit`}>
                 <HugeiconsIcon
-                  icon={ViewIcon}
+                  icon={Edit03Icon}
                   size={16}
                   color="currentColor"
                   strokeWidth={2}
                   className="size-4"
                 />
-                View Note
-              </a>
+                Edit Note
+              </Link>
             }
             className="w-full gap-2"
           ></Button>
-        ) : null}
+        </div>
       </SheetContent>
     </Sheet>
   )

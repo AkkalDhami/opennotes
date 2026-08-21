@@ -13,7 +13,13 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { FileStarIcon, Home03Icon } from "@hugeicons/core-free-icons"
+import {
+  Bookmark02Icon,
+  FileStarIcon,
+  Folder01Icon,
+  FolderHeartIcon,
+  Home03Icon,
+} from "@hugeicons/core-free-icons"
 import { AdminProfile } from "@/components/admin/admin-profile"
 
 import {
@@ -32,14 +38,29 @@ const data = {
       icon: <HugeiconsIcon icon={Home03Icon} strokeWidth={2} />,
     },
     {
-      title: "Overview",
+      title: "Dashboard",
       url: "/profile/dashboard",
       icon: <HugeiconsIcon icon={DashboardSquare02Icon} strokeWidth={2} />,
     },
     {
-      title: "Shared Notes",
+      title: "My Notes",
       url: "/profile/notes",
       icon: <HugeiconsIcon icon={File01Icon} strokeWidth={2} />,
+    },
+    {
+      title: "Saved Notes",
+      url: "/profile/saved-notes",
+      icon: <HugeiconsIcon icon={Bookmark02Icon} strokeWidth={2} />,
+    },
+    {
+      title: "My Collections",
+      url: "/profile/collections",
+      icon: <HugeiconsIcon icon={Folder01Icon} strokeWidth={2} />,
+    },
+    {
+      title: "Saved Collections",
+      url: "/profile/saved-collections",
+      icon: <HugeiconsIcon icon={FolderHeartIcon} strokeWidth={2} />,
     },
     {
       title: "Contributions",

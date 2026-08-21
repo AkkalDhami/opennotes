@@ -34,9 +34,8 @@ export function CopyStateIcon({ state }: { state: CopyState }) {
       color="currentColor"
       strokeWidth={2}
       className={cn(
-        "stroke-primary transition-all group-hover:text-brand",
-        "scale-100 opacity-100",
-        "stroke-brand group-hover/icon:stroke-brand"
+        "stroke-primary transition-all group-hover:text-foreground",
+        "scale-100 opacity-100"
       )}
     />
   ) : state === "error" ? (
