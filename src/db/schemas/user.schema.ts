@@ -23,6 +23,7 @@ export const users = pgTable(
     bio: text("bio"),
     avatarUrl: text("avatar_url"),
     avatarId: text("avatar_id"),
+
     ...timestamps,
   },
   (t) => [

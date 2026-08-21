@@ -10,13 +10,18 @@ import {
   varchar,
 } from "drizzle-orm/pg-core"
 import { users } from "./user.schema"
-import { timestamps } from "./schema.helper"
+import { timestamps, tsvector } from "./schema.helper"
 
-export const processingStatusEnum = pgEnum("processing_status", [
+export const NOTE_PROCESSING_STATUSES = [
   "PROCESSING",
   "READY",
   "FAILED",
-])
+] as const
+
+export const processingStatusEnum = pgEnum(
+  "processing_status",
+  NOTE_PROCESSING_STATUSES
+)
 
 export const noteStatusEnum = pgEnum("note_status", [
   "DRAFT",
@@ -79,6 +84,8 @@ export const notes = pgTable(
     ...timestamps,
     publishedAt: timestamp("published_at"),
     tags: text("tags").array().default([]),
+
+    searchVector: tsvector("search_vector"),
   },
   (t) => [
     uniqueIndex("notes_slug_idx").on(t.slug),
@@ -91,9 +98,36 @@ export const notes = pgTable(
   ]
 )
 
+export const noteModerationActionEnum = pgEnum("note_moderation_action", [
+  "PUBLISH",
+  "REJECT",
+  "REMOVE",
+  "RESTORE",
+  "UNPUBLISH",
+])
+
+export const noteModerationEvents = pgTable("note_moderation_events", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  noteId: uuid("note_id")
+    .notNull()
+    .references(() => notes.id, { onDelete: "cascade" }),
+  action: noteModerationActionEnum("action").notNull(),
+  adminId: uuid("admin_id")
+    .notNull()
+    .references(() => users.id),
+  reason: text("reason"),
+  ...timestamps,
+})
+
 export type NoteType = typeof notes.$inferSelect
 export type NewNoteType = typeof notes.$inferInsert
+
+export type NoteModerationEventType = typeof noteModerationEvents.$inferInsert
+
+export type NoteModerationEvent = typeof noteModerationEvents.$inferSelect
+
 export type NoteStatus = NoteType["status"]
 export type ProcessingStatus = NoteType["processingStatus"]
-
 export type NoteSourceType = NoteType["sourceType"]
+
+export type NoteModerationAction = NoteModerationEventType["action"]
