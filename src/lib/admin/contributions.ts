@@ -54,7 +54,11 @@ export async function approveContribution(
 
     await db
       .update(notes)
-      .set({ status: "PUBLISHED", publishedAt: new Date() })
+      .set({
+        status: "PUBLISHED",
+        processingStatus: "READY",
+        publishedAt: new Date(),
+      })
       .where(eq(notes.id, noteId))
 
     revalidateAll(noteId)
