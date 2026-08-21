@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils"
 import React from "react"
 
-export function Container({
+export function ErrorContainer({
   children,
   className,
   ...props
@@ -12,7 +12,7 @@ export function Container({
   return (
     <div
       className={cn(
-        `animate-fade-in-blur container mx-auto max-w-6xl`,
+        `flex h-full w-full flex-col items-center justify-center space-y-4`,
         className
       )}
       {...props}

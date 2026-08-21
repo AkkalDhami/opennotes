@@ -10,7 +10,6 @@ const badgeVariants = cva(
     variants: {
       variant: {
         default: "bg-primary text-primary-foreground [a]:hover:bg-primary/80",
-        brand: "bg-brand text-background [a]:hover:bg-brand/80",
         secondary:
           "bg-secondary text-secondary-foreground [a]:hover:bg-secondary/80",
         destructive:
@@ -20,6 +19,9 @@ const badgeVariants = cva(
         ghost:
           "hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50",
         link: "text-primary underline-offset-4 hover:underline",
+        success: "bg-green-500 text-background hover:bg-green-600",
+        warning: "bg-yellow-500 text-background hover:bg-yellow-600",
+        error: "bg-red-500 text-background hover:bg-red-600",
       },
     },
     defaultVariants: {

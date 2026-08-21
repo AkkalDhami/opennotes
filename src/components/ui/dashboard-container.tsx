@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils"
 import React from "react"
 
-export function Container({
+export function DashboardContainer({
   children,
   className,
   ...props
@@ -10,13 +10,7 @@ export function Container({
   className?: string
 }) {
   return (
-    <div
-      className={cn(
-        `animate-fade-in-blur container mx-auto max-w-6xl`,
-        className
-      )}
-      {...props}
-    >
+    <div className={cn(`space-y-6`, className)} {...props}>
       {children}
     </div>
   )

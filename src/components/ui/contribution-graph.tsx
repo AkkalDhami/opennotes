@@ -74,10 +74,10 @@ const DEFAULT_LABELS: Labels = {
 
 const THEME = cn(
   'data-[level="0"]:fill-(--color-neutral-500)/5',
-  'data-[level="1"]:fill-(--color-blue-500)/20',
-  'data-[level="2"]:fill-(--color-blue-500)/40',
-  'data-[level="3"]:fill-(--color-blue-500)/60',
-  'data-[level="4"]:fill-(--color-blue-500)/80'
+  'data-[level="1"]:fill-(--color-primary)/20',
+  'data-[level="2"]:fill-(--color-primary)/40',
+  'data-[level="3"]:fill-(--color-primary)/60',
+  'data-[level="4"]:fill-(--color-primary)/80'
 )
 
 type ContributionGraphContextType = {
