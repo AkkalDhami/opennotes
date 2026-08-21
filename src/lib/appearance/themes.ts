@@ -2,6 +2,7 @@ export type ThemeName =
   | "carbon"
   | "midnight"
   | "ember"
+  | "teal"
   | "ocean-blue"
   | "midnight-azure"
   | "graphite-studio"
@@ -13,6 +14,8 @@ export type ThemeName =
   | "paper-cream"
   | "slate"
   | "nordic"
+  | "deep-purple"
+  | "cosmic-navy"
 
 export interface ThemeSeed {
   id: ThemeName
@@ -105,6 +108,17 @@ export const THEME_SEEDS: ThemeSeed[] = [
     accentSat: 0,
   },
   {
+    id: "cosmic-navy",
+    name: "Cosmic Navy",
+    description: "Deep navy & electric blue",
+    neutralHue: 225,
+    neutralSat: 18,
+    primaryHue: 222,
+    primarySat: 75,
+    accentHue: 215,
+    accentSat: 55,
+  },
+  {
     id: "midnight",
     name: "Midnight",
     description: "Deep blue & luminous",
@@ -127,6 +141,17 @@ export const THEME_SEEDS: ThemeSeed[] = [
     accentSat: 55,
   },
   {
+    id: "teal",
+    name: "Teal Study",
+    description: "Cool & serene",
+    neutralHue: 180,
+    neutralSat: 10,
+    primaryHue: 180,
+    primarySat: 45,
+    accentHue: 200,
+    accentSat: 40,
+  },
+  {
     id: "ocean-blue",
     name: "Ocean Blue",
     description: "Clear & confident",
@@ -147,6 +172,17 @@ export const THEME_SEEDS: ThemeSeed[] = [
     primarySat: 80,
     accentHue: 210,
     accentSat: 65,
+  },
+  {
+    id: "deep-purple",
+    name: "Deep Purple",
+    description: "Vibrant & elegant",
+    neutralHue: 270,
+    neutralSat: 10,
+    primaryHue: 270,
+    primarySat: 50,
+    accentHue: 280,
+    accentSat: 40,
   },
   {
     id: "graphite-studio",
@@ -181,6 +217,7 @@ export const THEME_SEEDS: ThemeSeed[] = [
     accentHue: 180,
     accentSat: 45,
   },
+
   {
     id: "royal-violet",
     name: "Royal Violet",

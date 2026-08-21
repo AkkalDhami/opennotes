@@ -60,7 +60,6 @@ export const DEFAULT_PREFERENCES: AppearancePreferences = {
   reduceMotion: false,
 }
 
-/** rem values consumed by the `--radius` custom property; --radius-sm/md/lg/xl derive from this via calc() in globals.css (already in the project). */
 export const RADIUS_REM: Record<Radius, number> = {
   none: 0,
   compact: 0.375,

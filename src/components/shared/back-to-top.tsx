@@ -39,7 +39,7 @@ export function BackToTop() {
           className="fixed right-6 bottom-22 z-40 sm:bottom-12"
         >
           <Button
-            variant="brand"
+            variant="default"
             size="icon-lg"
             onClick={() => {
               scrollToTop()

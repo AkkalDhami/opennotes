@@ -229,3 +229,11 @@ export const FONT_FAMILY_STACKS: Record<FontFamily, string> = {
   serif: `ui-serif, Georgia, "Times New Roman", serif`,
   mono: `ui-monospace, "SF Mono", "Cascadia Code", monospace`,
 }
+
+export const FONT_SIZE_VALUES = {
+  small: "14px",
+  medium: "16px",
+  large: "18px",
+} as const
+
+export type FontSize = keyof typeof FONT_SIZE_VALUES
