@@ -46,5 +46,8 @@ export const generateUniqueSlug = async (
 
 // convert a slug to a title
 export const slugToTitle = (slug: string): string => {
-  return slug.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase())
+  return slug
+    .trim()
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase())
 }
