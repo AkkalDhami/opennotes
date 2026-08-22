@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { Controller, useForm, useWatch } from "react-hook-form"
+import { Controller, Resolver, useForm, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import toast from "react-hot-toast"
 
@@ -32,6 +32,7 @@ import { SearchSelect } from "@/components/shared/search-select"
 
 import {
   contributionFormSchema,
+  ContributionFieldsSchema,
   ContributionFormValues,
 } from "@/validations/contribution"
 import {
@@ -45,10 +46,11 @@ import {
 import { handleConfetti } from "@/components/ui/confetti"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { CheckmarkCircle02Icon } from "@hugeicons/core-free-icons"
-import { NoteSourceType } from "@/db"
+import { NoteSourceType, NoteStatus } from "@/db"
 import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
 import { APP_NAME } from "@/constants/app.constants"
+import { Spinner } from "@/components/ui/spinner"
 
 interface ApiResponse {
   success: boolean
@@ -90,15 +92,33 @@ const NOTE_SOURCE_OPTIONS: INoteSourceOptions[] = [
   },
 ] as const
 
-export function ContributionForm() {
+type ContributionFormInitialValues = Omit<ContributionFormValues, "file">
+
+interface ContributionFormProps {
+  contributionId?: string
+  initialValues?: ContributionFormInitialValues
+  initialStatus?: NoteStatus
+  adminEdit?: boolean
+}
+
+export function ContributionForm({
+  contributionId,
+  initialValues,
+  initialStatus,
+  adminEdit = false,
+}: ContributionFormProps) {
   const router = useRouter()
+  const isEditing = Boolean(contributionId && initialValues)
   const [uploadStatus, setUploadStatus] = useState<PdfUploadStatus>("idle")
   const [uploadProgress, setUploadProgress] = useState(0)
   const [uploadError, setUploadError] = useState<string | undefined>()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSavingDraft, setIsSavingDraft] = useState(false)
 
   const form = useForm<ContributionFormValues>({
-    resolver: zodResolver(contributionFormSchema),
+    resolver: zodResolver(
+      isEditing ? ContributionFieldsSchema : contributionFormSchema
+    ) as unknown as Resolver<ContributionFormValues>,
     defaultValues: {
       title: "",
       description: "",
@@ -117,6 +137,7 @@ export function ContributionForm() {
 
       file: undefined as unknown as File,
       tags: "",
+      ...initialValues,
     },
   })
 
@@ -137,6 +158,10 @@ export function ContributionForm() {
     name: "sourceType",
   })
 
+  const {
+    formState: { isDirty },
+  } = form
+
   const handleFileSelect = (file: File | null) => {
     setUploadError(undefined)
     setUploadStatus("idle")
@@ -156,10 +181,12 @@ export function ContributionForm() {
 
   const requiresSourceDetails = sourceType !== "ORIGINAL"
 
-  const onSubmit = async (values: ContributionFormValues) => {
+  const onSubmit = async (values: ContributionFormValues, isDraft: boolean) => {
     if (isSubmitting) return // guard against double submission
     setIsSubmitting(true)
-    setUploadStatus("uploading")
+    if (!isEditing) {
+      setUploadStatus("uploading")
+    }
     setUploadProgress(0)
     setUploadError(undefined)
 
@@ -177,15 +204,24 @@ export function ContributionForm() {
       formData.append("originalAuthor", values.originalAuthor ?? "")
       formData.append("sourceUrl", values.sourceUrl ?? "")
       formData.append("academicYear", values.academicYear ?? "")
-      formData.append("file", values.file)
+      if (!isEditing) {
+        formData.append("file", values.file)
+      }
       formData.append("tags", values.tags ?? "")
+      if (isDraft) {
+        formData.append("status", "DRAFT")
+      }
 
       if (values.shareConfirmation) {
         formData.append("shareConfirmation", "true")
       }
 
-      const result = await submitWithProgress(formData, setUploadProgress)
-      console.log({ result })
+      const result = await submitWithProgress(formData, setUploadProgress, {
+        method: isEditing ? "PATCH" : "POST",
+        url: isEditing
+          ? `/api/notes/${contributionId}/contribution`
+          : "/api/notes",
+      })
       if (!result.success) {
         setUploadStatus("error")
         setUploadError(result.message)
@@ -196,10 +232,30 @@ export function ContributionForm() {
       }
 
       setUploadStatus("idle")
-      toast.success("Your note has been submitted for review.")
-      handleConfetti()
+      toast.success(
+        isDraft
+          ? "Your draft has been saved."
+          : isEditing
+            ? adminEdit
+              ? "Note updated successfully."
+              : "Your note has been updated and submitted for review."
+            : "Your note has been submitted for review."
+      )
+      if (!isEditing) {
+        if (!isDraft) {
+          handleConfetti()
+        }
+      }
       form.reset()
-      router.push("/")
+      router.push(
+        isEditing
+          ? adminEdit
+            ? "/admin/notes"
+            : "/profile/contributions"
+          : isDraft
+            ? "/profile/contributions"
+            : "/"
+      )
     } catch (error) {
       console.error("[ContributionForm] submission failed:", error)
       setUploadStatus("error")
@@ -215,43 +271,50 @@ export function ContributionForm() {
 
   return (
     <form
-      onSubmit={form.handleSubmit(onSubmit)}
+      onSubmit={form.handleSubmit((values, event) => {
+        const submitter = (event?.nativeEvent as SubmitEvent | undefined)
+          ?.submitter as HTMLButtonElement | null
+
+        return onSubmit(values, submitter?.dataset.intent === "draft")
+      })}
       className="space-y-4"
       noValidate
     >
-      <Card className="bg-background">
-        <CardHeader>
-          <CardTitle className="text-lg">
-            Upload your PDF <span className="text-destructive">*</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Controller
-            name="file"
-            control={form.control}
-            render={({ fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <PdfUpload
-                  file={fileValue ?? null}
-                  onFileSelect={handleFileSelect}
-                  status={uploadStatus}
-                  progress={uploadProgress}
-                  errorMessage={uploadError}
-                  disabled={isSubmitting}
-                />
+      {!isEditing ? (
+        <Card className="bg-background">
+          <CardHeader>
+            <CardTitle className="text-lg">
+              Upload your PDF <span className="text-destructive">*</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Controller
+              name="file"
+              control={form.control}
+              render={({ fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <PdfUpload
+                    file={fileValue ?? null}
+                    onFileSelect={handleFileSelect}
+                    status={uploadStatus}
+                    progress={uploadProgress}
+                    errorMessage={uploadError}
+                    disabled={isSubmitting}
+                  />
 
-                <FieldDescription>
-                  Every submission is reviewed before being published.
-                </FieldDescription>
+                  <FieldDescription>
+                    Every submission is reviewed before being published.
+                  </FieldDescription>
 
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
-          />
-        </CardContent>
-      </Card>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+          </CardContent>
+        </Card>
+      ) : null}
 
       <Card className="bg-background">
         <CardHeader>
@@ -753,12 +816,68 @@ export function ContributionForm() {
           type="button"
           variant="outline"
           disabled={isSubmitting}
-          onClick={() => router.push("/")}
+          onClick={() =>
+            router.push(
+              isEditing
+                ? adminEdit
+                  ? "/admin/notes"
+                  : "/profile/contributions"
+                : "/"
+            )
+          }
         >
           Cancel
         </Button>
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Submitting..." : "Submit Note"}
+        {!adminEdit && (
+          <Button
+            type="submit"
+            variant="outline"
+            disabled={isSubmitting || !form.formState.isValid || !isDirty}
+            onClick={() => {
+              setIsSavingDraft(true)
+            }}
+            data-intent="draft"
+          >
+            {isSubmitting && isSavingDraft ? (
+              <>
+                <Spinner />
+                Saving draft...
+              </>
+            ) : (
+              "Save Draft"
+            )}
+          </Button>
+        )}
+        <Button
+          type="submit"
+          disabled={isSubmitting || !form.formState.isValid || !isDirty}
+          onClick={() => {
+            setIsSavingDraft(false)
+          }}
+        >
+          {isSubmitting ? (
+            isEditing ? (
+              <>
+                <Spinner />
+                Updating...
+              </>
+            ) : (
+              <>
+                <Spinner />
+                Submitting...
+              </>
+            )
+          ) : isEditing ? (
+            adminEdit ? (
+              "Update Note"
+            ) : initialStatus === "DRAFT" ? (
+              "Submit for Review"
+            ) : (
+              "Update & Resubmit"
+            )
+          ) : (
+            "Submit Note"
+          )}
         </Button>
       </div>
     </form>
@@ -767,11 +886,12 @@ export function ContributionForm() {
 
 function submitWithProgress(
   formData: FormData,
-  onProgress: (percent: number) => void
+  onProgress: (percent: number) => void,
+  request: { method: "PATCH" | "POST"; url: string }
 ): Promise<ApiResponse> {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest()
-    xhr.open("POST", "/api/notes")
+    xhr.open(request.method, request.url)
 
     xhr.upload.onprogress = (event) => {
       if (event.lengthComputable) {

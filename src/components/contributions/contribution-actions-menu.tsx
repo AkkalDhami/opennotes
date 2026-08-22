@@ -58,11 +58,31 @@ export function ContributionActionsMenu({
           View Details
         </DropdownMenuItem>
 
+        <DropdownMenuItem
+          nativeButton={false}
+          render={
+            <Link
+              href={
+                `/profile/contributions/${contribution.id}/preview` as Route
+              }
+            >
+              <HugeiconsIcon
+                icon={ViewIcon}
+                size={16}
+                color="currentColor"
+                strokeWidth={2}
+                className="mr-2 size-4"
+              />
+              Preview PDF
+            </Link>
+          }
+        ></DropdownMenuItem>
+
         {contribution.status === "DRAFT" ? (
           <DropdownMenuItem
             nativeButton={false}
             render={
-              <Link href={`/contribution/${contribution.id}/edit` as Route}>
+              <Link href={`/profile/contributions/${contribution.id}` as Route}>
                 <HugeiconsIcon
                   icon={Edit02Icon}
                   size={16}
@@ -80,7 +100,7 @@ export function ContributionActionsMenu({
           <DropdownMenuItem
             nativeButton={false}
             render={
-              <Link href={`/contribution/${contribution.id}/edit` as Route}>
+              <Link href={`/profile/contributions/${contribution.id}` as Route}>
                 <HugeiconsIcon
                   icon={Edit02Icon}
                   size={16}

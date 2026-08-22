@@ -154,23 +154,28 @@ export function ContributionDetailsSheet({
               className="w-full gap-2"
             ></Button>
           ) : null}
-          <Button
-            nativeButton={false}
-            variant="outline"
-            render={
-              <Link href={`/contribution/${contribution.id}/edit`}>
-                <HugeiconsIcon
-                  icon={Edit03Icon}
-                  size={16}
-                  color="currentColor"
-                  strokeWidth={2}
-                  className="size-4"
-                />
-                Edit Note
-              </Link>
-            }
-            className="w-full gap-2"
-          ></Button>
+          {(contribution.status === "DRAFT" ||
+            contribution.status === "REJECTED" ||
+            contribution.status === "PENDING_REVIEW" ||
+            contribution.status === "PUBLISHED") && (
+            <Button
+              nativeButton={false}
+              variant="outline"
+              render={
+                <Link href={`/profile/contributions/${contribution.id}`}>
+                  <HugeiconsIcon
+                    icon={Edit03Icon}
+                    size={16}
+                    color="currentColor"
+                    strokeWidth={2}
+                    className="size-4"
+                  />
+                  Edit Note
+                </Link>
+              }
+              className="w-full gap-2"
+            ></Button>
+          )}
         </div>
       </SheetContent>
     </Sheet>
