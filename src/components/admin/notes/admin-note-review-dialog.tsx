@@ -233,19 +233,6 @@ export function AdminNoteReviewDialog({
                       </dd>
                     </div>
                   )}
-                  {detail.fileHash && (
-                    <div className="flex justify-between gap-2">
-                      <dt className="shrink-0 text-muted-foreground">
-                        SHA-256
-                      </dt>
-                      <dd
-                        className="truncate font-mono text-xs text-foreground"
-                        title={detail.fileHash}
-                      >
-                        {detail.fileHash}
-                      </dd>
-                    </div>
-                  )}
                   <div className="flex justify-between">
                     <dt className="text-muted-foreground">Uploaded</dt>
                     <dd className="text-foreground">
@@ -289,6 +276,7 @@ export function AdminNoteReviewDialog({
                   onChange={(event) => setRejectReason(event.target.value)}
                   placeholder="Explain what needs to change so the contributor can resubmit…"
                   rows={3}
+                  className="resize-none"
                 />
                 {error && <p className="text-sm text-destructive">{error}</p>}
                 <div className="flex justify-end gap-2">

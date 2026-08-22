@@ -39,11 +39,12 @@ export function AdminNoteActions({ note }: { note: AdminNoteListItem }) {
 
   return (
     <>
-      <Menubar>
+      <Menubar className={"p-0"}>
         <MenubarMenu>
           <MenubarTrigger
+            className={"size-9"}
             render={
-              <Button variant="ghost" size="icon" className="size-8">
+              <Button variant="ghost" size="icon" className="size-9">
                 <HugeiconsIcon
                   icon={MoreVerticalIcon}
                   size={16}
@@ -124,6 +125,19 @@ export function AdminNoteActions({ note }: { note: AdminNoteListItem }) {
 
             {note.status === "PENDING_REVIEW" && (
               <>
+                <MenubarItem
+                  render={
+                    <Link href={`/admin/notes/${note.id}/edit` as Route} />
+                  }
+                >
+                  <HugeiconsIcon
+                    icon={Edit02Icon}
+                    size={16}
+                    strokeWidth={2}
+                    className="size-4"
+                  />
+                  Edit
+                </MenubarItem>
                 <MenubarItem onClick={() => setOpenDialog("review")}>
                   <HugeiconsIcon
                     icon={ViewIcon}
@@ -135,10 +149,7 @@ export function AdminNoteActions({ note }: { note: AdminNoteListItem }) {
                 </MenubarItem>
                 <MenubarItem
                   render={
-                    <Link
-                      href={`/notes/${note.slug}?preview=1`}
-                      target="_blank"
-                    />
+                    <Link href={`/admin/notes/${note.id}/preview` as Route} />
                   }
                 >
                   <HugeiconsIcon
@@ -191,10 +202,7 @@ export function AdminNoteActions({ note }: { note: AdminNoteListItem }) {
               <>
                 <MenubarItem
                   render={
-                    <Link
-                      href={`/notes/${note.slug}?preview=1`}
-                      target="_blank"
-                    />
+                    <Link href={`/admin/notes/${note.id}/preview` as Route} />
                   }
                 >
                   <HugeiconsIcon
@@ -245,6 +253,32 @@ export function AdminNoteActions({ note }: { note: AdminNoteListItem }) {
 
             {note.status === "REMOVED" && (
               <>
+                <MenubarItem
+                  render={
+                    <Link href={`/admin/notes/${note.id}/preview` as Route} />
+                  }
+                >
+                  <HugeiconsIcon
+                    icon={ViewIcon}
+                    size={16}
+                    strokeWidth={2}
+                    className="size-4"
+                  />
+                  Preview PDF
+                </MenubarItem>
+                <MenubarItem
+                  render={
+                    <Link href={`/admin/notes/${note.id}/edit` as Route} />
+                  }
+                >
+                  <HugeiconsIcon
+                    icon={Edit02Icon}
+                    size={16}
+                    strokeWidth={2}
+                    className="size-4"
+                  />
+                  Edit
+                </MenubarItem>
                 <MenubarItem render={<Link href={`/admin/notes/${note.id}`} />}>
                   <HugeiconsIcon
                     icon={ViewIcon}
@@ -273,6 +307,37 @@ export function AdminNoteActions({ note }: { note: AdminNoteListItem }) {
                     className="size-4"
                   />
                   Moderation history
+                </MenubarItem>
+              </>
+            )}
+
+            {note.status === "DRAFT" && (
+              <>
+                <MenubarItem
+                  render={
+                    <Link href={`/admin/notes/${note.id}/preview` as Route} />
+                  }
+                >
+                  <HugeiconsIcon
+                    icon={ViewIcon}
+                    size={16}
+                    strokeWidth={2}
+                    className="size-4"
+                  />
+                  Preview PDF
+                </MenubarItem>
+                <MenubarItem
+                  render={
+                    <Link href={`/admin/notes/${note.id}/edit` as Route} />
+                  }
+                >
+                  <HugeiconsIcon
+                    icon={Edit02Icon}
+                    size={16}
+                    strokeWidth={2}
+                    className="size-4"
+                  />
+                  Edit
                 </MenubarItem>
               </>
             )}

@@ -6,11 +6,11 @@ import { Button } from "@/components/ui/button"
 import { Heading } from "@/components/ui/heading"
 import { SubHeading } from "@/components/ui/sub-heading"
 
-export function DashboardHeader({ greet }: { greet: string }) {
+export function DashboardHeader({ greet }: { greet?: string }) {
   return (
     <div className="flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-center sm:justify-between">
       <div className="space-y-2">
-        <Heading>{greet}</Heading>
+        <Heading>{greet || "Hello, Admin"}</Heading>
         <SubHeading>
           Monitor notes, contributors, moderation, and platform activity.
         </SubHeading>

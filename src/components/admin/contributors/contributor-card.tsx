@@ -7,6 +7,7 @@ import { Route } from "next"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { getInitials } from "@/utils/get-initials"
 import { cn } from "@/lib/utils"
+import { Tilt } from "@/components/ui/tilt"
 
 export interface ContributorCardProps {
   id: string
@@ -31,68 +32,69 @@ export function ContributorCard({
           ? (`/admin/contributors/${username}` as Route)
           : `/contributors/${username}`
       }
-      className="group h-full rounded-xl focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none"
+      className="group relative h-full rounded-xl focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none"
     >
-      <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        whileHover={{ y: -4 }}
-        transition={{ type: "spring", stiffness: 300, damping: 24 }}
-        className="h-full"
-      >
-        <div className="relative h-full overflow-hidden rounded-lg border bg-card p-5 transition-colors group-hover:bg-muted">
-          <div className={cn("relative z-10 mt-0 flex flex-col", "gap-2")}>
-            <div className="relative space-y-3">
-              <div className="flex items-center gap-4">
-                <div className="relative">
-                  <Avatar className={cn("size-18")}>
-                    <AvatarImage
-                      src={avatarUrl ?? undefined}
-                      alt={`${displayName}'s avatar`}
-                    />
-                    <AvatarFallback
-                      className={
-                        "text-2xl font-semibold text-foreground sm:text-3xl"
-                      }
+      <Tilt isRevese>
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ type: "spring", stiffness: 300, damping: 24 }}
+          className="h-full"
+        >
+          <div className="relative h-full overflow-hidden rounded-lg border bg-card p-5 transition-colors group-hover:bg-muted">
+            <div className={cn("relative z-10 mt-0 flex flex-col", "gap-2")}>
+              <div className="relative space-y-3">
+                <div className="flex items-center gap-4">
+                  <div className="relative">
+                    <Avatar className={cn("size-18")}>
+                      <AvatarImage
+                        src={avatarUrl ?? undefined}
+                        alt={`${displayName}'s avatar`}
+                      />
+                      <AvatarFallback
+                        className={
+                          "text-2xl font-semibold text-foreground sm:text-3xl"
+                        }
+                      >
+                        {getInitials(displayName)}
+                      </AvatarFallback>
+                    </Avatar>
+
+                    <span
+                      className={cn(
+                        "absolute right-1 bottom-0.5 flex items-center justify-center rounded-full bg-background",
+                        "size-6 p-0.5"
+                      )}
                     >
-                      {getInitials(displayName)}
-                    </AvatarFallback>
-                  </Avatar>
+                      <BadgeCheckFilled className="text-blue-600" />
+                    </span>
+                  </div>
 
-                  <span
-                    className={cn(
-                      "absolute right-1 bottom-0.5 flex items-center justify-center rounded-full bg-background",
-                      "size-6 p-0.5"
-                    )}
-                  >
-                    <BadgeCheckFilled className="text-blue-600" />
-                  </span>
+                  <div className="space-y-1">
+                    <p className="text-xl font-medium text-foreground">
+                      {displayName}
+                    </p>
+                    <p className="text-lg text-muted-foreground">@{username}</p>
+                  </div>
                 </div>
 
-                <div className="space-y-1">
-                  <p className="text-xl font-medium text-foreground">
-                    {displayName}
-                  </p>
-                  <p className="text-lg text-muted-foreground">@{username}</p>
-                </div>
-              </div>
+                <p className="text-base text-foreground">
+                  <span className="text-lg font-semibold text-foreground">
+                    {publishedNoteCount.toLocaleString()}
+                  </span>{" "}
+                  {publishedNoteCount === 1 ? "Note Shared" : "Published Notes"}
+                </p>
 
-              <p className="text-base text-foreground">
-                <span className="text-lg font-semibold text-foreground">
-                  {publishedNoteCount.toLocaleString()}
-                </span>{" "}
-                {publishedNoteCount === 1 ? "Note Shared" : "Published Notes"}
-              </p>
-
-              {/* {topSubject && (
+                {/* {topSubject && (
                 <span className="text-sm text-muted-foreground">
                   {slugToTitle(topSubject)}
                 </span>
               )} */}
+              </div>
             </div>
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
+      </Tilt>
     </Link>
   )
 }
