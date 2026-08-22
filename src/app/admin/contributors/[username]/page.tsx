@@ -34,6 +34,7 @@ import { ContributorOverview } from "@/components/admin/contributors/contributor
 import { getContributorRank } from "@/lib/contributors/get-contributor-rank"
 import { RankMedal } from "@/components/shared/rank-medal"
 import { buttonVariants } from "@/components/ui/button"
+import { DashboardContainer } from "@/components/ui/dashboard-container"
 
 interface ContributorDetailPageProps {
   params: Promise<{ username: string }>
@@ -84,7 +85,7 @@ export default async function ContributorDetailPage({
     ])
 
   return (
-    <div className="flex flex-col gap-6">
+    <DashboardContainer>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <Heading>Contributor Profile</Heading>
 
@@ -283,6 +284,6 @@ export default async function ContributorDetailPage({
           />
         </div>
       </section>
-    </div>
+    </DashboardContainer>
   )
 }

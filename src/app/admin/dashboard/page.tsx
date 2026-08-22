@@ -13,15 +13,24 @@ import {
 } from "@/components/admin/dashboard/skeletons"
 import { StatsSection } from "@/components/admin/dashboard/stats-section"
 import { TopContributorsSection } from "@/components/admin/dashboard/top-contributors-section"
+import { DashboardContainer } from "@/components/ui/dashboard-container"
 import { requireAdmin } from "@/lib/auth/require-admin"
+import { getGreeting } from "@/utils/greeting"
+import { redirect } from "next/navigation"
 import { Suspense } from "react"
 
 export default async function Page() {
-  await requireAdmin()
+  const user = await requireAdmin()
+
+  if (!user) {
+    return redirect("/signin")
+  }
+
+  const greeting = getGreeting(user.name)
 
   return (
-    <div className="flex flex-col gap-6">
-      <DashboardHeader />
+    <DashboardContainer>
+      <DashboardHeader greet={greeting} />
 
       <Suspense fallback={<StatsGridSkeleton />}>
         <StatsSection />
@@ -54,6 +63,6 @@ export default async function Page() {
       <Suspense fallback={<TableCardSkeleton rows={1} />}>
         <ContentHealthSection />
       </Suspense>
-    </div>
+    </DashboardContainer>
   )
 }

@@ -16,6 +16,7 @@ import { APP_NAME } from "@/constants/app.constants"
 import { VALID_SORTS } from "@/app/(app)/contributors/page"
 import { ContributorStatsSection } from "@/components/admin/contributors/contributor-stats"
 import { getContributorsRanking } from "@/lib/contributors/contributors-ranking"
+import { DashboardContainer } from "@/components/ui/dashboard-container"
 
 export const metadata: Metadata = {
   title: "Contributors ",
@@ -57,7 +58,7 @@ export default async function page({ searchParams }: ContributorsPageProps) {
   }
 
   return (
-    <section className="my-0 space-y-6">
+    <DashboardContainer>
       <Heading>Contributors Overview</Heading>
       <ContributorStatsSection stats={stats} />
 
@@ -108,6 +109,6 @@ export default async function page({ searchParams }: ContributorsPageProps) {
           </section>
         </>
       )}
-    </section>
+    </DashboardContainer>
   )
 }
