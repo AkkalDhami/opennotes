@@ -14,10 +14,14 @@ import {
   getUserContributions,
   getUserContributionStats,
 } from "@/lib/user/get-contributions"
+import { PageHeader } from "@/components/shared/page-header"
+import { DashboardContainer } from "@/components/ui/dashboard-container"
+import { getGreeting } from "@/utils/greeting"
 
 export const metadata: Metadata = {
-  title: `My Profile`,
-  description: "View and manage your profile.",
+  title: "Overview",
+  description:
+    "See your activity, saved notes, collections, and contributions at a glance.",
 }
 
 interface ProfilePageProps {
@@ -106,8 +110,14 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
     Boolean(filters.course) ||
     filters.sort !== "newest"
 
+  const greeting = getGreeting(profile.name)
+
   return (
-    <div className="space-y-8">
+    <DashboardContainer>
+      <PageHeader
+        title={greeting}
+        description="See your activity, saved notes, and contributions at a glance."
+      />
       <ProfileHeader profile={profile} />
       <ProfileStats stats={stats} />
 
@@ -120,6 +130,6 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
           filterOptions={filterOptions}
         />
       )}
-    </div>
+    </DashboardContainer>
   )
 }

@@ -1,13 +1,12 @@
 "use client"
 
 import { useEffect } from "react"
-
-import { Button } from "@/components/ui/button"
-import { Alert02Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { Alert02Icon } from "@hugeicons/core-free-icons"
+import { Button } from "@/components/ui/button"
 import { ErrorContainer } from "@/components/ui/error-container"
 
-export default function AdminErrorPage({
+export default function ErrorPage({
   error,
   reset,
 }: {
@@ -15,7 +14,7 @@ export default function AdminErrorPage({
   reset: () => void
 }) {
   useEffect(() => {
-    console.error("[admin-reports] route error", error)
+    console.error(error)
   }, [error])
 
   return (

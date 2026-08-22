@@ -15,13 +15,13 @@ import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
   title: {
-    default: "Profile",
-    template: "%s | Profile",
+    default: "OpenNotes",
+    template: "%s | Profile | OpenNotes",
   },
-  robots: {
-    index: false,
-    follow: false,
-  },
+  // robots: {
+  //   index: false,
+  //   follow: false,
+  // },
 }
 
 export default async function UserLayout({
