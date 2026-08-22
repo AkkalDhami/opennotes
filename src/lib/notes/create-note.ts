@@ -38,7 +38,7 @@ interface CreateNoteInput {
 
 interface CreateNoteResult {
   id: string
-  status: "PENDING_REVIEW"
+  status: "DRAFT" | "PENDING_REVIEW"
 }
 
 const USER_FACING_MESSAGES: Record<CreateNoteErrorCode, string> = {
@@ -66,6 +66,7 @@ export const createNoteFromFormData = async ({
   contributorId,
   formData,
 }: CreateNoteInput): Promise<CreateNoteResult> => {
+  const isDraft = formData.get("status") === "DRAFT"
   // 1. Validate the text fields.
   const rawFields = {
     title: formData.get("title") || undefined,
@@ -199,7 +200,7 @@ export const createNoteFromFormData = async ({
     pageCount: pageCount,
 
     processingStatus: "PROCESSING",
-    status: "PENDING_REVIEW",
+    status: isDraft ? "DRAFT" : "PENDING_REVIEW",
 
     sourceType: fields.sourceType,
     originalAuthor: fields.originalAuthor || null,
@@ -215,7 +216,7 @@ export const createNoteFromFormData = async ({
       .values(newNote)
       .returning({ id: notes.id, status: notes.status })
 
-    return { id: row.id, status: "PENDING_REVIEW" }
+    return { id: row.id, status: isDraft ? "DRAFT" : "PENDING_REVIEW" }
   } catch (error) {
     console.error("[create-note] Database insert failed:", error)
     await cleanupOrphanedNoteFile(uploaded.fileId)

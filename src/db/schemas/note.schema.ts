@@ -23,13 +23,15 @@ export const processingStatusEnum = pgEnum(
   NOTE_PROCESSING_STATUSES
 )
 
-export const noteStatusEnum = pgEnum("note_status", [
+export const NOTE_STATUS = [
   "DRAFT",
   "PENDING_REVIEW",
   "PUBLISHED",
   "REJECTED",
   "REMOVED",
-])
+] as const
+
+export const noteStatusEnum = pgEnum("note_status", NOTE_STATUS)
 
 export const NOTE_SOURCES = [
   "ORIGINAL",
