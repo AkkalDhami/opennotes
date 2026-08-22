@@ -101,7 +101,7 @@ export default function RootLayout({
       className={cn(
         "antialiased",
         FONT_VARIABLES,
-        "selection:bg-muted selection:text-foreground"
+        "selection:bg-primary selection:text-primary-foreground"
       )}
     >
       <head>
