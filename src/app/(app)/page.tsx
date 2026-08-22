@@ -19,7 +19,7 @@ export default function Page() {
       <HeroSection />
       <TrendingNotesSection />
       <ContributorsSection />
-      <ContributorMedalShowcase className="mt-4" />
+      <ContributorMedalShowcase className="mx-4 mt-8" />
     </Container>
   )
 }
