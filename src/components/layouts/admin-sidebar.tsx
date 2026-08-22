@@ -12,7 +12,6 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
   FileStarIcon,
   Flag02Icon,
@@ -35,42 +34,42 @@ const data = {
     {
       title: "Home",
       url: "/",
-      icon: <HugeiconsIcon icon={Home03Icon} strokeWidth={2} />,
+      icon: Home03Icon,
     },
     {
       title: "Dashboard",
       url: "/admin/dashboard",
-      icon: <HugeiconsIcon icon={DashboardSquare02Icon} strokeWidth={2} />,
+      icon: DashboardSquare02Icon,
     },
     {
       title: "All Notes",
       url: "/admin/notes",
-      icon: <HugeiconsIcon icon={File01Icon} strokeWidth={2} />,
+      icon: File01Icon,
     },
     {
       title: "Contributions",
       url: "/admin/contributions",
-      icon: <HugeiconsIcon icon={FileStarIcon} strokeWidth={2} />,
+      icon: FileStarIcon,
     },
     {
       title: "Users",
       url: "/admin/users",
-      icon: <HugeiconsIcon icon={UserGroupIcon} strokeWidth={2} />,
+      icon: UserGroupIcon,
     },
     {
       title: "Contributors",
       url: "/admin/contributors",
-      icon: <HugeiconsIcon icon={UserGroup03Icon} strokeWidth={2} />,
+      icon: UserGroup03Icon,
     },
     {
       title: "Reports",
       url: "/admin/reports",
-      icon: <HugeiconsIcon icon={Flag02Icon} strokeWidth={2} />,
+      icon: Flag02Icon,
     },
     {
       title: "Settings",
       url: "/admin/settings",
-      icon: <HugeiconsIcon icon={Settings02Icon} strokeWidth={2} />,
+      icon: Settings02Icon,
     },
   ],
 }

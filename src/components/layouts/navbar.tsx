@@ -26,7 +26,7 @@ export async function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 border-b bg-background backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 border-x px-4">
+      <div className="relative z-10 mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 border-x px-4">
         <div className="flex items-center gap-6">
           <Logo />
 

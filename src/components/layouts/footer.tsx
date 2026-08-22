@@ -7,6 +7,7 @@ import { AxeIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Route } from "next"
 import Link from "next/link"
+// import { NoiseTexture } from "@/components/ui/noise-texture"
 
 const footerLinks = [
   { href: "/terms", label: "Terms" },
@@ -17,7 +18,8 @@ const footerLinks = [
 
 export function Footer() {
   return (
-    <footer className="mb-12 border-y text-muted-foreground">
+    <footer className="relative mb-12 border-y text-muted-foreground">
+      {/* <NoiseTexture noiseOpacity={0.1} /> */}
       <div className="mx-auto max-w-6xl space-y-2 border-x px-4 py-6">
         <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
           <p>

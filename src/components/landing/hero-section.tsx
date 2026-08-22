@@ -1,7 +1,13 @@
 "use client"
 
-import { motion, useReducedMotion, type Variants } from "motion/react"
-import { Suspense } from "react"
+import {
+  motion,
+  stagger,
+  useAnimate,
+  useReducedMotion,
+  type Variants,
+} from "motion/react"
+import { Suspense, useEffect } from "react"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { BookOpen02Icon, Share05Icon } from "@hugeicons/core-free-icons"
 
@@ -15,6 +21,7 @@ import { LiquidEther } from "@/components/ui/liquid-ether"
 import { SideRays } from "@/components/ui/siderays"
 import Link from "next/link"
 import { Route } from "next"
+import { AnimatedText } from "@/components/ui/animated-text"
 
 interface HeroSectionProps {
   className?: string
@@ -47,9 +54,35 @@ export function HeroSection({ className }: HeroSectionProps) {
     },
   }
 
+  const [scope, animate] = useAnimate()
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/immutability
+    startAnimate()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const startAnimate = () => {
+    animate(
+      "#hero-title span",
+      {
+        opacity: 1,
+        filter: "blur(0)",
+        y: 0,
+      },
+      {
+        duration: 0.3,
+        ease: "easeInOut",
+        delay: stagger(0.03),
+      }
+    )
+  }
+
+  const heroTitle = "Share what you know. Find what you need."
+
   return (
     <>
-      <div className="pointer-events-none absolute inset-0 hidden h-screen dark:block">
+      <div className="pointer-events-none absolute inset-0 hidden h-screen dark:hidden">
         <LiquidEther
           colors={["#080e07", "#fcfaed", "#080e07"]}
           mouseForce={20}
@@ -68,7 +101,7 @@ export function HeroSection({ className }: HeroSectionProps) {
           autoRampDuration={0.6}
         />
       </div>
-      <div className="pointer-events-none absolute inset-0 hidden h-screen dark:hidden">
+      <div className="pointer-events-none absolute inset-0 hidden h-screen">
         <SideRays
           rayColor1="#f6f1df"
           rayColor2="#080e07"
@@ -83,6 +116,7 @@ export function HeroSection({ className }: HeroSectionProps) {
           opacity={1}
         />
       </div>
+
       <Section
         id="hero"
         className={cn(
@@ -90,34 +124,57 @@ export function HeroSection({ className }: HeroSectionProps) {
           className
         )}
       >
+        {/* <div
+          className="absolute inset-x-0 bottom-0 z-0 h-[70%]"
+          style={{
+            background:
+              "radial-gradient(ellipse 90% 40% at 50% 100%, var(--color-primary) 0%, transparent 70%), var(--background)",
+            maskImage: "linear-gradient(to top, black 0%, transparent 100%)",
+            WebkitMaskImage:
+              "linear-gradient(to top, black 0%, transparent 100%)",
+          }}
+        /> */}
         <motion.div
           initial="hidden"
           animate="show"
           variants={container}
           className="relative mx-auto flex max-w-4xl flex-col items-center space-y-6 text-center"
         >
-          <motion.p
+          <motion.div
             variants={item}
-            className="font-heading text-xs font-medium tracking-[0.14em] text-muted-foreground uppercase sm:text-sm"
+            className="font-heading relative text-xs font-medium tracking-[0.14em] text-muted-foreground uppercase sm:text-sm"
           >
             BUILT BY LEARNERS, SHARED WITH EVERYONE
-          </motion.p>
+          </motion.div>
 
-          <motion.h1
-            variants={item}
-            className="text-5xl leading-[1.09] font-medium tracking-tight sm:text-6xl lg:text-7xl"
-          >
-            Share what you know. <br /> Find what you need.
-          </motion.h1>
+          <div ref={scope}>
+            <motion.h1
+              id="hero-title"
+              aria-labelledby="hero-title"
+              className="text-4xl leading-[1.09] font-medium tracking-tight sm:text-5xl md:max-w-3xl md:text-6xl lg:text-7xl"
+            >
+              {heroTitle.split(" ").map((word, idx) => (
+                <motion.span
+                  key={idx}
+                  style={{
+                    opacity: 0,
+                    filter: "blur(10px)",
+                    y: 10,
+                  }}
+                  className="inline-block"
+                >
+                  {word} &nbsp;
+                </motion.span>
+              ))}
+            </motion.h1>
+          </div>
 
-          <motion.p
-            variants={item}
+          <AnimatedText
             className="mx-auto max-w-150 text-base leading-relaxed text-muted-foreground sm:max-w-170 sm:text-lg"
-          >
-            Discover notes and study materials shared by students and educators.
+            text="Discover notes and study materials shared by students and educators.
             Upload your own notes, build your contributor profile, and help
-            others learn.
-          </motion.p>
+            others learn."
+          />
 
           <motion.div variants={item} className="w-full max-w-2xl">
             <Suspense fallback={<div className="h-14" />}>
