@@ -104,7 +104,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: true,
-        message: "Note submitted successfully.",
+        message:
+          note.status === "DRAFT"
+            ? "Draft saved successfully."
+            : "Note submitted successfully.",
         data: {
           id: note.id,
           status: note.status,
