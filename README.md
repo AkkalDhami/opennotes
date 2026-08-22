@@ -12,43 +12,6 @@ The platform is designed to solve a simple problem: useful educational notes are
 
 ---
 
-## ✨ Features
-
-### 📚 Discover Notes
-
-- Browse publicly available notes
-- Search by title, subject, topic, contributor, and other metadata
-- Filter notes by education level, grade, category, and more
-- Sort by newest, most viewed, most downloaded, and relevance
-- View detailed note information
-- Discover related notes
-
-### 📄 PDF Notes
-
-- Upload PDF educational materials
-- Browser-based PDF viewing
-- Download public notes
-- File size and type validation
-- SHA-256 file hashing for duplicate detection
-- PDF metadata such as page count and file size
-
-### 👥 Contributors
-
-- Public contributor profiles
-- Contributor usernames
-- Contributor biographies
-- Published contributions
-- Contribution statistics
-- Contribution activity graph
-- Contributor rankings
-- Contributor badges and recognition
-
-Contributors must also provide information about the source of material they upload.
-
-This helps OpenNotes distinguish between content created by the contributor and material shared under another legitimate basis.
-
----
-
 # ⚙️ Installation
 
 Clone the repository:

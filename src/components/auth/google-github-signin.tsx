@@ -3,8 +3,7 @@
 import { signIn, useSession } from "next-auth/react"
 
 import { Button } from "@/components/ui/button"
-import { APP_NAME } from "@/constants/app.constants"
-import Link from "next/link"
+import { Logo } from "@/components/shared/logo"
 
 export function GoogleAndGitHubSignin() {
   const { status } = useSession()
@@ -12,12 +11,10 @@ export function GoogleAndGitHubSignin() {
   return (
     <div className="flex min-h-svh w-full items-center justify-center bg-background px-4 py-8">
       <div className="w-full max-w-md">
-        <div className="mb-8 text-center">
-          <Link href="/" className="text-2xl font-medium tracking-tight">
-            {APP_NAME}
-          </Link>
+        <div className="mb-8 flex flex-col items-center justify-center">
+          <Logo />
 
-          <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-muted-foreground">
+          <p className="mx-auto mt-2 max-w-sm text-center leading-6 text-muted-foreground">
             A place where students discover, share, and learn from notes
             together.
           </p>

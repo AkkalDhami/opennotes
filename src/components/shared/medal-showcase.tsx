@@ -24,7 +24,7 @@ export function ContributorMedalShowcase({
   return (
     <section
       className={cn(
-        "relative flex w-full flex-col items-center gap-12 overflow-hidden rounded-xl p-10 text-center",
+        "relative flex flex-col items-center gap-12 overflow-hidden rounded-xl p-10 text-center",
         className
       )}
     >
@@ -50,11 +50,11 @@ export function ContributorMedalShowcase({
         className="group flex flex-col items-center gap-12 rounded-2xl focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none"
       >
         <div className="flex items-end justify-center gap-10 transition-transform duration-300 group-hover:-translate-y-1">
-          <SilverMedal delay={0.1} showLabel={false} />
+          <SilverMedal delay={0.1} size={120} showLabel={false} />
           <div className="mb-6">
-            <GoldMedal size={216} delay={0} showLabel={false} />
+            <GoldMedal size={150} delay={0} showLabel={false} />
           </div>
-          <BronzeMedal delay={0.2} showLabel={false} />
+          <BronzeMedal delay={0.2} size={120} showLabel={false} />
         </div>
 
         {/* <div className="flex flex-wrap items-start justify-center gap-6">

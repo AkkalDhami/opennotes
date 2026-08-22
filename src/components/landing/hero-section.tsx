@@ -140,12 +140,10 @@ export function HeroSection({ className }: HeroSectionProps) {
           variants={container}
           className="relative mx-auto flex max-w-4xl flex-col items-center space-y-6 text-center"
         >
-          <motion.div
-            variants={item}
+          <AnimatedText
             className="font-heading relative text-xs font-medium tracking-[0.14em] text-muted-foreground uppercase sm:text-sm"
-          >
-            BUILT BY LEARNERS, SHARED WITH EVERYONE
-          </motion.div>
+            text="BUILT BY LEARNERS, SHARED WITH EVERYONE"
+          />
 
           <div ref={scope}>
             <motion.h1

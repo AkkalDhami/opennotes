@@ -12,6 +12,7 @@ const PUBLIC_ROUTES = [
   "/guidelines",
   "/community",
   "/notes",
+  "/settings",
 ]
 
 function isPublicRoute(pathname: string) {
