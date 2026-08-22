@@ -10,6 +10,7 @@ import { ContributionsPagination } from "@/components/admin/contributions/contri
 import { RefreshButton } from "@/components/admin/contributions/refresh-button"
 import { contributionFiltersSchema } from "@/validations/contribution-filter"
 import { AdminPageHeader } from "@/components/admin/admin-page-header"
+import { DashboardContainer } from "@/components/ui/dashboard-container"
 
 export const metadata = {
   title: "Contributions | Admin",
@@ -43,7 +44,7 @@ export default async function AdminContributionsPage({
   ])
 
   return (
-    <div className="flex flex-col gap-6">
+    <DashboardContainer>
       <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
         <AdminPageHeader
           title="Contributions"
@@ -65,6 +66,6 @@ export default async function AdminContributionsPage({
           searchParams={rawParams}
         />
       </div>
-    </div>
+    </DashboardContainer>
   )
 }

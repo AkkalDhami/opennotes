@@ -10,6 +10,7 @@ import { ContributionDetail } from "@/components/admin/contributions/contributio
 import { Button } from "@/components/ui/button"
 import { ArrowLeft01Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { DashboardContainer } from "@/components/ui/dashboard-container"
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -36,7 +37,7 @@ export default async function AdminContributionDetailPage({
   ])
 
   return (
-    <div className="flex flex-col gap-6">
+    <DashboardContainer>
       <Button
         variant="secondary"
         size="sm"
@@ -61,6 +62,6 @@ export default async function AdminContributionDetailPage({
         contributorStats={contributorStats}
         fileUrl={fileUrl}
       />
-    </div>
+    </DashboardContainer>
   )
 }
