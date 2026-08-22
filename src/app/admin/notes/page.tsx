@@ -9,6 +9,7 @@ import { AdminNotesSkeleton } from "@/components/admin/notes/admin-notes-skeleto
 import { getAdminNotes, getAdminNoteStats } from "@/lib/admin/admin-notes"
 import { Heading } from "@/components/ui/heading"
 import { SubHeading } from "@/components/ui/sub-heading"
+import { DashboardContainer } from "@/components/ui/dashboard-container"
 
 export const metadata: Metadata = {
   title: "Notes",
@@ -34,7 +35,7 @@ export default async function AdminNotesPage({
   const filters = adminNotesFiltersSchema.parse(flatParams)
 
   return (
-    <div className="space-y-4">
+    <DashboardContainer>
       <div className="space-y-2">
         <Heading>Notes</Heading>
         <SubHeading>
@@ -54,7 +55,7 @@ export default async function AdminNotesPage({
       >
         <AdminNotesResults filters={filters} />
       </Suspense>
-    </div>
+    </DashboardContainer>
   )
 }
 
