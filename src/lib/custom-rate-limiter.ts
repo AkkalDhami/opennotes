@@ -53,6 +53,15 @@ export function getClientIP(request: NextRequest): string {
   )
 }
 
+export function getClientIPFromHeaders(headersList: Headers): string {
+  return (
+    headersList.get("cf-connecting-ip") ??
+    headersList.get("x-real-ip") ??
+    headersList.get("x-forwarded-for")?.split(",")[0].trim() ??
+    "unknown"
+  )
+}
+
 export function checkRateLimit(key: string, config: RateLimitConfig) {
   const now = Date.now()
   const existing = rateLimitStore.get(key)
