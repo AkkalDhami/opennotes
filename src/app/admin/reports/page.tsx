@@ -7,6 +7,7 @@ import {
   ReportsStatsSkeleton,
   ReportsTableSkeleton,
 } from "@/components/admin/reports/skeletons"
+import { DashboardContainer } from "@/components/ui/dashboard-container"
 import { requireAdmin } from "@/lib/auth/require-admin"
 import { Metadata } from "next"
 import { Suspense } from "react"
@@ -39,7 +40,7 @@ export default async function AdminReportsPage(
   const sort = params.sort === "oldest" ? "oldest" : "newest"
 
   return (
-    <div className="space-y-4">
+    <DashboardContainer>
       <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
         <ReportsHeader />
         <RefreshButton />
@@ -62,7 +63,7 @@ export default async function AdminReportsPage(
           sort={sort}
         />
       </Suspense>
-    </div>
+    </DashboardContainer>
   )
 }
 
