@@ -66,22 +66,22 @@ export const STATUS_CONFIG: Record<
     label: "Pending Review",
     description:
       "Your note has been submitted and is waiting for admin review.",
-    badgeClassName: "bg-warning/10 text-warning border-warning/20",
+    badgeClassName: "bg-amber-500/10 text-amber-500 border-amber-500/20",
   },
   PUBLISHED: {
     label: "Published",
     description:
       "Your note is published and visible to the OpenNotes community.",
-    badgeClassName: "bg-success/10 text-success border-success/20",
+    badgeClassName: "bg-green-500/10 text-green-500 border-green-500/20",
   },
   REJECTED: {
     label: "Rejected",
     description: "Your note was rejected by an administrator.",
-    badgeClassName: "bg-destructive/10 text-destructive border-destructive/20",
+    badgeClassName: "bg-red-500/10 text-red-500 border-red-500/20",
   },
   REMOVED: {
     label: "Removed",
     description: "This note has been removed from publication.",
-    badgeClassName: "bg-muted text-muted-foreground border-muted-foreground/20",
+    badgeClassName: "bg-red-500/10 text-red-500 border-red-500/20",
   },
 }
