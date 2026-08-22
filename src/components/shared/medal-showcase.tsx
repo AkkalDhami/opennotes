@@ -10,10 +10,11 @@ import {
   BronzeMedal,
 } from "@/components/shared/rank-medal"
 import { cn } from "@/lib/utils"
-import { Heading } from "../ui/heading"
-import { SubHeading } from "../ui/sub-heading"
+import { Heading } from "@/components/ui/heading"
+import { SubHeading } from "@/components/ui/sub-heading"
 import { ArrowRight02Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { NoiseTexture } from "@/components/ui/noise-texture"
 
 export function ContributorMedalShowcase({
   className,
@@ -23,10 +24,11 @@ export function ContributorMedalShowcase({
   return (
     <section
       className={cn(
-        "flex w-full flex-col items-center gap-12 text-center",
+        "relative flex w-full flex-col items-center gap-12 overflow-hidden rounded-xl p-10 text-center",
         className
       )}
     >
+      <NoiseTexture noiseOpacity={0.3} />
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         whileInView={{ opacity: 1, y: 0 }}
