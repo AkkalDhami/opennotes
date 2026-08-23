@@ -23,7 +23,7 @@ interface HeroSearchProps {
 export function HeroSearch({
   className,
   action = "/notes",
-  placeholder = "Search notes, subjects, topics...",
+  placeholder = "Search notes, descriptions, subjects, topics...",
 }: HeroSearchProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -71,7 +71,7 @@ export function HeroSearch({
   return (
     <div className={cn("w-full", className)}>
       <label htmlFor="hero-search-input" className="sr-only">
-        Search notes, subjects, and topics
+        Search notes, descriptions, subjects, and topics
       </label>
 
       <InputGroup

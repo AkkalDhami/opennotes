@@ -14,15 +14,16 @@ import { ProfileData } from "@/types/profile"
 import { cn } from "@/lib/utils"
 import { getInitials } from "@/utils/get-initials"
 import { formatDate } from "@/utils/format-date"
-import { buttonVariants } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import Link from "next/link"
+import { useModal } from "@/hooks/use-modal-store"
 
 interface ProfileHeaderProps {
   profile: ProfileData
 }
 
 export function ProfileHeader({ profile }: ProfileHeaderProps) {
-  // const { open } = useModal()
+  const { open } = useModal()
 
   return (
     <div className="rounded-lg border bg-card p-4 sm:p-6">
@@ -99,23 +100,23 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
           </div>
         </div>
 
-        <div className="flex shrink-0 items-center gap-6 sm:flex-col sm:items-end">
-          <div className="flex gap-6 sm:justify-end">
-            <div className="text-right">
+        <div className="flex w-full flex-wrap items-center gap-6 sm:flex-col sm:items-end">
+          <div className="flex w-full gap-6 sm:justify-end">
+            <div className="flex items-baseline-last gap-2">
               <p className="text-lg font-semibold text-foreground">
                 {profile.totalContributions}
               </p>
-              <p className="text-xs text-muted-foreground">Contributions</p>
+              <p className="text-sm text-muted-foreground">Contributions</p>
             </div>
-            <div className="text-right">
+            <div className="flex items-baseline-last gap-2">
               <p className="text-lg font-semibold text-foreground">
                 {profile.publishedContributions}
               </p>
               <p className="text-xs text-muted-foreground">Published</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            {/* <Button
+          <div className="grid w-full gap-3 sm:flex sm:items-center sm:justify-end">
+            <Button
               onClick={() =>
                 open("update-profile", {
                   profile: {
@@ -129,7 +130,7 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
               }
               variant="default"
               size="sm"
-              className="gap-2"
+              className="w-full gap-2 sm:w-auto"
             >
               <HugeiconsIcon
                 icon={Edit02Icon}
@@ -139,7 +140,7 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
                 className="size-4"
               />
               Edit Profile
-            </Button> */}
+            </Button>
             {profile.publishedContributions > 0 && (
               <Link
                 href={`/contributors/${profile.username}`}
