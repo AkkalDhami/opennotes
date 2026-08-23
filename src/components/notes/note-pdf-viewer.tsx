@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Download01Icon, LinkSquare01Icon } from "@hugeicons/core-free-icons"
 import { Button } from "@/components/ui/button"
@@ -14,12 +14,32 @@ interface NotePdfViewerProps {
 export function NotePdfViewer({ note, fileUrl }: NotePdfViewerProps) {
   const [embedFailed, setEmbedFailed] = useState(false)
 
+  const hasTrackedView = useRef(false)
+
+  const handlePdfLoad = () => {
+    if (hasTrackedView.current) {
+      return
+    }
+
+    hasTrackedView.current = true
+
+    void fetch(`/api/notes/${note.id}/view`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).catch((error) => {
+      console.error("Failed to track note view:", error)
+    })
+  }
+
   return (
     <div id="viewer" className="scroll-mt-20">
       {!embedFailed ? (
         <div className="overflow-hidden rounded-lg border">
           <iframe
             src={fileUrl}
+            onLoad={handlePdfLoad}
             title={`${note.title} — PDF preview`}
             className="h-[70vh] min-h-105 w-full sm:h-[80vh]"
             onError={() => setEmbedFailed(true)}

@@ -55,6 +55,7 @@ export function NoteActions({ note, fileUrl }: NoteActionsProps) {
         />
         Download PDF
       </DownloadNoteButton>
+
       <Button
         size="sm"
         variant="outline"
@@ -74,6 +75,7 @@ export function NoteActions({ note, fileUrl }: NoteActionsProps) {
       ></Button>
 
       <NoteShareButton note={note} />
+
       <NoteQrDialog note={note} />
 
       <ButtonGroup>

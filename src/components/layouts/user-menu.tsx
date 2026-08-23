@@ -31,7 +31,7 @@ export function UserMenu({
 
   const handleLogout = async () => {
     startTransition(async () => {
-      const res = await logoutUser()
+      const res = await logoutUser(user.id)
       if (res) {
         toast.success("Logout successfully")
       } else {

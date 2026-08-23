@@ -18,7 +18,7 @@ import {
   Home03Icon,
   UserGroup03Icon,
 } from "@hugeicons/core-free-icons"
-import { AdminProfile } from "@/components/admin/admin-profile"
+import { UserProfile } from "@/components/shared/user-profile"
 
 import {
   DashboardSquare02Icon,
@@ -93,7 +93,7 @@ export function AdminSidebar({
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <AdminProfile user={user} />
+        <UserProfile user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

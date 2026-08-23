@@ -6,6 +6,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar"
 import { isActiveLink } from "@/utils/check-active-link"
 import { HugeiconsIcon, IconSvgElement } from "@hugeicons/react"
@@ -24,6 +25,8 @@ export function NavMain({
 }) {
   const pathname = usePathname()
 
+  const { isMobile, setOpenMobile } = useSidebar()
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
@@ -37,7 +40,8 @@ export function NavMain({
                 tooltip={item.title}
                 size={"default"}
                 render={<Link href={item.url as Route} />}
-                className=""
+                onClick={() => isMobile && setOpenMobile(false)}
+                className="gap-3"
               >
                 {item.icon && (
                   <HugeiconsIcon icon={item.icon} strokeWidth={2} />

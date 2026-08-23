@@ -25,7 +25,7 @@ export async function Navbar() {
   const user = await getCurrentUser()
 
   return (
-    <header className="sticky top-0 z-40 border-b bg-background backdrop-blur">
+    <header className="sticky top-0 z-40 border-t border-b bg-background pt-0.5 backdrop-blur">
       <div className="relative z-10 mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 border-x px-4">
         <div className="flex items-center gap-6">
           <Logo />
@@ -104,6 +104,11 @@ export async function Navbar() {
                     {l.label}
                   </DropdownMenuItem>
                 ))}
+                {!user?.id && (
+                  <DropdownMenuItem render={<Link href={"/signin"} />}>
+                    Login
+                  </DropdownMenuItem>
+                )}
               </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>

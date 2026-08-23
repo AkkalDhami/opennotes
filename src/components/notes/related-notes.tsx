@@ -19,14 +19,14 @@ export async function RelatedNotes({ note }: RelatedNotesProps) {
   if (related.length === 0) return null
 
   return (
-    <section aria-labelledby="related-notes-heading" className="mt-10">
+    <section aria-labelledby="related-notes-heading" className="mt-4">
       <h2
         id="related-notes-heading"
-        className="text-lg font-semibold text-foreground"
+        className="text-xl font-medium text-foreground"
       >
         Related notes
       </h2>
-      <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
         {related.map((relatedNote) => (
           <NoteCard key={relatedNote.id} note={relatedNote} />
         ))}

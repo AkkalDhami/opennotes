@@ -21,10 +21,10 @@ export function ContributorPreview({
   notes,
 }: ContributorPreviewProps) {
   return (
-    <div className="space-y-4">
-      <SubHeading as="h3">Contributor Profile:</SubHeading>
+    <div className="space-y-4 p-4 lg:shadow-[0px_0px_50px_1px_#00000024] dark:lg:shadow-[0px_0px_50px_1px_#ffffff24]">
+      <SubHeading as="h3">Contributor Profile</SubHeading>
 
-      <div className="space-y-4 rounded-[16px] border p-4">
+      <div className="space-y-4">
         <div className="flex items-center gap-3">
           <div className="relative">
             <Avatar className="size-18 border">
@@ -47,7 +47,7 @@ export function ContributorPreview({
               )}
             />
           </div>
-          <div className="min-w-0">
+          <div className="lg:min-w-0">
             <Link
               href={`/contributors/${contributor.username}`}
               className="flex flex-wrap items-center gap-3 truncate text-lg font-medium text-foreground underline-offset-2 hover:underline"
@@ -85,12 +85,12 @@ export function ContributorPreview({
       </div>
 
       {notes && notes?.length > 0 && (
-        <ScrollArea className="h-140 space-y-6 pb-3">
+        <ScrollArea className="space-y-6 pb-3 lg:max-h-140">
           <SubHeading as="h3" className="mb-4">
             More from {sliceContent(contributor.name)}:
           </SubHeading>
 
-          <div className="space-y-4">
+          <div className="flex flex-wrap gap-4 space-y-4">
             {notes?.map((note) => (
               <NoteCard key={note.id} note={note} />
             ))}
