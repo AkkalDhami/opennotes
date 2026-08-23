@@ -11,6 +11,7 @@ export const envSchema = z.object({
   CRYPTO_SECRET: z.string(),
 
   DOWNLOADER_HASH_SECRET: z.string(),
+  VIEWER_HASH_SECRET: z.string(),
 
   IMAGEKIT_URL_ENDPOINT: z.string(),
 
