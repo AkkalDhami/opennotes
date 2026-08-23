@@ -3,6 +3,7 @@ export * from "./schemas/user.schema"
 
 export * from "./schemas/note.schema"
 export * from "./schemas/download.schema"
+export * from "./schemas/view.schema"
 export * from "./schemas/report.schema"
 export * from "./schemas/bookmark.schema"
 export * from "./schemas/account.schema"

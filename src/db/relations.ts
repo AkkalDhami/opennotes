@@ -11,6 +11,7 @@ import {
 import { badges, userBadges } from "./schemas/badge.schema"
 import { collectionNotes, collections } from "./schemas/collection.schema"
 import { contributorProfiles } from "./schemas/contributor-profile.schema"
+import { views } from "./schemas/view.schema"
 
 export const usersRelations = relations(users, ({ one, many }) => ({
   notes: many(notes),
@@ -46,6 +47,8 @@ export const notesRelations = relations(notes, ({ one, many }) => ({
 
   downloads: many(downloads),
 
+  views: many(views),
+
   bookmarks: many(bookmarks),
 
   reports: many(reports),
@@ -60,6 +63,13 @@ export const notesRelations = relations(notes, ({ one, many }) => ({
 export const downloadsRelations = relations(downloads, ({ one }) => ({
   note: one(notes, {
     fields: [downloads.noteId],
+    references: [notes.id],
+  }),
+}))
+
+export const viewsRelations = relations(views, ({ one }) => ({
+  note: one(notes, {
+    fields: [views.noteId],
     references: [notes.id],
   }),
 }))

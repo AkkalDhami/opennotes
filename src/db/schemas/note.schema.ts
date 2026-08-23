@@ -81,6 +81,7 @@ export const notes = pgTable(
 
     status: noteStatusEnum("status").notNull().default("PENDING_REVIEW"),
     downloadCount: integer("download_count").notNull().default(0),
+    viewCount: integer("view_count").notNull().default(0),
     rejectionReason: text("rejection_reason"),
 
     ...timestamps,
