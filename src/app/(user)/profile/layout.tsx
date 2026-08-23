@@ -9,7 +9,6 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
-import { getUserCurrentSession } from "@/features/auth/auth.service"
 import { getCurrentUser } from "@/lib/auth/get-current-user"
 import { Metadata } from "next"
 import { redirect } from "next/navigation"
@@ -35,9 +34,6 @@ export default async function UserLayout({
   if (!user || !user.name || !user.username) {
     return redirect("/signin?next=/profile")
   }
-
-  const a = await getUserCurrentSession(user.id)
-  // console.log({ a })
 
   return (
     <SidebarProvider>

@@ -120,7 +120,7 @@ export function HeroSection({ className }: HeroSectionProps) {
       <Section
         id="hero"
         className={cn(
-          "relative isolate mb-12 overflow-hidden px-6 py-16 sm:py-18 lg:py-22",
+          "relative isolate mb-12 overflow-hidden px-4 py-16 sm:py-18 lg:py-22",
           className
         )}
       >

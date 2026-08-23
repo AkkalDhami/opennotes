@@ -129,7 +129,7 @@ export function ContributionDetailsSheet({
                 variant="outline"
                 className="rounded-full font-normal"
               >
-                {tag}
+                #{tag}
               </Badge>
             ))}
           </div>

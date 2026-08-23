@@ -1,7 +1,7 @@
 "use client"
 
 import { HugeiconsIcon } from "@hugeicons/react"
-import { Download04Icon, Calendar04Icon } from "@hugeicons/core-free-icons"
+import { Download01Icon, Calendar04Icon } from "@hugeicons/core-free-icons"
 
 import { Card, CardContent } from "@/components/ui/card"
 import { StatusBadge } from "@/components/profile/status-badge"
@@ -12,6 +12,7 @@ import {
 } from "@/components/contributions/contribution-details-sheet"
 import { ContributionListItem } from "@/types/contribution"
 import { formatDate } from "@/utils/format-date"
+import { slugToTitle } from "@/utils/slug"
 
 interface ContributionCardListProps {
   contributions: ContributionListItem[]
@@ -25,15 +26,16 @@ export function ContributionCardList({
   return (
     <div className="flex flex-col gap-3 md:hidden">
       {contributions.map((contribution) => (
-        <Card key={contribution.id} className="shadow-none">
-          <CardContent className="space-y-3 p-4">
+        <Card key={contribution.id} className="p-4 shadow-none">
+          <CardContent className="space-y-1 p-0">
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0">
-                <p className="truncate font-medium text-foreground">
+                <p className="truncate text-lg font-medium text-foreground">
                   {contribution.title}
                 </p>
-                <p className="truncate text-xs text-muted-foreground">
-                  {contribution.subject} · {contribution.category}
+                <p className="truncate text-sm text-muted-foreground">
+                  {slugToTitle(contribution.subject)} ·{" "}
+                  {slugToTitle(contribution.category)}
                 </p>
               </div>
               <ContributionActionsMenu
@@ -42,18 +44,22 @@ export function ContributionCardList({
               />
             </div>
 
-            <p className="text-xs text-muted-foreground">
-              {contribution.educationLevel}
-              {contribution.course ? ` · ${contribution.course}` : ""}
-              {contribution.grade ? ` · ${contribution.grade}` : ""}
+            <p className="text-sm text-muted-foreground">
+              {slugToTitle(contribution.educationLevel)}
+              {contribution.course
+                ? ` · ${slugToTitle(contribution.course)}`
+                : ""}
+              {contribution.grade
+                ? ` · ${slugToTitle(contribution.grade)}`
+                : ""}
             </p>
 
             <div className="flex items-center justify-between">
               <StatusBadge status={contribution.status} />
-              <div className="flex items-center gap-3 text-xs text-muted-foreground">
+              <div className="flex items-center gap-3 text-sm text-muted-foreground">
                 <span className="inline-flex items-center gap-1">
                   <HugeiconsIcon
-                    icon={Download04Icon}
+                    icon={Download01Icon}
                     size={14}
                     color="currentColor"
                     strokeWidth={2}
@@ -64,7 +70,7 @@ export function ContributionCardList({
               </div>
             </div>
 
-            <p className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+            <p className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
               <HugeiconsIcon
                 icon={Calendar04Icon}
                 size={14}
