@@ -9,6 +9,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
+import { getUserCurrentSession } from "@/features/auth/auth.service"
 import { getCurrentUser } from "@/lib/auth/get-current-user"
 import { Metadata } from "next"
 import { redirect } from "next/navigation"
@@ -32,8 +33,11 @@ export default async function UserLayout({
   const user = await getCurrentUser()
 
   if (!user || !user.name || !user.username) {
-    return redirect("/signin")
+    return redirect("/signin?next=/profile")
   }
+
+  const a = await getUserCurrentSession(user.id)
+  // console.log({ a })
 
   return (
     <SidebarProvider>
@@ -54,7 +58,9 @@ export default async function UserLayout({
           <div className="flex items-center gap-4 px-3">
             <SidebarTrigger />
             <Separator orientation="vertical" className="mt-2 h-4" />
-            <AdminBreadcrumb />
+            <div className="hidden sm:flex">
+              <AdminBreadcrumb />
+            </div>
           </div>
 
           <ThemeToggle />
