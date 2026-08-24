@@ -15,51 +15,40 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Logo } from "@/components/shared/logo"
-const links = [
+
+export const links = [
   { href: "/notes", label: "Notes" },
   { href: "/contributors", label: "Contributors" },
   { href: "/settings", label: "Settings" },
+  { href: "/contribution", label: "Contribute" },
 ]
 
 export async function Navbar() {
   const user = await getCurrentUser()
 
   return (
-    <header className="sticky top-0 z-40 border-t border-b bg-background pt-0.5 backdrop-blur">
+    <header className="pt-0.5r sticky top-0 z-40 border-t border-b bg-background backdrop-blur-md">
       <div className="relative z-10 mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 border-x px-4">
         <div className="flex items-center gap-6">
           <Logo />
-
-          <nav className="hidden items-center gap-6 font-medium md:flex">
-            {links.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href as Route}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                {l.label}
-              </Link>
-            ))}
-          </nav>
         </div>
+        <nav className="hidden items-center gap-6 rounded-full border bg-background px-4 py-3 font-medium backdrop-blur md:flex">
+          {links.map((l) => (
+            <Link
+              key={l.href}
+              href={l.href as Route}
+              className="text-muted-foreground hover:text-primary"
+            >
+              {l.label}
+            </Link>
+          ))}
+        </nav>
 
         {/* <div className="hidden max-w-xs flex-1 items-center md:flex">
           <CommandMenu />
         </div> */}
 
         <div className="flex items-center gap-2">
-          <Link
-            href="/contribution"
-            className={cn(
-              buttonVariants({
-                variant: "ghost",
-              }),
-              "hidden rounded-full px-4 hover:bg-muted md:flex"
-            )}
-          >
-            Share Your Notes
-          </Link>
-
           {user?.id ? (
             <UserMenu user={user} />
           ) : (

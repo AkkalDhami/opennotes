@@ -2,6 +2,8 @@ import { NoteCard } from "@/components/notes/note-card"
 import { PageHeader } from "@/components/shared/page-header"
 import { Button } from "@/components/ui/button"
 import { DashboardContainer } from "@/components/ui/dashboard-container"
+import { CreateCollectionButton } from "@/components/user/collections/create-collection-button"
+import { DeleteCollectionButton } from "@/components/user/collections/delete-collection-butto"
 import { EditCollectionButton } from "@/components/user/collections/edit-collection-button"
 import { APP_NAME } from "@/constants/app.constants"
 import { getCurrentUser } from "@/lib/auth/get-current-user"
@@ -12,6 +14,7 @@ import {
 } from "@/lib/user/collection-queries"
 import { formatCompactNumber } from "@/utils/format"
 import {
+  ArrowLeft01Icon,
   Download01Icon,
   File01Icon,
   Folder01Icon,
@@ -21,7 +24,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Metadata, Route } from "next"
 import Link from "next/link"
-import { notFound, redirect } from "next/navigation"
+import { redirect } from "next/navigation"
 
 export const metadata: Metadata = {
   title: "My Collections",
@@ -37,7 +40,7 @@ export default async function page(
   if (!user) redirect("/signin")
 
   const collection = await getCollectionByOwnerAndSlug(user.id, slug)
-  if (!collection) notFound()
+  if (!collection) redirect("/profile/collections")
 
   const [children, notes] = await Promise.all([
     getChildCollections(collection.id),
@@ -62,23 +65,37 @@ export default async function page(
 
   return (
     <DashboardContainer>
-      <PageHeader
-        title="My Collections"
-        description="Create and organize your notes into collections."
-      />
-
-      <Link
-        href="/profile/collections"
-        className="text-sm text-muted-foreground hover:text-foreground"
-      >
-        ← My Collections
-      </Link>
+      <Button
+        variant="secondary"
+        size="sm"
+        nativeButton={false}
+        className="w-fit"
+        render={
+          <Link href="/profile/collections">
+            <HugeiconsIcon
+              icon={ArrowLeft01Icon}
+              size={16}
+              strokeWidth={2}
+              className="size-4"
+              aria-hidden="true"
+            />
+            My Collections
+          </Link>
+        }
+      ></Button>
 
       <PageHeader
         title={collection.name}
-        description={collection.description ?? "No description"}
+        description={collection.description ?? undefined}
       />
       <div className="flex gap-2">
+        <CreateCollectionButton
+          label="Create Subcollection"
+          data={{
+            fixedParentId: collection.id,
+            fixedParentName: collection.name,
+          }}
+        />
         <EditCollectionButton collection={collection} />
         <Button variant="outline">
           <HugeiconsIcon
@@ -89,6 +106,12 @@ export default async function page(
           />
           Share
         </Button>
+        <DeleteCollectionButton
+          data={{
+            id: collection.id,
+            name: collection.name,
+          }}
+        />
       </div>
 
       <div className="mt-4 flex flex-wrap gap-4 text-sm text-muted-foreground">

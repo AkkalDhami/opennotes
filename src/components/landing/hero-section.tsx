@@ -124,16 +124,6 @@ export function HeroSection({ className }: HeroSectionProps) {
           className
         )}
       >
-        {/* <div
-          className="absolute inset-x-0 bottom-0 z-0 h-[70%]"
-          style={{
-            background:
-              "radial-gradient(ellipse 90% 40% at 50% 100%, var(--color-primary) 0%, transparent 70%), var(--background)",
-            maskImage: "linear-gradient(to top, black 0%, transparent 100%)",
-            WebkitMaskImage:
-              "linear-gradient(to top, black 0%, transparent 100%)",
-          }}
-        /> */}
         <motion.div
           initial="hidden"
           animate="show"
