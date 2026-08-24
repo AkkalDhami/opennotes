@@ -15,6 +15,7 @@ export type ThemeName =
   | "slate"
   | "nordic"
   | "deep-purple"
+  | "volt"
   | "cosmic-navy"
 
 export interface ThemeSeed {
@@ -119,6 +120,19 @@ export const THEME_SEEDS: ThemeSeed[] = [
     accentSat: 55,
   },
   {
+    id: "volt",
+    name: "Volt",
+    description: "Bold & energetic",
+    neutralHue: 105,
+    neutralSat: 0.01,
+
+    primaryHue: 105,
+    primarySat: 0.32,
+
+    accentHue: 100,
+    accentSat: 0.14,
+  },
+  {
     id: "midnight",
     name: "Midnight",
     description: "Deep blue & luminous",
@@ -128,6 +142,28 @@ export const THEME_SEEDS: ThemeSeed[] = [
     primarySat: 75,
     accentHue: 215,
     accentSat: 55,
+  },
+  {
+    id: "ocean-blue",
+    name: "Ocean Blue",
+    description: "Clear & confident",
+    neutralHue: 212,
+    neutralSat: 14,
+    primaryHue: 210,
+    primarySat: 75,
+    accentHue: 198,
+    accentSat: 60,
+  },
+  {
+    id: "deep-purple",
+    name: "Deep Purple",
+    description: "Vibrant & elegant",
+    neutralHue: 270,
+    neutralSat: 10,
+    primaryHue: 270,
+    primarySat: 50,
+    accentHue: 280,
+    accentSat: 40,
   },
   {
     id: "ember",
@@ -151,17 +187,7 @@ export const THEME_SEEDS: ThemeSeed[] = [
     accentHue: 200,
     accentSat: 40,
   },
-  {
-    id: "ocean-blue",
-    name: "Ocean Blue",
-    description: "Clear & confident",
-    neutralHue: 212,
-    neutralSat: 14,
-    primaryHue: 210,
-    primarySat: 75,
-    accentHue: 198,
-    accentSat: 60,
-  },
+
   {
     id: "midnight-azure",
     name: "Midnight Azure",
@@ -173,17 +199,7 @@ export const THEME_SEEDS: ThemeSeed[] = [
     accentHue: 210,
     accentSat: 65,
   },
-  {
-    id: "deep-purple",
-    name: "Deep Purple",
-    description: "Vibrant & elegant",
-    neutralHue: 270,
-    neutralSat: 10,
-    primaryHue: 270,
-    primarySat: 50,
-    accentHue: 280,
-    accentSat: 40,
-  },
+
   {
     id: "graphite-studio",
     name: "Graphite Studio",

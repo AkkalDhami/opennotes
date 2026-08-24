@@ -3,6 +3,7 @@ import { and, asc, desc, eq, ilike, inArray, or, sql } from "drizzle-orm"
 
 import { db, notes, users } from "@/db"
 import { PublicNote } from "@/types/note"
+import { getCurrentUser } from "@/lib/auth/get-current-user"
 
 export const CONTRIBUTORS_PER_PAGE = 20
 export const TOP_CONTRIBUTORS_COUNT = 3
@@ -301,6 +302,8 @@ export async function getContributorPublishedNotes(
 }> {
   const safePage = Math.max(1, page)
 
+  const user = await getCurrentUser()
+
   const [rows, totalRow] = await Promise.all([
     db
       .select({
@@ -313,6 +316,7 @@ export async function getContributorPublishedNotes(
         educationLevel: notes.educationLevel,
         grade: notes.grade,
         publishedAt: notes.publishedAt,
+        lastModifiedAt: notes.updatedAt,
         downloadCount: notes.downloadCount,
         academicYear: notes.academicYear,
         tags: notes.tags,
@@ -329,6 +333,16 @@ export async function getContributorPublishedNotes(
         sourceType: notes.sourceType,
         sourceUrl: notes.sourceUrl,
         originalAuthor: notes.originalAuthor,
+        viewCount: notes.viewCount,
+
+        isBookmarked: user
+          ? sql<boolean>`EXISTS (
+          SELECT 1
+          FROM bookmarks b
+          WHERE b.note_id = ${notes.id}
+            AND b.user_id = ${user.id}
+        )`
+          : sql<boolean>`false`,
       })
       .from(notes)
       .innerJoin(users, eq(notes.contributorId, users.id))
@@ -364,6 +378,7 @@ export async function getContributorPublishedNotes(
       educationLevel: r.educationLevel,
       grade: r.grade,
       publishedAt: r.publishedAt ? new Date(r.publishedAt) : new Date(),
+      lastModifiedAt: r.lastModifiedAt ? new Date(r.lastModifiedAt) : null,
       downloadCount: Number(r.downloadCount),
       academicYear: r.academicYear,
       tags: r.tags || [],
@@ -371,11 +386,13 @@ export async function getContributorPublishedNotes(
       fileSizeBytes: Number(r.fileSizeBytes),
       course: r.course,
       description: r.description,
+      viewCount: Number(r.viewCount),
       filePath: r.filePath,
       topic: r.topic,
       originalAuthor: r.originalAuthor,
       sourceType: r.sourceType,
       sourceUrl: r.sourceUrl,
+      isBookmarked: Boolean(r.isBookmarked),
       contributor: {
         id: r.contributorId,
         name: r.contributorName,
