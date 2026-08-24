@@ -7,6 +7,7 @@ import {
   Copy01Icon,
   MoreVerticalSquare01Icon,
   Flag02Icon,
+  FolderAddIcon,
 } from "@hugeicons/core-free-icons"
 import { Button } from "@/components/ui/button"
 import { NoteShareButton } from "./note-share-button"
@@ -74,9 +75,27 @@ export function NoteActions({ note, fileUrl }: NoteActionsProps) {
         }
       ></Button>
 
-      <NoteShareButton note={note} />
-
       <NoteQrDialog note={note} />
+
+      <Button
+        variant="outline"
+        onClick={() =>
+          open("add-note-to-collections", {
+            addNoteToCollectionsDialog: {
+              noteId: note.id,
+              noteTitle: note.title,
+            },
+          })
+        }
+      >
+        <HugeiconsIcon
+          icon={FolderAddIcon}
+          size={24}
+          color="currentColor"
+          strokeWidth={2}
+        />
+        Add to collection
+      </Button>
 
       <ButtonGroup>
         <Button variant="outline">More</Button>
@@ -114,7 +133,7 @@ export function NoteActions({ note, fileUrl }: NoteActionsProps) {
                 Report note
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
+
             <DropdownMenuGroup>
               <DropdownMenuItem onClick={handleCopyLink}>
                 <HugeiconsIcon
@@ -127,6 +146,12 @@ export function NoteActions({ note, fileUrl }: NoteActionsProps) {
                 Copy Link
               </DropdownMenuItem>
             </DropdownMenuGroup>
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem
+              render={<NoteShareButton note={note} />}
+            ></DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </ButtonGroup>

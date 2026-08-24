@@ -13,6 +13,7 @@ import {
   HeartIcon,
 } from "@hugeicons/core-free-icons"
 import { cn } from "@/lib/utils"
+import { useSidebar } from "../ui/sidebar"
 
 type ProfileCtaProps = {
   icon: IconSvgElement
@@ -35,10 +36,12 @@ export function ProfileCta({
   iconClassName = "text-primary",
   buttonProps,
 }: ProfileCtaProps) {
+  const { open } = useSidebar()
+
   return (
     <section
       aria-labelledby="profile-cta-title"
-      className={cn("mx-2 pb-4", className)}
+      className={cn("mx-2 hidden pb-4", !open && "hidden", className)}
     >
       <div className="flex flex-col items-center rounded-lg bg-primary/10 p-4 text-center">
         <div className="mb-5 flex size-18 items-center justify-center rounded-xl bg-primary/15">
@@ -116,7 +119,7 @@ export function ParsedProfileCta({ pathname }: { pathname: string }) {
         title="Organize Your Saved Notes"
         description="Turn your saved notes into collections for easier study."
         buttonLabel="Create Collection"
-        href="/profile/collections/new"
+        href="#"
       />
     )
   }

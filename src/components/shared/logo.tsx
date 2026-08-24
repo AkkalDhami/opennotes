@@ -10,7 +10,7 @@ export function Logo({ className }: { className?: string }) {
   return (
     <Link
       href="/"
-      className={cn("flex items-center gap-2 font-medium", className)}
+      className={cn("relative flex items-center gap-2 font-medium", className)}
     >
       <HugeiconsIcon
         icon={BookOpen01Icon}

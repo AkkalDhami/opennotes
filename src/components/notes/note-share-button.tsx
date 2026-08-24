@@ -39,7 +39,12 @@ export function NoteShareButton({ note }: NoteShareButtonProps) {
   }
 
   return (
-    <Button variant="outline" onClick={handleShare} className="gap-2">
+    <Button
+      variant="outline"
+      size="sm"
+      onClick={handleShare}
+      className="w-full gap-2"
+    >
       <HugeiconsIcon
         icon={Share08Icon}
         size={16}
