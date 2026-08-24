@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server"
 import { verifyAccessToken } from "./lib/jwt"
 import { refreshAccessToken } from "./features/auth/auth.service"
 import { ACCESS_TOKEN_TTL } from "./features/auth/auth.cookie"
+import redis from "./configs/redis"
+import { SessionType } from "./types/auth"
 
 const PUBLIC_ROUTES = [
   "/",
@@ -63,6 +65,14 @@ export async function proxy(request: NextRequest) {
     const payload = verifyAccessToken(accessToken)
 
     if (!payload?.sub) {
+      return NextResponse.redirect(new URL("/signin", request.url))
+    }
+
+    const sessionKey = `session:${payload.sid}`
+
+    const session = await redis.get<SessionType>(sessionKey)
+
+    if (!session || session.userId !== payload.sub) {
       return NextResponse.redirect(new URL("/signin", request.url))
     }
 

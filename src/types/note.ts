@@ -40,13 +40,15 @@ export interface PublicNote {
   pageCount: number | null
   fileSizeBytes: number | null
   filePath: string
-  // viewCount: number;
+  viewCount: number
   downloadCount: number
   publishedAt: Date
+  lastModifiedAt: Date | null
   contributor: PublicContributor
   sourceType: NoteSourceType
   sourceUrl: string | null
   originalAuthor: string | null
+  isBookmarked: boolean
 }
 
 export interface PublicContributor {
