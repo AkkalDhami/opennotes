@@ -47,8 +47,8 @@ export function generateHashedToken(token: string): string {
 }
 
 //? generate token and hashed token
-export function generateTokenAndHashedToken(id: string) {
-  const cryptoSecret = process.env.CRYPTO_SECRET! || "secret"
+export function generateTokenAndHashedToken(id: string, secret?: string) {
+  const cryptoSecret = secret || process.env.CRYPTO_SECRET! || "secret"
   const token = crypto
     .createHmac("sha256", cryptoSecret)
     .update(String(id))

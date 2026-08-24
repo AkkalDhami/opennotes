@@ -1,6 +1,7 @@
 import {
   index,
   integer,
+  pgEnum,
   pgTable,
   primaryKey,
   text,
@@ -11,6 +12,13 @@ import {
 import { users } from "./user.schema"
 import { timestamps } from "./schema.helper"
 import { notes } from "./note.schema"
+
+export const COLLECTION_VISIBLITY = ["PRIVATE", "PUBLIC"] as const
+
+export const collectionVisibilityEnum = pgEnum(
+  "collection_visibility",
+  COLLECTION_VISIBLITY
+)
 
 export const collections = pgTable(
   "collections",
@@ -30,6 +38,10 @@ export const collections = pgTable(
     slug: text("slug").notNull(),
 
     description: text("description"),
+
+    visibility: collectionVisibilityEnum("visibility")
+      .notNull()
+      .default("PRIVATE"),
 
     position: integer("position").notNull().default(0),
 
@@ -97,3 +109,5 @@ export const collectionSaves = pgTable(
     index("collection_saves_collection_idx").on(table.collectionId),
   ]
 )
+
+export type CollectionVisibility = (typeof COLLECTION_VISIBLITY)[number]
