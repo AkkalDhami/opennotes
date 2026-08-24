@@ -38,7 +38,12 @@ import {
   CreateCollectionSchema,
 } from "@/validations/collection"
 import { useModal } from "@/hooks/use-modal-store"
-import { Spinner } from "../ui/spinner"
+import { Spinner } from "@/components/ui/spinner"
+import { COLLECTION_VISIBLITY } from "@/db"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Globe02Icon, IncognitoIcon } from "@hugeicons/core-free-icons"
+import { cn } from "@/lib/utils"
+import { HugeiconsIcon } from "@hugeicons/react"
 
 export function CreateCollectionDialog() {
   const router = useRouter()
@@ -58,14 +63,15 @@ export function CreateCollectionDialog() {
       name: collection?.name ?? "",
       description: collection?.description ?? "",
       parentId: fixedParentId ?? "none",
+      visibility: "PRIVATE",
     },
   })
 
   const title = fixedParentId ? "Create subcollection" : "Create collection"
 
-  // console.log({
-  //   error: form.formState.errors,
-  // })
+  if (fixedParentId) {
+    form.setValue("parentId", fixedParentId)
+  }
 
   const parentId = useWatch({
     control: form.control,
@@ -81,13 +87,13 @@ export function CreateCollectionDialog() {
     })
   }
 
-  // console.log({ values: form.getValues() })
   function handleSubmit(values: CreateCollectionInput) {
     startTransition(async () => {
       const result = await createCollection({
         name: values.name,
         description: values.description,
         parentId: values.parentId === "none" ? null : values.parentId,
+        visibility: values.visibility,
       })
 
       if (!result.ok) {
@@ -188,6 +194,61 @@ export function CreateCollectionDialog() {
                 )}
               />
 
+              <Controller
+                name="visibility"
+                control={form.control}
+                render={({ field }) => (
+                  <Field>
+                    <RadioGroup
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      className="grid gap-2 sm:grid-cols-2"
+                    >
+                      {COLLECTION_VISIBLITY.map((opt) => (
+                        <label
+                          key={opt}
+                          htmlFor={`visibility-${opt}`}
+                          className={cn(
+                            "flex cursor-pointer items-start gap-3 rounded-lg border p-3 transition-colors",
+                            "hover:bg-muted/40",
+                            field.value === opt
+                              ? "border-primary bg-primary/5"
+                              : "border-border"
+                          )}
+                        >
+                          <RadioGroupItem
+                            id={`visibility-${opt}`}
+                            value={opt}
+                            className="mt-0.5"
+                          />
+
+                          <span className="flex flex-col gap-0.5">
+                            <span className="flex items-center gap-2 text-sm font-medium capitalize">
+                              <HugeiconsIcon
+                                icon={
+                                  opt === "PUBLIC" ? Globe02Icon : IncognitoIcon
+                                }
+                                size={16}
+                                color="currentColor"
+                                strokeWidth={2}
+                                className="text-muted-foreground"
+                              />
+                              {opt.toLowerCase()}
+                            </span>
+
+                            <span className="text-xs text-muted-foreground">
+                              {opt === "PUBLIC"
+                                ? "Anyone can view this collection"
+                                : "Only you can see this collection"}
+                            </span>
+                          </span>
+                        </label>
+                      ))}
+                    </RadioGroup>
+                  </Field>
+                )}
+              />
+
               {!fixedParentId && parentOptions && parentOptions?.length > 0 && (
                 <Field data-invalid={!!form.formState.errors.parentId}>
                   <FieldLabel htmlFor="collection-parent">
@@ -195,12 +256,12 @@ export function CreateCollectionDialog() {
                   </FieldLabel>
 
                   <Select
-                    value={parentId}
-                    onValueChange={(value) =>
-                      form.setValue("parentId", value ?? "", {
+                    value={parentId || "none"}
+                    onValueChange={(value) => {
+                      form.setValue("parentId", value === "none" ? "" : value, {
                         shouldValidate: true,
                       })
-                    }
+                    }}
                   >
                     <SelectTrigger
                       id="collection-parent"
