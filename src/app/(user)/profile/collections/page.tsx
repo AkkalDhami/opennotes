@@ -20,7 +20,10 @@ import {
   getOwnerCollectionOptions,
   getUserCollectionTree,
 } from "@/lib/user/collection-queries"
-import { CollectionsSort } from "@/validations/collection"
+import {
+  CollectionsSort,
+  CollectionsSortSchema,
+} from "@/validations/collection"
 
 import { Metadata } from "next"
 import { redirect } from "next/navigation"
@@ -44,6 +47,14 @@ export default async function page(props: PageProps<"/profile/collections">) {
   if (!user) redirect("/signin")
 
   const parentOptions = await getOwnerCollectionOptions(user.id)
+
+  // `catch` rather than `parse`: a hand-edited `?sort=` shouldn't 500 the page,
+  // it should fall back to the owner's own drag-and-drop order.
+  const activeSort = CollectionsSortSchema.catch("position").parse(sort)
+
+  // Dropping into a name-sorted or filtered list would write positions the user
+  // can't see, so dragging is only offered on the unfiltered stored order.
+  const isReorderable = activeSort === "position" && !q
 
   return (
     <DashboardContainer>
@@ -70,17 +81,18 @@ export default async function page(props: PageProps<"/profile/collections">) {
         <CollectionsToolbar
           defaultQuery={q ?? ""}
           defaultView={view}
-          defaultSort={sort}
+          defaultSort={activeSort}
         />
       </div>
 
-      <div className="mt-8">
+      <div className="mt-6">
         {view === "list" ? (
           <Suspense fallback={<CollectionTreeSkeleton />}>
             <CollectionTreeSection
               ownerId={user.id}
               search={q}
-              sort={sort as CollectionsSort}
+              sort={activeSort}
+              isReorderable={isReorderable}
             />
           </Suspense>
         ) : (
@@ -88,7 +100,8 @@ export default async function page(props: PageProps<"/profile/collections">) {
             <CollectionGridSection
               ownerId={user.id}
               search={q}
-              sort={sort as CollectionsSort}
+              sort={activeSort}
+              isReorderable={isReorderable}
             />
           </Suspense>
         )}
@@ -106,32 +119,36 @@ async function CollectionGridSection({
   ownerId,
   search,
   sort,
+  isReorderable,
 }: {
   ownerId: string
   search?: string
   sort: CollectionsSort
+  isReorderable: boolean
 }) {
   const tree = await getUserCollectionTree({ ownerId, search, sort })
 
   if (tree.length === 0 && search) return <NoSearchResultsState />
   if (tree.length === 0) return <EmptyCollectionsState />
 
-  return <CollectionGrid nodes={tree} />
+  return <CollectionGrid nodes={tree} isReorderable={isReorderable} />
 }
 
 async function CollectionTreeSection({
   ownerId,
   search,
   sort,
+  isReorderable,
 }: {
   ownerId: string
   search?: string
   sort: CollectionsSort
+  isReorderable: boolean
 }) {
   const tree = await getUserCollectionTree({ ownerId, search, sort })
 
   if (tree.length === 0 && search) return <NoSearchResultsState />
   if (tree.length === 0) return <EmptyCollectionsState />
 
-  return <CollectionTree nodes={tree} />
+  return <CollectionTree nodes={tree} isReorderable={isReorderable} />
 }
