@@ -1,8 +1,8 @@
 "use client"
 
-import { useTransition } from "react"
+import { useEffect, useMemo, useTransition } from "react"
 import { useRouter } from "next/navigation"
-import { Controller, useForm, useWatch } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import toast from "react-hot-toast"
 
@@ -24,13 +24,6 @@ import {
   FieldDescription,
   FieldGroup,
 } from "@/components/ui/field"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 
 import { createCollection } from "@/lib/user/collections"
 import {
@@ -44,6 +37,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Globe02Icon, IncognitoIcon } from "@hugeicons/core-free-icons"
 import { cn } from "@/lib/utils"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { CollectionParentPicker } from "@/components/user/collections/collection-parent-picker"
+import { buildOptionTree } from "@/lib/user/collection-option-tree"
 
 export function CreateCollectionDialog() {
   const router = useRouter()
@@ -62,21 +57,31 @@ export function CreateCollectionDialog() {
     defaultValues: {
       name: collection?.name ?? "",
       description: collection?.description ?? "",
-      parentId: fixedParentId ?? "none",
+      parentId: fixedParentId ?? null,
       visibility: "PRIVATE",
     },
   })
 
   const title = fixedParentId ? "Create subcollection" : "Create collection"
 
-  if (fixedParentId) {
-    form.setValue("parentId", fixedParentId)
-  }
+  // Reset on open rather than calling setValue during render: the previous
+  // version wrote to form state on every render, which fights React and left
+  // stale values behind when the dialog was reopened for a different parent.
+  useEffect(() => {
+    if (!isModalOpen) return
+    form.reset({
+      name: "",
+      description: "",
+      parentId: fixedParentId ?? null,
+      visibility: "PRIVATE",
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isModalOpen, fixedParentId])
 
-  const parentId = useWatch({
-    control: form.control,
-    name: "parentId",
-  })
+  const parentTree = useMemo(
+    () => buildOptionTree(parentOptions ?? []),
+    [parentOptions]
+  )
 
   function handleClose() {
     close()
@@ -84,6 +89,7 @@ export function CreateCollectionDialog() {
       name: "",
       description: "",
       parentId: null,
+      visibility: "PRIVATE",
     })
   }
 
@@ -128,13 +134,21 @@ export function CreateCollectionDialog() {
               <DialogTitle>{title}</DialogTitle>
 
               <DialogDescription>
-                {fixedParentName
-                  ? `This will be nested under "${fixedParentName}".`
-                  : "Group related notes together — you can nest collections later."}
+                {fixedParentName ? (
+                  <>
+                    This will be nested under{" "}
+                    <strong className="font-medium text-foreground">
+                      {fixedParentName}
+                    </strong>
+                    .
+                  </>
+                ) : (
+                  "Group related notes together — you can nest collections later."
+                )}
               </DialogDescription>
             </DialogHeader>
 
-            <div className="grid gap-5 py-4">
+            <div className="grid max-h-[60vh] gap-4 overflow-y-auto px-2">
               {/* Description */}
 
               <Controller
@@ -142,7 +156,7 @@ export function CreateCollectionDialog() {
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-rhf-demo-title">
+                    <FieldLabel htmlFor="collection-name">
                       Name <span className="text-destructive">*</span>
                     </FieldLabel>
 
@@ -153,7 +167,6 @@ export function CreateCollectionDialog() {
                       maxLength={120}
                       autoFocus
                       aria-invalid={fieldState.invalid}
-                      {...form.register("name")}
                     />
 
                     {fieldState.invalid && (
@@ -168,7 +181,7 @@ export function CreateCollectionDialog() {
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="form-rhf-demo-title">
+                    <FieldLabel htmlFor="collection-description">
                       Description
                     </FieldLabel>
 
@@ -179,7 +192,6 @@ export function CreateCollectionDialog() {
                       maxLength={500}
                       rows={3}
                       aria-invalid={fieldState.invalid}
-                      {...form.register("description")}
                       className="resize-none"
                     />
 
@@ -249,44 +261,37 @@ export function CreateCollectionDialog() {
                 )}
               />
 
-              {!fixedParentId && parentOptions && parentOptions?.length > 0 && (
-                <Field data-invalid={!!form.formState.errors.parentId}>
-                  <FieldLabel htmlFor="collection-parent">
-                    Parent collection
-                  </FieldLabel>
+              {!fixedParentId && parentTree.length > 0 && (
+                <Controller
+                  name="parentId"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor="collection-parent">
+                        Parent collection
+                      </FieldLabel>
 
-                  <Select
-                    value={parentId || "none"}
-                    onValueChange={(value) => {
-                      form.setValue("parentId", value === "none" ? "" : value, {
-                        shouldValidate: true,
-                      })
-                    }}
-                  >
-                    <SelectTrigger
-                      id="collection-parent"
-                      aria-invalid={!!form.formState.errors.parentId}
-                    >
-                      <SelectValue placeholder="None" />
-                    </SelectTrigger>
+                      <CollectionParentPicker
+                        id="collection-parent"
+                        nodes={parentTree}
+                        value={
+                          field.value && field.value !== "none"
+                            ? field.value
+                            : null
+                        }
+                        onChange={(parentId) => field.onChange(parentId)}
+                      />
 
-                    <SelectContent>
-                      <SelectItem value="none">None</SelectItem>
+                      <FieldDescription>
+                        Optional. Pick a collection to nest this one inside.
+                      </FieldDescription>
 
-                      {parentOptions.map((opt) => (
-                        <SelectItem key={opt.id} value={opt.id}>
-                          {opt.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-
-                  {form.formState.errors.parentId && (
-                    <FieldError>
-                      {form.formState.errors.parentId.message}
-                    </FieldError>
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
                   )}
-                </Field>
+                />
               )}
             </div>
 

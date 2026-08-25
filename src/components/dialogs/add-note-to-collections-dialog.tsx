@@ -200,7 +200,7 @@ export function AddNoteToCollectionsDialog() {
         if (!openState) handleClose()
       }}
     >
-      <DialogContent className="flex max-h-[85vh] flex-col sm:max-w-lg">
+      <DialogContent className="flex max-h-[75vh] scroll-fade scrollbar-thin scrollbar-gutter-both flex-col overflow-y-auto sm:max-w-lg">
         <form
           onSubmit={form.handleSubmit(handleSubmit)}
           id="add-note-to-collections-form"
@@ -210,9 +210,17 @@ export function AddNoteToCollectionsDialog() {
             <DialogHeader>
               <DialogTitle>Add to collections</DialogTitle>
               <DialogDescription>
-                {noteTitle
-                  ? `Choose collections to add "${noteTitle}" to.`
-                  : "Choose collections to add this note to."}
+                {noteTitle ? (
+                  <>
+                    Choose collections to add{" "}
+                    <strong className="font-medium text-foreground">
+                      {noteTitle}
+                    </strong>{" "}
+                    to.
+                  </>
+                ) : (
+                  "Choose collections to add this note to."
+                )}
               </DialogDescription>
             </DialogHeader>
 
@@ -356,7 +364,7 @@ export function AddNoteToCollectionsDialog() {
                     <Spinner /> Adding...
                   </>
                 ) : selectedCount === 0 ? (
-                  "Add"
+                  "Add to collection"
                 ) : (
                   `Add to ${selectedCount}`
                 )}

@@ -38,6 +38,14 @@ import { useModal } from "@/hooks/use-modal-store"
 import { COLLECTION_VISIBLITY } from "@/db"
 import { HugeiconsIcon } from "@hugeicons/react"
 
+/** Blank baseline, used before a collection is loaded and again on close. */
+const EMPTY_VALUES: UpdateCollectionInput = {
+  id: "",
+  name: "",
+  description: "",
+  visibility: "PRIVATE",
+}
+
 export function EditCollectionDialog() {
   const router = useRouter()
   const { close, isOpen, type, data } = useModal()
@@ -49,29 +57,35 @@ export function EditCollectionDialog() {
 
   const form = useForm<UpdateCollectionInput>({
     resolver: zodResolver(UpdateCollectionSchema),
-    defaultValues: {
-      id: editCollection?.id ?? "",
-      name: editCollection?.name ?? "",
-      description: editCollection?.description ?? "",
-    },
+    defaultValues: EMPTY_VALUES,
   })
 
-  // fill the form with the existing data
+  /**
+   * Load the collection into the form each time the dialog opens.
+   *
+   * This has to be a `reset`, not a set of `setValue` calls. The dialog is
+   * mounted once at the app root with an empty modal store, so `defaultValues`
+   * is evaluated before any collection exists — and the previous version never
+   * wrote `id` afterwards. `UpdateCollectionSchema` requires a uuid there, so
+   * the resolver rejected every submit before it reached the action, with no
+   * field on screen to show the error: the Save button simply did nothing.
+   *
+   * `reset` also re-baselines `isDirty`, which is what gates the Save button.
+   */
   useEffect(() => {
-    if (editCollection) {
-      form.setValue("name", editCollection.name)
-      form.setValue("description", editCollection?.description ?? "")
-      form.setValue("visibility", editCollection.visibility)
-    }
-  }, [editCollection, form])
+    if (!isModalOpen || !editCollection) return
+    form.reset({
+      id: editCollection.id,
+      name: editCollection.name,
+      description: editCollection.description ?? "",
+      visibility: editCollection.visibility,
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isModalOpen, editCollection?.id])
 
   function handleClose() {
     close()
-    form.reset({
-      name: "",
-      description: "",
-      visibility: "PRIVATE",
-    })
+    form.reset(EMPTY_VALUES)
   }
 
   function handleSubmit(values: UpdateCollectionInput) {
@@ -79,7 +93,7 @@ export function EditCollectionDialog() {
 
     startTransition(async () => {
       const result = await updateCollection({
-        id: values.id ?? editCollection.id,
+        id: editCollection.id,
         name: values.name,
         description: values.description,
         visibility: values.visibility,
@@ -138,7 +152,6 @@ export function EditCollectionDialog() {
                       maxLength={120}
                       autoFocus
                       aria-invalid={fieldState.invalid}
-                      {...form.register("name")}
                     />
 
                     {fieldState.invalid && (
@@ -164,7 +177,6 @@ export function EditCollectionDialog() {
                       maxLength={300}
                       rows={3}
                       aria-invalid={fieldState.invalid}
-                      {...form.register("description")}
                       className="resize-none"
                     />
 
@@ -184,6 +196,10 @@ export function EditCollectionDialog() {
                 control={form.control}
                 render={({ field }) => (
                   <Field>
+                    <FieldLabel htmlFor="visibility-PUBLIC">
+                      Visibility
+                    </FieldLabel>
+
                     <RadioGroup
                       value={field.value}
                       onValueChange={field.onChange}

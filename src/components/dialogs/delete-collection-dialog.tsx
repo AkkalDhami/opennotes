@@ -61,9 +61,12 @@ export function DeleteCollectionDialog() {
         <DialogHeader>
           <DialogTitle>Delete collection?</DialogTitle>
           <DialogDescription>
-            This will delete &quot;{deleteCollectionData?.name}&quot;. The notes
-            themselves will not be deleted. Any subcollections inside it will be
-            deleted too.
+            This will delete{" "}
+            <strong className="font-medium text-foreground">
+              {deleteCollectionData?.name}
+            </strong>
+            . The notes themselves will not be deleted. Any subcollections
+            inside it will be deleted too.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>

@@ -122,14 +122,31 @@ export function UpdateNoteDialog() {
     },
   })
 
+  const category = useWatch({
+    control: form.control,
+    name: "category",
+  })
+
   const educationLevel = useWatch({
     control: form.control,
     name: "educationLevel",
   })
+
+  const course = useWatch({
+    control: form.control,
+    name: "course",
+  })
+
+  const grade = useWatch({
+    control: form.control,
+    name: "grade",
+  })
+
   const status = useWatch({
     control: form.control,
     name: "status",
   })
+
   const tags =
     useWatch({
       control: form.control,
@@ -349,7 +366,7 @@ export function UpdateNoteDialog() {
                     <FieldContent>
                       <SearchSelect
                         options={NOTES_CATEGORIES}
-                        value={form.watch("category")}
+                        value={category}
                         onChange={(value) =>
                           form.setValue("category", value as string, {
                             shouldDirty: true,
@@ -378,7 +395,7 @@ export function UpdateNoteDialog() {
                   <FieldContent>
                     <SearchSelect
                       options={EDUCATIONAL_LEVELS}
-                      value={form.watch("educationLevel")}
+                      value={educationLevel}
                       onChange={(value) =>
                         form.setValue("educationLevel", value as string, {
                           shouldDirty: true,
@@ -412,7 +429,7 @@ export function UpdateNoteDialog() {
                                 },
                               ]
                         }
-                        value={form.watch("course") ?? ""}
+                        value={course ?? ""}
                         onChange={(value) =>
                           form.setValue("course", value as string, {
                             shouldDirty: true,
@@ -437,7 +454,7 @@ export function UpdateNoteDialog() {
                     <FieldContent>
                       <SearchSelect
                         options={filteredGrades}
-                        value={form.watch("grade")}
+                        value={grade}
                         onChange={(value) =>
                           form.setValue("grade", value as string, {
                             shouldDirty: true,
