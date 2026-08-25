@@ -15,7 +15,6 @@ import {
 import {
   FileStarIcon,
   Folder01Icon,
-  FolderHeartIcon,
   HeartIcon,
   Home03Icon,
 } from "@hugeicons/core-free-icons"
@@ -58,11 +57,11 @@ const data = {
       url: "/profile/collections",
       icon: Folder01Icon,
     },
-    {
-      title: "Saved Collections",
-      url: "/profile/saved-collections",
-      icon: FolderHeartIcon,
-    },
+    // {
+    //   title: "Saved Collections",
+    //   url: "/profile/saved-collections",
+    //   icon: FolderHeartIcon,
+    // },
     {
       title: "Contributions",
       url: "/profile/contributions",

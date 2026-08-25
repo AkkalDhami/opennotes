@@ -32,7 +32,7 @@ export async function Navbar() {
         <div className="flex items-center gap-6">
           <Logo />
         </div>
-        <nav className="hidden items-center gap-6 rounded-full border bg-background px-4 py-3 font-medium backdrop-blur md:flex">
+        <nav className="hidden items-center gap-6 rounded-full border bg-background px-6 py-3 font-medium backdrop-blur md:flex">
           {links.map((l) => (
             <Link
               key={l.href}
