@@ -11,13 +11,21 @@ export const timestamps = {
 }
 
 /**
- * Drizzle doesn't ship a built-in `tsvector` column type, so this defines
- * a minimal custom one. The column itself is a PostgreSQL GENERATED ALWAYS
- * AS ... STORED column (see db/migrations/0001_notes_search.sql) — Drizzle
- * never writes to it directly, it's only ever read from in SELECT/ORDER BY/
- * WHERE. Postgres recomputes it automatically whenever title, description,
- * subject, topic, or tags change, so there's no "stale search vector" risk
- * (§11) and no application-level sync code to maintain.
+ * Drizzle doesn't ship a built-in `tsvector` column type, so this defines a
+ * minimal custom one. Drizzle never writes to this column — it is only ever
+ * read in WHERE / ORDER BY.
+ *
+ * IMPORTANT: `drizzle-kit push` creates this as a plain, empty `tsvector`
+ * column. It is populated by a database trigger installed out-of-band by
+ * `npm run db:search` (see src/db/sql/notes-search.sql). Until you run that,
+ * `search_vector` is NULL on every row and full-text search silently matches
+ * nothing — no error, just zero results.
+ *
+ * It is a trigger rather than a GENERATED ALWAYS column on purpose: the
+ * vector includes `tags text[]`, and `array_to_string()` is only STABLE, not
+ * IMMUTABLE, so Postgres rejects it in a generated-column expression.
+ *
+ * Re-run `npm run db:search` after any push that touched `notes`.
  */
 export const tsvector = customType<{ data: string; driverData: string }>({
   dataType() {

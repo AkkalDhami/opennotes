@@ -12,6 +12,9 @@ export type ModalType =
   | "edit-collection"
   | "delete-collection"
   | "add-note-to-collections"
+  | "share-collection"
+  | "move-collection"
+  | "collection-details"
 
 export type CollectionParentOption = {
   id: string
@@ -31,6 +34,36 @@ export type AddNoteToCollectionsDialogType = {
   noteTitle: string
 }
 
+/**
+ * Everything the share dialog needs to build a link without another round trip.
+ * `visibility` is carried so the dialog can explain itself if it's ever opened
+ * for a private collection instead of silently producing a dead link.
+ */
+export type ShareCollectionDialogType = {
+  id: string
+  slug: string
+  name: string
+  description?: string | null
+  visibility: CollectionRecord["visibility"]
+}
+
+export type MoveCollectionDialogType = {
+  id: string
+  name: string
+  parentId: string | null
+}
+
+/**
+ * Seed for the details dialog. Only an id and a name: the dialog fetches the
+ * collection fresh (and re-fetches on every drill-down), so anything more here
+ * would just be a second copy to keep in sync. The name is carried so the header
+ * has something to show during the first load instead of a blank row.
+ */
+export type CollectionDetailsDialogType = {
+  id: string
+  name: string
+}
+
 export interface ModalData {
   profile?: Omit<UserType, "role" | "emailVerified" | "email">
   note?: UpdateNoteFormValues & { id: string }
@@ -42,6 +75,9 @@ export interface ModalData {
     "id" | "name" | "description" | "visibility"
   >
   addNoteToCollectionsDialog?: AddNoteToCollectionsDialogType
+  shareCollection?: ShareCollectionDialogType
+  moveCollection?: MoveCollectionDialogType
+  collectionDetails?: CollectionDetailsDialogType
 }
 
 export interface ModalStore {
