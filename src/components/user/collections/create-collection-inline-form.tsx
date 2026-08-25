@@ -1,7 +1,7 @@
 "use client"
 
-import { useTransition } from "react"
-import { Controller, useForm, useWatch } from "react-hook-form"
+import { useMemo, useTransition } from "react"
+import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import toast from "react-hot-toast"
@@ -14,21 +14,16 @@ import {
   FieldLabel,
   FieldGroup,
 } from "@/components/ui/field"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { Spinner } from "@/components/ui/spinner"
 
 import { createCollection } from "@/lib/user/collections"
 import { CollectionNameSchema } from "@/validations/collection"
+import { CollectionParentPicker } from "@/components/user/collections/collection-parent-picker"
+import { buildTreeFromDepthList } from "@/lib/user/collection-option-tree"
 
 const InlineCreateCollectionSchema = z.object({
   name: CollectionNameSchema,
-  parentId: z.uuid().or(z.literal("none")).nullable().optional(),
+  parentId: z.uuid().nullable().optional(),
 })
 
 type InlineCreateCollectionInput = z.infer<typeof InlineCreateCollectionSchema>
@@ -57,19 +52,20 @@ export function CreateCollectionInlineForm({
     resolver: zodResolver(InlineCreateCollectionSchema),
     defaultValues: {
       name: "",
-      parentId: defaultParentId ?? "none",
+      parentId: defaultParentId ?? null,
     },
   })
 
-  const parentId = useWatch({
-    control: form.control,
-    name: "parentId",
-  })
+  // The caller hands us an already-flattened depth list; rebuild the nesting so
+  // the picker can render it as a tree.
+  const parentTree = useMemo(
+    () => buildTreeFromDepthList(parentOptions),
+    [parentOptions]
+  )
 
   function handleSubmit(values: InlineCreateCollectionInput) {
     startTransition(async () => {
-      const parentId =
-        values.parentId === "none" ? null : (values.parentId ?? null)
+      const parentId = values.parentId ?? null
 
       const result = await createCollection({
         name: values.name,
@@ -91,7 +87,7 @@ export function CreateCollectionInlineForm({
         parentId,
       })
 
-      form.reset({ name: "", parentId: "none" })
+      form.reset({ name: "", parentId: null })
     })
   }
 
@@ -122,32 +118,24 @@ export function CreateCollectionInlineForm({
           )}
         />
 
-        {parentOptions.length > 0 && (
-          <Field>
-            <FieldLabel htmlFor="inline-collection-parent">
-              Parent collection
-            </FieldLabel>
-            <Select
-              value={parentId || "none"}
-              onValueChange={(value) =>
-                form.setValue("parentId", value === "none" ? "none" : value, {
-                  shouldValidate: true,
-                })
-              }
-            >
-              <SelectTrigger id="inline-collection-parent">
-                <SelectValue placeholder="None" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="none">None (top level)</SelectItem>
-                {parentOptions.map((opt) => (
-                  <SelectItem key={opt.id} value={opt.id}>
-                    {"—".repeat(opt.depth)} {opt.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </Field>
+        {parentTree.length > 0 && (
+          <Controller
+            name="parentId"
+            control={form.control}
+            render={({ field }) => (
+              <Field>
+                <FieldLabel htmlFor="inline-collection-parent">
+                  Parent collection
+                </FieldLabel>
+                <CollectionParentPicker
+                  id="inline-collection-parent"
+                  nodes={parentTree}
+                  value={field.value ?? null}
+                  onChange={(parentId) => field.onChange(parentId)}
+                />
+              </Field>
+            )}
+          />
         )}
       </FieldGroup>
 

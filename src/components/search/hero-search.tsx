@@ -12,6 +12,10 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group"
+import {
+  SearchSuggestions,
+  useSearchAutocomplete,
+} from "@/components/search/search-suggestions"
 import { Route } from "next"
 
 interface HeroSearchProps {
@@ -30,36 +34,51 @@ export function HeroSearch({
 
   const [query, setQuery] = React.useState(searchParams.get("q") ?? "")
 
-  const search = React.useMemo(
-    () =>
-      debounce((value: string) => {
-        const trimmed = value.trim()
+  const pushQuery = React.useCallback(
+    (value: string) => {
+      const trimmed = value.trim()
+      const params = new URLSearchParams(searchParams.toString())
 
-        const params = new URLSearchParams(searchParams.toString())
+      if (trimmed) {
+        params.set("q", trimmed)
+      } else {
+        params.delete("q")
+      }
 
-        if (trimmed) {
-          params.set("q", trimmed)
-        } else {
-          params.delete("q")
+      const queryString = params.toString()
+
+      router.push(
+        (queryString ? `${action}?${queryString}` : action) as Route,
+        {
+          scroll: false,
         }
-
-        const queryString = params.toString()
-
-        router.push(
-          (queryString ? `${action}?${queryString}` : action) as Route,
-          {
-            scroll: false,
-          }
-        )
-      }, 400),
+      )
+    },
     [router, action, searchParams]
   )
+
+  const search = React.useMemo(() => debounce(pushQuery, 400), [pushQuery])
 
   React.useEffect(() => {
     return () => {
       search.clear()
     }
   }, [search])
+
+  /** Picking a suggestion or pressing Enter shouldn't wait out the debounce. */
+  const submitNow = React.useCallback(
+    (value: string) => {
+      search.clear()
+      setQuery(value)
+      pushQuery(value)
+    },
+    [search, pushQuery]
+  )
+
+  const autocomplete = useSearchAutocomplete({
+    value: query,
+    onSubmit: submitNow,
+  })
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const value = event.target.value
@@ -69,7 +88,7 @@ export function HeroSearch({
   }
 
   return (
-    <div className={cn("w-full", className)}>
+    <div className={cn("relative w-full", className)}>
       <label htmlFor="hero-search-input" className="sr-only">
         Search notes, descriptions, subjects, and topics
       </label>
@@ -97,13 +116,22 @@ export function HeroSearch({
           name="q"
           type="search"
           inputMode="search"
-          autoComplete="off"
           value={query}
           onChange={handleChange}
           placeholder={placeholder}
           className="h-full text-base"
+          {...autocomplete.inputProps}
         />
       </InputGroup>
+
+      {autocomplete.isOpen && (
+        <SearchSuggestions
+          suggestions={autocomplete.suggestions}
+          activeIndex={autocomplete.activeIndex}
+          listboxId={autocomplete.listboxId}
+          getOptionProps={autocomplete.getOptionProps}
+        />
+      )}
     </div>
   )
 }

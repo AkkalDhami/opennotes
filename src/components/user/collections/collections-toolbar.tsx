@@ -22,11 +22,22 @@ import {
 } from "./collection-view-switcher"
 
 const SORT_OPTIONS = [
+  { value: "position", label: "Custom order" },
   { value: "updated", label: "Recently updated" },
   { value: "created", label: "Recently created" },
   { value: "name_asc", label: "Name A–Z" },
   { value: "name_desc", label: "Name Z–A" },
 ] as const
+
+/**
+ * `Select.Value` renders the raw value when it has no children, which is how the
+ * parent picker ended up showing a bare uuid. Here the values are already
+ * readable, but a label map keeps the trigger reading "Custom order" rather
+ * than "position".
+ */
+const SORT_LABELS: Record<string, string> = Object.fromEntries(
+  SORT_OPTIONS.map((option) => [option.value, option.label])
+)
 
 export function CollectionsToolbar({
   defaultQuery,
@@ -88,18 +99,20 @@ export function CollectionsToolbar({
       <div className="flex flex-wrap items-center gap-3">
         <CollectionViewSwitcher value={defaultView || "grid"} />
         <Select
-          defaultValue={defaultSort}
-
+          defaultValue={defaultSort || "position"}
           onValueChange={(value) => pushParams({ sort: value || undefined })}
         >
           <SelectTrigger
             className="w-full sm:w-52"
             aria-label="Sort collections"
           >
-            <SelectValue placeholder="Sort by" />
+            <SelectValue placeholder="Sort by">
+              {(value: string | null) =>
+                (value && SORT_LABELS[value]) || "Sort by"
+              }
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Default</SelectItem>
             {SORT_OPTIONS.map((opt) => (
               <SelectItem key={opt.value} value={opt.value}>
                 {opt.label}
