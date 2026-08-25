@@ -1,9 +1,12 @@
+"use client"
+
 import Link from "next/link"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
   ArrowUpRight01Icon,
   CheckmarkBadge01Icon,
   Download01Icon,
+  FolderAddIcon,
 } from "@hugeicons/core-free-icons"
 import { PublicNote } from "@/types/note"
 import { formatFileSize, formatCompactNumber } from "@/lib/notes/format"
@@ -18,6 +21,7 @@ import { NoiseTexture } from "@/components/ui/noise-texture"
 import { Tilt } from "@/components/ui/tilt"
 import { formatNoteMeta } from "@/utils/format"
 import { BookmarkButton } from "@/components/shared/bookmark-button"
+import { useModal } from "@/hooks/use-modal-store"
 
 interface NoteCardProps {
   note: PublicNote
@@ -25,6 +29,7 @@ interface NoteCardProps {
 }
 
 export function NoteCard({ note, from }: NoteCardProps) {
+  const { open } = useModal()
   return (
     <Tilt isRevese>
       <div className="group relative flex h-full flex-col space-y-2 overflow-hidden rounded-lg border bg-card p-4 transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
@@ -43,7 +48,32 @@ export function NoteCard({ note, from }: NoteCardProps) {
             className="top-4"
           />
 
-          <p className="text-sm font-medium text-muted-foreground">
+          <button
+            type="button"
+            aria-label="Add note to collections"
+            className={cn(
+              "absolute top-12 right-4 z-10",
+              "flex size-5 items-center justify-center rounded-full",
+              "bg-muted text-muted-foreground hover:text-primary"
+            )}
+            onClick={() =>
+              open("add-note-to-collections", {
+                addNoteToCollectionsDialog: {
+                  noteId: note.id,
+                  noteTitle: note.title,
+                },
+              })
+            }
+          >
+            <HugeiconsIcon
+              icon={FolderAddIcon}
+              size={24}
+              color="currentColor"
+              strokeWidth={2}
+            />
+          </button>
+
+          <p className="pr-8 text-sm font-medium text-muted-foreground">
             {formatNoteMeta([
               slugToTitle(note.educationLevel ?? ""),
               slugToTitle(note.course ?? ""),

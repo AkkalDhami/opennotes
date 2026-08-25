@@ -150,7 +150,7 @@ export function NoteActions({ note, fileUrl }: NoteActionsProps) {
             <DropdownMenuSeparator />
 
             <DropdownMenuItem
-              render={<NoteShareButton note={note} />}
+              render={<NoteShareButton note={note} className="justify-start" />}
             ></DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

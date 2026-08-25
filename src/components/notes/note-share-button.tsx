@@ -5,12 +5,14 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { Share08Icon } from "@hugeicons/core-free-icons"
 import { Button } from "@/components/ui/button"
 import { PublicNote } from "@/types/note"
+import { cn } from "@/lib/utils"
 
 interface NoteShareButtonProps {
   note: PublicNote
+  className?: string
 }
 
-export function NoteShareButton({ note }: NoteShareButtonProps) {
+export function NoteShareButton({ note, className }: NoteShareButtonProps) {
   async function handleShare() {
     const url = window.location.href
 
@@ -43,7 +45,7 @@ export function NoteShareButton({ note }: NoteShareButtonProps) {
       variant="outline"
       size="sm"
       onClick={handleShare}
-      className="w-full gap-2"
+      className={cn("w-full gap-2", className)}
     >
       <HugeiconsIcon
         icon={Share08Icon}

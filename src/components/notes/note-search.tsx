@@ -6,6 +6,10 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { Search01Icon, Cancel01Icon } from "@hugeicons/core-free-icons"
 import { Input } from "@/components/ui/input"
 import {
+  SearchSuggestions,
+  useSearchAutocomplete,
+} from "@/components/search/search-suggestions"
+import {
   buildNoteFiltersQuery,
   parseNoteFilters,
 } from "@/lib/notes/note-filters"
@@ -41,6 +45,18 @@ export function NoteSearch() {
     router.push(`${pathname}${query}` as Route, { scroll: false })
   }
 
+  /** Searches immediately, cancelling any debounced search already queued. */
+  function searchNow(nextQuery: string) {
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    setValue(nextQuery)
+    updateUrl(nextQuery)
+  }
+
+  const autocomplete = useSearchAutocomplete({
+    value,
+    onSubmit: searchNow,
+  })
+
   function handleChange(next: string) {
     setValue(next)
     if (debounceRef.current) clearTimeout(debounceRef.current)
@@ -48,9 +64,8 @@ export function NoteSearch() {
   }
 
   function handleClear() {
-    if (debounceRef.current) clearTimeout(debounceRef.current)
-    setValue("")
-    updateUrl("")
+    autocomplete.close()
+    searchNow("")
   }
 
   return (
@@ -68,15 +83,10 @@ export function NoteSearch() {
         autoFocus
         value={value}
         onChange={(e) => handleChange(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            if (debounceRef.current) clearTimeout(debounceRef.current)
-            updateUrl(value)
-          }
-        }}
         placeholder="Search by title, subject, topic, tags, contributor..."
         aria-label="Search notes"
         className="pr-9 pl-9"
+        {...autocomplete.inputProps}
       />
       {value && (
         <button
@@ -93,6 +103,15 @@ export function NoteSearch() {
           />
           <span className="sr-only">Clear search</span>
         </button>
+      )}
+
+      {autocomplete.isOpen && (
+        <SearchSuggestions
+          suggestions={autocomplete.suggestions}
+          activeIndex={autocomplete.activeIndex}
+          listboxId={autocomplete.listboxId}
+          getOptionProps={autocomplete.getOptionProps}
+        />
       )}
     </div>
   )
