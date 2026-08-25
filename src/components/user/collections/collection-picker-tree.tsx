@@ -12,32 +12,62 @@ import {
 import { Checkbox } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
-import { CollectionTreeNode } from "@/lib/user/collection-queries"
 import { formatCompactNumber } from "@/utils/format"
 
-interface CollectionPickerTreeProps {
-  nodes: CollectionTreeNode[]
+/**
+ * The minimum shape the tree needs to render a row. Kept structural rather than
+ * tied to `CollectionTreeNode` so the same component can render the lightweight
+ * `{id, name}` option trees the parent pickers build — `stats` is optional and
+ * the note count is simply omitted when absent.
+ */
+export type PickerCollectionNode = {
+  id: string
+  name: string
+  description?: string | null
+  stats?: { noteCount: number }
+  children: PickerCollectionNode[]
+}
+
+interface CollectionPickerTreeProps<T extends PickerCollectionNode> {
+  nodes: T[]
   selectedIds: Set<string>
-  alreadyAddedIds: Set<string>
+  /** Disabled and shown as already-checked, with an explanatory badge. */
+  alreadyAddedIds?: Set<string>
+  /** Disabled and shown unchecked — an invalid target rather than a done one. */
+  disabledIds?: Set<string>
   forceExpandIds: Set<string>
-  onToggle: (node: CollectionTreeNode) => void
+  onToggle: (node: T) => void
+  alreadyAddedLabel?: string
+  disabledLabel?: string
+  /**
+   * "single" swaps the checkbox for a radio dot. Selection itself is still owned
+   * by the parent — this only changes the affordance.
+   */
+  selectionMode?: "single" | "multiple"
   depth?: number
 }
 
-export function CollectionPickerTree({
+export function CollectionPickerTree<T extends PickerCollectionNode>({
   nodes,
   selectedIds,
   alreadyAddedIds,
+  disabledIds,
   forceExpandIds,
   onToggle,
+  alreadyAddedLabel = "Already added",
+  disabledLabel,
+  selectionMode = "multiple",
   depth = 0,
-}: CollectionPickerTreeProps) {
+}: CollectionPickerTreeProps<T>) {
   if (nodes.length === 0) return null
 
   return (
     <div
       role={depth === 0 ? "tree" : "group"}
       aria-label={depth === 0 ? "Collections" : undefined}
+      aria-multiselectable={
+        depth === 0 ? selectionMode === "multiple" : undefined
+      }
     >
       {nodes.map((node) => (
         <CollectionPickerRow
@@ -46,28 +76,40 @@ export function CollectionPickerTree({
           depth={depth}
           selectedIds={selectedIds}
           alreadyAddedIds={alreadyAddedIds}
+          disabledIds={disabledIds}
           forceExpandIds={forceExpandIds}
           onToggle={onToggle}
+          alreadyAddedLabel={alreadyAddedLabel}
+          disabledLabel={disabledLabel}
+          selectionMode={selectionMode}
         />
       ))}
     </div>
   )
 }
 
-function CollectionPickerRow({
+function CollectionPickerRow<T extends PickerCollectionNode>({
   node,
   depth,
   selectedIds,
   alreadyAddedIds,
+  disabledIds,
   forceExpandIds,
   onToggle,
+  alreadyAddedLabel,
+  disabledLabel,
+  selectionMode,
 }: {
-  node: CollectionTreeNode
+  node: T
   depth: number
   selectedIds: Set<string>
-  alreadyAddedIds: Set<string>
+  alreadyAddedIds?: Set<string>
+  disabledIds?: Set<string>
   forceExpandIds: Set<string>
-  onToggle: (node: CollectionTreeNode) => void
+  onToggle: (node: T) => void
+  alreadyAddedLabel: string
+  disabledLabel?: string
+  selectionMode: "single" | "multiple"
 }) {
   const hasChildren = node.children.length > 0
   const forceExpanded = forceExpandIds.has(node.id)
@@ -79,13 +121,30 @@ function CollectionPickerRow({
     if (forceExpanded) setExpanded(true)
   }, [forceExpanded])
 
-  const alreadyAdded = alreadyAddedIds.has(node.id)
+  const alreadyAdded = alreadyAddedIds?.has(node.id) ?? false
+  const blocked = disabledIds?.has(node.id) ?? false
+  const disabled = alreadyAdded || blocked
   const selected = selectedIds.has(node.id)
+  const checked = alreadyAdded ? true : selected
+
+  const badgeLabel = alreadyAdded
+    ? alreadyAddedLabel
+    : blocked
+      ? disabledLabel
+      : undefined
 
   return (
-    <div role="tree-item" aria-expanded={hasChildren ? expanded : undefined}>
+    <div
+      role="treeitem"
+      aria-expanded={hasChildren ? expanded : undefined}
+      aria-selected={disabled ? undefined : selected}
+    >
       <div
-        className="group flex items-center gap-2 rounded-md py-2 pr-2 hover:bg-muted/40"
+        className={cn(
+          "group flex items-center gap-2 rounded-md py-2 pr-2 hover:bg-muted/40",
+          selected && !disabled && "bg-primary/5",
+          blocked && "opacity-50"
+        )}
         style={{ paddingLeft: `${8 + depth * 20}px` }}
       >
         {hasChildren ? (
@@ -108,24 +167,40 @@ function CollectionPickerRow({
           <span className="h-6 w-6 shrink-0" aria-hidden />
         )}
 
-        <Checkbox
-          id={`collection-picker-${node.id}`}
-          checked={alreadyAdded ? true : selected}
-          disabled={alreadyAdded}
-          onCheckedChange={() => onToggle(node)}
-          aria-label={
-            alreadyAdded ? `${node.name}, already added` : `Select ${node.name}`
-          }
-        />
+        {selectionMode === "single" ? (
+          <span
+            aria-hidden
+            className={cn(
+              "flex size-4 shrink-0 items-center justify-center rounded-full border",
+              selected ? "border-primary" : "border-input",
+              disabled && "border-muted"
+            )}
+          >
+            {selected && <span className="size-2 rounded-full bg-primary" />}
+          </span>
+        ) : (
+          <Checkbox
+            id={`collection-picker-${node.id}`}
+            checked={checked}
+            disabled={disabled}
+            onCheckedChange={() => onToggle(node)}
+            aria-label={
+              alreadyAdded
+                ? `${node.name}, ${alreadyAddedLabel.toLowerCase()}`
+                : `Select ${node.name}`
+            }
+          />
+        )}
 
         <button
           type="button"
-          onClick={() => !alreadyAdded && onToggle(node)}
-          disabled={alreadyAdded}
+          onClick={() => !disabled && onToggle(node)}
+          disabled={disabled}
+          aria-pressed={selectionMode === "single" ? selected : undefined}
           className={cn(
             "flex min-w-0 flex-1 items-center gap-2 rounded text-left text-sm",
             "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
-            alreadyAdded && "cursor-default"
+            disabled && "cursor-default"
           )}
         >
           <HugeiconsIcon
@@ -133,32 +208,38 @@ function CollectionPickerRow({
             size={18}
             color="currentColor"
             strokeWidth={2}
-            className="shrink-0 text-primary"
+            className="shrink-0"
           />
           <span className="truncate font-medium text-foreground">
             {node.name}
           </span>
-          <span className="hidden shrink-0 text-xs text-muted-foreground sm:inline">
-            {formatCompactNumber(node.stats.noteCount)}{" "}
-            {node.stats.noteCount === 1 ? "note" : "notes"}
-          </span>
+          {node.stats && (
+            <span className="hidden shrink-0 text-xs text-muted-foreground sm:inline">
+              {formatCompactNumber(node.stats.noteCount)}{" "}
+              {node.stats.noteCount === 1 ? "note" : "notes"}
+            </span>
+          )}
         </button>
 
-        {alreadyAdded && (
-          <Badge variant="secondary" className="shrink-0 text-xs">
-            Already added
+        {badgeLabel && (
+          <Badge variant="outline" className="shrink-0 text-xs">
+            {badgeLabel}
           </Badge>
         )}
       </div>
 
       {hasChildren && expanded ? (
         <CollectionPickerTree
-          nodes={node.children}
+          nodes={node.children as T[]}
           depth={depth + 1}
           selectedIds={selectedIds}
           alreadyAddedIds={alreadyAddedIds}
+          disabledIds={disabledIds}
           forceExpandIds={forceExpandIds}
           onToggle={onToggle}
+          alreadyAddedLabel={alreadyAddedLabel}
+          disabledLabel={disabledLabel}
+          selectionMode={selectionMode}
         />
       ) : null}
     </div>
