@@ -24,8 +24,6 @@ export const authOptions: AuthOptions = {
     }) {
       if (!account || !profile) return false
       if (account?.provider === "google" || account?.provider === "github") {
-        console.log({ profile, account })
-
         const userInfo = {
           name: profile?.name as string,
           email: profile?.email as string,
@@ -42,14 +40,16 @@ export const authOptions: AuthOptions = {
         try {
           const user = await getOrCreateOAuthUser(userInfo)
 
-          console.log("Authenticated user:", user)
-
-          const { accessToken, refreshToken } = await createAuthSession({
+          const {
+            accessToken,
+            refreshToken,
+            sessionId: sid,
+          } = await createAuthSession({
             email: userInfo.email,
             userId: user.id,
           })
 
-          await setAuthCookie({ accessToken, refreshToken })
+          await setAuthCookie({ accessToken, refreshToken, sid })
 
           return true
         } catch (error) {

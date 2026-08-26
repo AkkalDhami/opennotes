@@ -1,6 +1,11 @@
 export type SessionType = {
   userId: string
+  sessionId: string
   refreshTokenHash: string
+  userAgent: string
+  ip: string
+  createdAt: Date
+  expiresAt: Date
 }
 
 export type UserType = {
