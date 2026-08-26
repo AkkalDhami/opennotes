@@ -53,7 +53,7 @@ export interface AppearancePreferences {
 
 export const DEFAULT_PREFERENCES: AppearancePreferences = {
   mode: "system",
-  theme: "carbon",
+  theme: "volt",
   fontFamily: "manrope",
   fontSize: "medium",
   radius: "default",
