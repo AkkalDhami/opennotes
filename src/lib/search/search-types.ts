@@ -1,15 +1,52 @@
-import type { NoteSourceType } from "@/db"
+/**
+ * Types for the notes search engine.
+ *
+ * DESIGN RULE: the *public* contract is not defined here — it is imported
+ * from `@/types/note`, which is what the discovery page, `NoteGrid`,
+ * `NoteCard` and pagination already consume. Duplicating a second
+ * `PublicNote`/`SearchNotesResult` shape here is what let the previous
+ * version of this module drift into unusable dead code: it returned
+ * `{ items: [{ note }] }` while every component expected `{ notes }`.
+ *
+ * So: UI-facing shapes are re-exported from `@/types/note`; only things the
+ * UI must never see (parsed queries, ranking debug info) are defined here.
+ * Nothing PostgreSQL-specific — tsquery, tsvector, trigram scores — may
+ * appear in any exported type.
+ */
 
-// ---------------------------------------------------------------------------
-// Public contract — this is the ONLY shape the UI is allowed to depend on.
-// Everything PostgreSQL-specific (tsquery, tsvector, trigram scores, weighted
-// CASE expressions, etc.) lives behind `NotesSearchIndex` and must never leak
-// into these types.
-// ---------------------------------------------------------------------------
+import type {
+  NoteFilterState,
+  NoteSortOption,
+  PublicNote,
+  SearchNotesParams,
+  SearchNotesResult,
+} from "@/types/note"
 
-export type SearchSort =
-  "relevance" | "downloads" | "views" | "newest" | "oldest"
+export type {
+  NoteFilterState,
+  NoteSortOption,
+  PublicNote,
+  SearchNotesParams,
+  SearchNotesResult,
+}
 
+/**
+ * The sorts the engine can execute. A superset of `NoteSortOption`: `views`
+ * is orderable in the database (`notes.view_count`, with a partial index)
+ * even if a given UI build doesn't expose it as a dropdown option.
+ */
+export type SearchSort = NoteSortOption | "views"
+
+/**
+ * The filter half of `SearchNotesParams`, minus the query/sort/paging
+ * fields. Structural filters are exact-match `WHERE` clauses; the query is
+ * ranked. Keeping them apart is what makes "filters narrow, query ranks"
+ * enforceable rather than a comment.
+ *
+ * Deliberately omits `institution` from `NoteFilterState` — there is no
+ * `institution` column on `notes`, so it can never be honoured. It stays in
+ * the URL-level `NoteFilterState` for backwards compatibility only.
+ */
 export interface SearchNotesFilters {
   subject?: string
   grade?: string
@@ -18,88 +55,8 @@ export interface SearchNotesFilters {
   academicYear?: string
   course?: string
   contributorId?: string
+  contributorUsername?: string
   tags?: string[]
-}
-
-export interface SearchNotesParams {
-  query?: string
-  filters?: SearchNotesFilters
-  sort?: SearchSort
-  page?: number
-  pageSize?: number
-}
-
-export interface PublicNoteContributor {
-  id: string
-  name: string
-  username: string
-}
-
-/**
- * Kept intentionally close to the existing `PublicNote` contract (§35).
- * `fileType` isn't a real column on `notes` — it's derived from
- * `originalFileName`'s extension at the search-index boundary, so the UI
- * doesn't need to know that.
- */
-export interface PublicNote {
-  id: string
-  slug: string
-  title: string
-  description: string | null
-  subject: string
-  grade: string
-  educationLevel: string
-  course: string
-  topic: string | null
-  academicYear: string | null
-  tags: string[]
-  fileType: string | null
-  pageCount: number | null
-  fileSizeBytes: number
-  downloadCount: number
-  originalAuthor: string | null
-  sourceType: NoteSourceType
-  sourceUrl: string | null
-  publishedAt: Date | null
-  contributor: PublicNoteContributor
-}
-
-/**
- * Internal-only relevance breakdown (§25). Useful for debugging/tuning the
- * ranking model. Never send this to the client in production — treat it the
- * same way you'd treat any other moderation/internal metadata.
- */
-export interface SearchMatchMetadata {
-  titleExact: boolean
-  titlePhrase: boolean
-  topicExact: boolean
-  subjectExact: boolean
-  gradeExact: boolean
-  educationLevelExact: boolean
-  tagMatch: boolean
-  contributorMatch: boolean
-  fuzzyMatch: boolean
-  fullTextRank: number
-  trigramSimilarity: number
-  popularityScore: number
-  freshnessScore: number
-  finalScore: number
-}
-
-export interface SearchResultItem {
-  note: PublicNote
-  /** Present only when the caller explicitly asks for match debug info. */
-  match?: SearchMatchMetadata
-}
-
-export interface SearchNotesResult {
-  items: SearchResultItem[]
-  total: number
-  page: number
-  pageSize: number
-  totalPages: number
-  /** Set when zero results were found and a plausible correction exists. */
-  didYouMean?: string
 }
 
 // ---------------------------------------------------------------------------
@@ -123,10 +80,11 @@ export interface ParsedAcademicQuery {
 }
 
 // ---------------------------------------------------------------------------
-// Suggestions (§29) — architectural boundary only for V1.
+// Autocomplete
 // ---------------------------------------------------------------------------
 
 export interface NoteSuggestion {
+  /** What the user sees, and what gets pushed into `?q=` when picked. */
   label: string
   /** What kind of thing this suggestion represents, for UI grouping. */
   kind: "subject" | "topic" | "title"
