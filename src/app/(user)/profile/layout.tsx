@@ -24,6 +24,9 @@ export const metadata: Metadata = {
   // },
 }
 
+/** Signed-in only: the layout reads the auth cookie, so nothing here is static. */
+export const dynamic = "force-dynamic"
+
 export default async function UserLayout({
   children,
 }: {
@@ -47,6 +50,7 @@ export default async function UserLayout({
           username: user.username,
           bio: user.bio,
           emailVerified: user.emailVerified ?? false,
+          avatarId: user.avatarId,
         }}
       />
       <SidebarInset>

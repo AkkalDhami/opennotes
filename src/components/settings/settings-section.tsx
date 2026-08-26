@@ -8,7 +8,7 @@ export function SettingsSection({
   description,
 }: {
   title: string
-  description: string
+  description?: string
   children: React.ReactNode
   className?: string
 }) {
@@ -18,7 +18,11 @@ export function SettingsSection({
         <SubHeading as="h3" className="text-card-foreground">
           {title}
         </SubHeading>
-        <SubHeading className="text-muted-foreground">{description}</SubHeading>
+        {description && (
+          <SubHeading className="text-muted-foreground">
+            {description}
+          </SubHeading>
+        )}
       </div>
       {children}
     </section>

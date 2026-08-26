@@ -24,6 +24,9 @@ export const metadata: Metadata = {
   },
 }
 
+/** Admin only: `requireAdmin()` reads the auth cookie, so nothing here is static. */
+export const dynamic = "force-dynamic"
+
 export default async function AdminLayout({
   children,
 }: {
@@ -43,6 +46,7 @@ export default async function AdminLayout({
           name: user.name,
           email: user.email,
           avatar: user.avatar,
+          avatarId: user.avatarId,
           role: user.role,
           username: user.username,
           bio: user.bio,

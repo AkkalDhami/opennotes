@@ -3,6 +3,15 @@ import { Navbar } from "@/components/layouts/navbar"
 import { BackToTop } from "@/components/shared/back-to-top"
 // import { NoiseTexture } from "@/components/ui/noise-texture"
 
+/**
+ * `Navbar` awaits `getCurrentUser()`, which reads the `access_token` cookie, so
+ * no route in this group can be prerendered — the shell is personalised. Next
+ * otherwise fails the build with `DYNAMIC_SERVER_USAGE` while collecting page
+ * data for `/`. Declaring it here says so explicitly instead of letting each
+ * page discover it at build time.
+ */
+export const dynamic = "force-dynamic"
+
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
