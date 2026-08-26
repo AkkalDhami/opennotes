@@ -26,6 +26,8 @@ import {
   Source_Code_Pro,
   Space_Mono,
   IBM_Plex_Mono,
+  Instrument_Serif,
+  Instrument_Sans,
 } from "next/font/google"
 import type { FontFamily } from "./preferences"
 
@@ -166,6 +168,18 @@ const ibmPlexMono = IBM_Plex_Mono({
   variable: "--font-ibm-plex-mono",
   display: "swap",
 })
+const instrumentSans = Instrument_Sans({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-instrument-sans",
+  display: "swap",
+})
+const instrumentSerif = Instrument_Serif({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-instrument-serif",
+  display: "swap",
+})
 
 export const FONT_VARIABLES = [
   geist.variable,
@@ -195,6 +209,8 @@ export const FONT_VARIABLES = [
   sourceCodePro.variable,
   spaceMono.variable,
   ibmPlexMono.variable,
+  instrumentSans.variable,
+  instrumentSerif.variable,
 ].join(" ")
 
 export const FONT_FAMILY_STACKS: Record<FontFamily, string> = {
@@ -225,9 +241,10 @@ export const FONT_FAMILY_STACKS: Record<FontFamily, string> = {
   "source-code-pro": `var(--font-source-code-pro), ui-monospace, "SF Mono", monospace`,
   "space-mono": `var(--font-space-mono), ui-monospace, "SF Mono", monospace`,
   "ibm-plex-mono": `var(--font-ibm-plex-mono), ui-monospace, "SF Mono", monospace`,
-  system: `ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif`,
   serif: `ui-serif, Georgia, "Times New Roman", serif`,
   mono: `ui-monospace, "SF Mono", "Cascadia Code", monospace`,
+  "instrument-sans": `var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif`,
+  "instrument-serif": `var(--font-instrument-serif), ui-serif, Georgia, serif`,
 }
 
 export const FONT_SIZE_VALUES = {

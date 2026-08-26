@@ -2,6 +2,7 @@ import { and, desc, eq, ne, or, sql } from "drizzle-orm"
 import { db } from "@/db"
 import { notes, users } from "@/db"
 import { PublicNote } from "@/types/note"
+import { getCurrentUser } from "@/lib/auth/get-current-user"
 
 interface GetRelatedNotesArgs {
   noteId: string
@@ -43,6 +44,8 @@ export async function getRelatedNotes({
     (CASE WHEN ${tagOverlap} THEN 1 ELSE 0 END)
   )`
 
+  const user = await getCurrentUser()
+
   const rows = await db
     .select({
       id: notes.id,
@@ -59,7 +62,9 @@ export async function getRelatedNotes({
       pageCount: notes.pageCount,
       fileSizeBytes: notes.fileSizeBytes,
       downloadCount: notes.downloadCount,
+      viewCount: notes.viewCount,
       publishedAt: notes.publishedAt,
+      lastModifiedAt: notes.updatedAt,
       contributorId: users.id,
       contributorName: users.name,
       contributorUsername: users.username,
@@ -70,6 +75,15 @@ export async function getRelatedNotes({
       sourceType: notes.sourceType,
       sourceUrl: notes.sourceUrl,
       originalAuthor: notes.originalAuthor,
+
+      isBookmarked: user
+        ? sql<boolean>`EXISTS (
+          SELECT 1
+          FROM bookmarks b
+          WHERE b.note_id = ${notes.id}
+            AND b.user_id = ${user.id}
+        )`
+        : sql<boolean>`false`,
     })
     .from(notes)
     .innerJoin(users, eq(notes.contributorId, users.id))
@@ -105,10 +119,13 @@ export async function getRelatedNotes({
     fileSizeBytes: row.fileSizeBytes,
     downloadCount: row.downloadCount,
     filePath: row.filePath,
+    viewCount: row.viewCount,
     publishedAt: row.publishedAt ? new Date(row.publishedAt) : new Date(),
+    lastModifiedAt: row.lastModifiedAt ? new Date(row.lastModifiedAt) : null,
     originalAuthor: row.originalAuthor,
     sourceType: row.sourceType,
     sourceUrl: row.sourceUrl,
+    isBookmarked: row.isBookmarked,
     contributor: {
       id: row.contributorId,
       name: row.contributorName,
@@ -130,6 +147,8 @@ export async function getRelatedNotesByContributor({
   contributorId: string
   limit?: number
 }): Promise<PublicNote[]> {
+  const user = await getCurrentUser()
+
   const rows = await db
     .select({
       id: notes.id,
@@ -147,6 +166,7 @@ export async function getRelatedNotesByContributor({
       fileSizeBytes: notes.fileSizeBytes,
       downloadCount: notes.downloadCount,
       publishedAt: notes.publishedAt,
+      lastModifiedAt: notes.updatedAt,
       contributorId: users.id,
       contributorName: users.name,
       contributorUsername: users.username,
@@ -156,6 +176,16 @@ export async function getRelatedNotesByContributor({
       sourceType: notes.sourceType,
       sourceUrl: notes.sourceUrl,
       originalAuthor: notes.originalAuthor,
+      viewCount: notes.viewCount,
+
+      isBookmarked: user
+        ? sql<boolean>`EXISTS (
+          SELECT 1
+          FROM bookmarks b
+          WHERE b.note_id = ${notes.id}
+            AND b.user_id = ${user.id}
+        )`
+        : sql<boolean>`false`,
     })
     .from(notes)
     .innerJoin(users, eq(notes.contributorId, users.id))
@@ -181,8 +211,10 @@ export async function getRelatedNotesByContributor({
     pageCount: row.pageCount,
     fileSizeBytes: row.fileSizeBytes,
     downloadCount: row.downloadCount,
+    viewCount: row.viewCount,
     filePath: row.filePath,
     publishedAt: row.publishedAt ? new Date(row.publishedAt) : new Date(),
+    lastModifiedAt: row.lastModifiedAt ? new Date(row.lastModifiedAt) : null,
     contributor: {
       id: row.contributorId,
       name: row.contributorName,
@@ -192,5 +224,6 @@ export async function getRelatedNotesByContributor({
     originalAuthor: row.originalAuthor,
     sourceType: row.sourceType,
     sourceUrl: row.sourceUrl,
+    isBookmarked: row.isBookmarked,
   }))
 }

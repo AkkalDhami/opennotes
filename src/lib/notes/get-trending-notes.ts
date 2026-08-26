@@ -3,6 +3,7 @@ import "server-only"
 import { db, downloads, notes, users } from "@/db"
 import { and, eq, gte, sql } from "drizzle-orm"
 import { PublicNote } from "@/types/note"
+import { getCurrentUser } from "@/lib/auth/get-current-user"
 
 const DEFAULT_LIMIT = 12
 const TRENDING_DAYS = 30
@@ -14,6 +15,8 @@ export async function getTrendingNotes(
     const since = new Date()
 
     since.setDate(since.getDate() - TRENDING_DAYS)
+
+    const user = await getCurrentUser()
 
     const rows = await db
       .select({
@@ -33,6 +36,7 @@ export async function getTrendingNotes(
         pageCount: notes.pageCount,
         downloadCount: notes.downloadCount,
         publishedAt: notes.publishedAt,
+        lastModifiedAt: notes.updatedAt,
         createdAt: notes.createdAt,
         tags: notes.tags,
         filePath: notes.filePath,
@@ -45,9 +49,19 @@ export async function getTrendingNotes(
         sourceUrl: notes.sourceUrl,
         originalAuthor: notes.originalAuthor,
         // Downloads during the last 30 days
+        viewCount: notes.viewCount,
         recentDownloads: sql<number>`
           COUNT(${downloads.id})
         `.as("recent_downloads"),
+
+        isBookmarked: user
+          ? sql<boolean>`EXISTS (
+          SELECT 1
+          FROM bookmarks b
+          WHERE b.note_id = ${notes.id}
+            AND b.user_id = ${user.id}
+        )`
+          : sql<boolean>`false`,
       })
       .from(notes)
       .innerJoin(users, eq(notes.contributorId, users.id))
@@ -95,8 +109,11 @@ export async function getTrendingNotes(
       filePath: row.filePath,
 
       downloadCount: row.downloadCount,
+      viewCount: row.viewCount,
+      isBookmarked: row.isBookmarked,
 
       publishedAt: row.publishedAt ? new Date(row.publishedAt) : new Date(),
+      lastModifiedAt: row.lastModifiedAt ? new Date(row.lastModifiedAt) : null,
       originalAuthor: row.originalAuthor,
       sourceType: row.sourceType,
       sourceUrl: row.sourceUrl,

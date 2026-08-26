@@ -30,9 +30,10 @@ export type FontFamily =
   | "source-code-pro"
   | "space-mono"
   | "ibm-plex-mono"
-  | "system"
   | "serif"
   | "mono"
+  | "instrument-sans"
+  | "instrument-serif"
 
 export type FontSize = "small" | "medium" | "large"
 
@@ -77,18 +78,20 @@ export const FONT_LABELS: Record<FontFamily, string> = {
   geist: "Geist",
   inter: "Inter",
   manrope: "Manrope",
+  "instrument-sans": "Instrument Sans",
+  "instrument-serif": "Instrument Serif",
   "dm-sans": "DM Sans",
   "source-sans": "Source Sans 3",
   roboto: "Roboto",
+  sora: "Sora",
+  montserrat: "Montserrat",
   "open-sans": "Open Sans",
   "plus-jakarta-sans": "Plus Jakarta Sans",
   "space-grotesk": "Space Grotesk",
-  sora: "Sora",
   figtree: "Figtree",
   outfit: "Outfit",
   "public-sans": "Public Sans",
   "bricolage-grotesque": "Bricolage Grotesque",
-  montserrat: "Montserrat",
   lora: "Lora",
   merriweather: "Merriweather",
   "playfair-display": "Playfair Display",
@@ -101,18 +104,16 @@ export const FONT_LABELS: Record<FontFamily, string> = {
   "source-code-pro": "Source Code Pro",
   "space-mono": "Space Mono",
   "ibm-plex-mono": "IBM Plex Mono",
-  system: "System",
   serif: "Serif",
   mono: "Monospace",
 }
 
-export type FontCategory = "sans" | "serif" | "mono" | "system"
+export type FontCategory = "sans" | "serif" | "mono"
 
 export const CATEGORY_LABELS: Record<FontCategory, string> = {
   sans: "Sans Serif",
   serif: "Serif",
   mono: "Monospace",
-  system: "System",
 }
 
 export const FONT_CATEGORIES: Record<FontCategory, FontFamily[]> = {
@@ -120,23 +121,25 @@ export const FONT_CATEGORIES: Record<FontCategory, FontFamily[]> = {
     "geist",
     "inter",
     "manrope",
-    "dm-sans",
-    "source-sans",
-    "roboto",
-    "open-sans",
+    // "dm-sans",
+    // "source-sans",
+    // "roboto",
+    // "open-sans",
     "plus-jakarta-sans",
     "space-grotesk",
     "sora",
     "figtree",
-    "outfit",
-    "public-sans",
+    // "outfit",
+    // "public-sans",
     "bricolage-grotesque",
     "montserrat",
+    "instrument-sans",
   ],
   serif: [
-    "serif",
+    // "serif",
     "lora",
     "merriweather",
+    "instrument-serif",
     "playfair-display",
     "source-serif-pro",
     "fraunces",
@@ -151,7 +154,6 @@ export const FONT_CATEGORIES: Record<FontCategory, FontFamily[]> = {
     "space-mono",
     "ibm-plex-mono",
   ],
-  system: ["system"],
 }
 
 export interface DensityTokens {
