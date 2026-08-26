@@ -1,7 +1,7 @@
 "use client"
 
-import { useTransition } from "react"
-import { Controller, useForm } from "react-hook-form"
+import { useEffect, useTransition } from "react"
+import { Controller, useForm, type DefaultValues } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import toast from "react-hot-toast"
 
@@ -38,42 +38,50 @@ import { ReportReasonType } from "@/db"
 import { useModal } from "@/hooks/use-modal-store"
 import { Spinner } from "@/components/ui/spinner"
 
+/** Blank baseline, used before a note is loaded and again on close. */
+const EMPTY_VALUES: DefaultValues<SubmitReportInput> = {
+  noteId: "",
+  reason: undefined,
+  explanation: "",
+}
+
 export function ReportNoteDialog() {
   const { close, isOpen, type, data } = useModal()
 
   const isModalOpen = isOpen && type === "report-note"
 
-  const { reportNoteId } = data
+  const { reportNoteId } = data ?? {}
+
   const [isPending, startTransition] = useTransition()
 
   const form = useForm<SubmitReportInput>({
     resolver: zodResolver(SubmitReportSchema),
-    defaultValues: {
-      noteId: reportNoteId,
-      reason: undefined,
-      explanation: "",
-    },
+    defaultValues: EMPTY_VALUES,
   })
 
-  function handleOpenChange(next: boolean) {
-    if (!next) {
-      form.reset({
-        noteId: reportNoteId,
-        reason: undefined,
-        explanation: "",
-      })
-    }
+  useEffect(() => {
+    if (!isModalOpen) return
+    form.reset({ ...EMPTY_VALUES, noteId: reportNoteId ?? "" })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isModalOpen, reportNoteId])
 
+  function handleClose() {
     close()
+    form.reset(EMPTY_VALUES)
   }
 
   function onSubmit(values: SubmitReportInput) {
+    if (!reportNoteId) {
+      toast.error("This note could not be identified.")
+      return
+    }
+
     startTransition(async () => {
-      const result = await submitNoteReport(values)
+      const result = await submitNoteReport({ ...values, noteId: reportNoteId })
 
       if (result.success) {
         toast.success("Report submitted successfully.")
-        handleOpenChange(false)
+        handleClose()
         return
       }
 
@@ -103,7 +111,7 @@ export function ReportNoteDialog() {
     <Dialog
       open={isModalOpen}
       onOpenChange={(openState) => {
-        if (!openState) close()
+        if (!openState) handleClose()
       }}
     >
       <DialogContent className="sm:max-w-md">
@@ -175,12 +183,17 @@ export function ReportNoteDialog() {
               </Field>
             )}
           />
+          {/* `noteId` is carried in a hidden value, so an error on it has no
+              field of its own to render into. Without this, that failure looks
+              like a dead Submit button. */}
+          <FieldError>{form.formState.errors.noteId?.message}</FieldError>
         </form>
 
         <DialogFooter>
           <Button
+            type="button"
             variant="outline"
-            onClick={() => handleOpenChange(false)}
+            onClick={handleClose}
             disabled={isPending}
           >
             Cancel

@@ -15,13 +15,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Logo } from "@/components/shared/logo"
-
-export const links = [
-  { href: "/notes", label: "Notes" },
-  { href: "/contributors", label: "Contributors" },
-  { href: "/settings", label: "Settings" },
-  { href: "/contribution", label: "Contribute" },
-]
+import { NAV_LINKS } from "@/constants/nav.constants"
+import { NavLinks } from "./nav-links"
 
 export async function Navbar() {
   const user = await getCurrentUser()
@@ -32,17 +27,8 @@ export async function Navbar() {
         <div className="flex items-center gap-6">
           <Logo />
         </div>
-        <nav className="hidden items-center gap-6 rounded-full border bg-background px-6 py-3 font-medium backdrop-blur md:flex">
-          {links.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href as Route}
-              className="text-muted-foreground hover:text-primary"
-            >
-              {l.label}
-            </Link>
-          ))}
-        </nav>
+
+        <NavLinks />
 
         {/* <div className="hidden max-w-xs flex-1 items-center md:flex">
           <CommandMenu />
@@ -85,7 +71,7 @@ export async function Navbar() {
             ></DropdownMenuTrigger>
             <DropdownMenuContent className={"w-44"}>
               <DropdownMenuGroup>
-                {links.map((l) => (
+                {NAV_LINKS.map((l) => (
                   <DropdownMenuItem
                     key={l.href}
                     render={<Link href={l.href as Route} />}
