@@ -44,11 +44,24 @@ export function formatFileSize(bytes: number): string {
   return `${value.toFixed(value < 10 ? 1 : 0)} ${units[unitIndex]}`
 }
 
-/** "Bachelor · BSc CS · Semester 2" — skips any missing segment. */
 export function formatNoteMeta(
-  parts: Array<string | null | undefined>
+  parts: Array<string | null | undefined>,
+  removeRepeatedPrefix = true
 ): string {
-  return parts
-    .filter((part): part is string => Boolean(part && part.trim()))
+  const cleaned = parts.filter((part): part is string => Boolean(part?.trim()))
+
+  return cleaned
+    .map((part, index) => {
+      if (!removeRepeatedPrefix || index === 0) return part
+
+      const previous = cleaned[index - 1]
+      const prefix = `${previous} `
+
+      if (previous && part.startsWith(prefix)) {
+        return part.slice(prefix.length)
+      }
+
+      return part
+    })
     .join(" · ")
 }

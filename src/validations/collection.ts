@@ -61,13 +61,48 @@ export const MoveCollectionSchema = z.object({
   direction: z.enum(["up", "down"]),
 })
 
+/**
+ * Re-parenting ("Move to…"). `parentId: null` means "move to the top level".
+ * The cycle guard (a collection can't become its own descendant's child) lives
+ * in the action, since it needs to read the tree.
+ */
+export const MoveCollectionToParentSchema = z.object({
+  id: z.uuid(),
+  parentId: z.uuid().nullable(),
+})
+export type MoveCollectionToParentInput = z.infer<
+  typeof MoveCollectionToParentSchema
+>
+
+export const DuplicateCollectionSchema = z.object({
+  id: z.uuid(),
+  /** Copy `collection_notes` memberships too. Structure-only copy when false. */
+  includeNotes: z.boolean().default(true),
+})
+export type DuplicateCollectionInput = z.input<typeof DuplicateCollectionSchema>
+
+export const CollectionMoveTargetsSchema = z.object({
+  collectionId: z.uuid(),
+})
+
+/** Input for the details dialog's per-id overview fetch. */
+export const CollectionOverviewSchema = z.object({
+  collectionId: z.uuid(),
+  noteLimit: z.number().int().min(1).max(24).optional(),
+})
+
 export const SaveCollectionSchema = z.object({
   collectionId: z.uuid(),
 })
 
+/**
+ * "position" is the owner's own drag-and-drop order and is the default — any
+ * other sort overrides it for display only, and disables dragging (you can't
+ * meaningfully drop into a list that isn't showing the stored order).
+ */
 export const CollectionsSortSchema = z
-  .enum(["updated", "created", "name_asc", "name_desc"])
-  .default("updated")
+  .enum(["position", "updated", "created", "name_asc", "name_desc"])
+  .default("position")
 export type CollectionsSort = z.infer<typeof CollectionsSortSchema>
 
 export const AddNoteToCollectionsSchema = z.object({
