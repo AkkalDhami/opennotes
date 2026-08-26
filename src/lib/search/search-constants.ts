@@ -3,14 +3,43 @@ import {
   GRADES,
   SUBJECTS,
 } from "@/constants/notes.constants"
+import { DEFAULT_PAGE_SIZE } from "@/types/note"
 
 export const SEARCH_CONFIG = {
+  /** Queries longer than this are truncated, not rejected (§4). */
   maxQueryLength: 200,
+
+  /**
+   * Below this length the trigram fallback is skipped entirely. Similarity
+   * on 1–3 character strings is noise: "ab" is ~0.3 similar to half the
+   * corpus, which would make the fuzzy fallback match everything.
+   */
   minFuzzyLength: 4,
-  trigramThreshold: 0.25,
-  didYouMeanThreshold: 0.35,
-  defaultPageSize: 20,
+
+  /**
+   * Trigram similarity floor for the fuzzy fallback.
+   *
+   * IMPORTANT: the index-usable `%` operator compares against Postgres's
+   * own `pg_trgm.similarity_threshold` GUC (default 0.3), NOT this value.
+   * `%` is what lets the planner use notes_*_trgm_idx — `similarity() > x`
+   * cannot use a trigram index at all. So the engine filters with `%` for
+   * speed and then re-checks `similarity() >= trigramThreshold` so this
+   * constant stays authoritative even if the server GUC is different.
+   *
+   * Keep this at or above 0.3 — set it lower and the `%` prefilter, not
+   * this constant, becomes the real floor.
+   */
+  trigramThreshold: 0.3,
+
+  /** Mirrors the UI's page size so engine and grid agree on pagination. */
+  defaultPageSize: DEFAULT_PAGE_SIZE,
   maxPageSize: 50,
+
+  /** Minimum input length before autocomplete queries the database. */
+  minSuggestLength: 2,
+  /** Hard cap on the autocomplete dropdown, per kind and overall. */
+  maxSuggestionsPerKind: 4,
+  maxSuggestions: 8,
 } as const
 
 export const SEARCH_WEIGHTS = {
@@ -27,13 +56,24 @@ export const SEARCH_WEIGHTS = {
   freshness: 1,
 } as const
 
+/**
+ * Documents the weights baked into `notes_build_search_vector()` in
+ * src/db/sql/notes-search.sql. This object is not consumed at runtime — the
+ * tsvector is built in the database — it exists so the weighting is visible
+ * from the TypeScript side. If you change one, change both and re-run
+ * `npm run db:search -- --rebuild`.
+ *
+ * `contributor` is deliberately absent: it lives on `users`, not `notes`, so
+ * it cannot be part of the note's own tsvector. Contributor matching is a
+ * separate ranking signal (SEARCH_WEIGHTS.contributorMatch).
+ */
 export const TSVECTOR_WEIGHTS = {
   title: "A",
   topic: "A",
   subject: "B",
   tags: "B",
   description: "C",
-  contributor: "D",
+  course: "D",
 } as const
 
 /**
