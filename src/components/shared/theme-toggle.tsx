@@ -11,16 +11,23 @@ export function ThemeToggle({ className }: { className?: string }) {
   const { theme, setTheme } = useTheme()
   const setMode = useAppearanceStore((s) => s.setMode)
 
+  function toggleTheme(theme: string) {
+    if (!document.startViewTransition) {
+      setTheme(theme)
+      setMode(theme === "dark" ? "light" : "dark")
+      return
+    }
+
+    document.startViewTransition(() => setTheme(theme))
+  }
+
   return (
     <div className={cn("flex items-center justify-center gap-2", className)}>
       <Button
         variant="ghost"
         size="icon"
         className="md:size-8"
-        onClick={() => {
-          setTheme(theme === "dark" ? "light" : "dark")
-          setMode(theme === "dark" ? "light" : "dark")
-        }}
+        onClick={() => toggleTheme(theme === "dark" ? "light" : "dark")}
       >
         <HugeiconsIcon
           icon={Sun03Icon}

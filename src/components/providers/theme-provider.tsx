@@ -56,8 +56,16 @@ function ThemeHotkey() {
         return
       }
 
-      setTheme(resolvedTheme === "dark" ? "light" : "dark")
-      setMode(resolvedTheme === "dark" ? "light" : "dark")
+      if (!document.startViewTransition) {
+        setTheme(resolvedTheme === "dark" ? "light" : "dark")
+        setMode(resolvedTheme === "dark" ? "light" : "dark")
+
+        return
+      }
+
+      document.startViewTransition(() =>
+        setTheme(resolvedTheme === "dark" ? "light" : "dark")
+      )
       event.preventDefault()
     }
 
