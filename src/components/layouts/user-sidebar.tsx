@@ -16,7 +16,6 @@ import {
   FileStarIcon,
   Folder01Icon,
   HeartIcon,
-  Home03Icon,
 } from "@hugeicons/core-free-icons"
 import { UserProfile } from "@/components/shared/user-profile"
 
@@ -30,50 +29,38 @@ import { Logo } from "@/components/shared/logo"
 import { usePathname } from "next/navigation"
 import { ParsedProfileCta } from "@/components/profile/profile-cta"
 
-const data = {
-  navMain: [
-    {
-      title: "Home",
-      url: "/",
-      icon: Home03Icon,
-    },
-    {
-      title: "Dashboard",
-      url: "/profile/dashboard",
-      icon: DashboardSquare02Icon,
-    },
-    {
-      title: "My Notes",
-      url: "/profile/notes",
-      icon: File01Icon,
-    },
-    {
-      title: "Saved Notes",
-      url: "/profile/saved-notes",
-      icon: HeartIcon,
-    },
-    {
-      title: "My Collections",
-      url: "/profile/collections",
-      icon: Folder01Icon,
-    },
-    // {
-    //   title: "Saved Collections",
-    //   url: "/profile/saved-collections",
-    //   icon: FolderHeartIcon,
-    // },
-    {
-      title: "Contributions",
-      url: "/profile/contributions",
-      icon: FileStarIcon,
-    },
-    {
-      title: "Settings",
-      url: "/profile/settings",
-      icon: Settings02Icon,
-    },
-  ],
-}
+export const SIDEBAR_ITEMS = [
+  {
+    title: "Dashboard",
+    url: "/profile/dashboard",
+    icon: DashboardSquare02Icon,
+  },
+  {
+    title: "My Notes",
+    url: "/profile/notes",
+    icon: File01Icon,
+  },
+  {
+    title: "Saved Notes",
+    url: "/profile/saved-notes",
+    icon: HeartIcon,
+  },
+  {
+    title: "My Collections",
+    url: "/profile/collections",
+    icon: Folder01Icon,
+  },
+  // {
+  //   title: "Contributions",
+  //   url: "/profile/contributions",
+  //   icon: FileStarIcon,
+  // },
+  {
+    title: "Settings",
+    url: "/profile/settings",
+    icon: Settings02Icon,
+  },
+]
 
 export function UserSidebar({
   user,
@@ -92,9 +79,10 @@ export function UserSidebar({
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={SIDEBAR_ITEMS} />
         <ParsedProfileCta pathname={pathname} />
       </SidebarContent>
+
       <SidebarFooter>
         <UserProfile user={user} />
       </SidebarFooter>

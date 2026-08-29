@@ -14,15 +14,13 @@ import { Route } from "next"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
-export function NavMain({
-  items,
-}: {
-  items: {
-    title: string
-    url: string
-    icon?: IconSvgElement
-  }[]
-}) {
+export type NavigationItem = {
+  title: string
+  url: string
+  icon?: IconSvgElement
+}
+
+export function NavMain({ items }: { items: NavigationItem[] }) {
   const pathname = usePathname()
 
   const { isMobile, setOpenMobile } = useSidebar()
