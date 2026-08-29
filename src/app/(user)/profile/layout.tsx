@@ -1,6 +1,8 @@
 import { AdminBreadcrumb } from "@/components/admin/admin-breadcrumb"
+import { MobileNav } from "@/components/layouts/mobile-nav"
 
-import { UserSidebar } from "@/components/layouts/user-sidebar"
+import { SIDEBAR_ITEMS, UserSidebar } from "@/components/layouts/user-sidebar"
+import { Logo } from "@/components/shared/logo"
 import { ThemeToggle } from "@/components/shared/theme-toggle"
 
 import { Separator } from "@/components/ui/separator"
@@ -54,17 +56,21 @@ export default async function UserLayout({
         }}
       />
       <SidebarInset>
-        <header className="sticky top-0 right-0 left-0 z-50 flex h-16 shrink-0 items-center justify-between gap-2 border-b bg-background pr-6">
-          <div className="flex items-center gap-4 px-3">
+        <header className="sticky top-0 right-0 left-0 z-50 flex h-16 shrink-0 items-center justify-between gap-2 border-b bg-background px-4 sm:px-0 sm:pr-6">
+          <div className="sm:hidden">
+            <Logo />
+          </div>
+          <div className="hidden items-center gap-4 px-3 sm:flex">
             <SidebarTrigger />
             <Separator orientation="vertical" className="mt-2 h-4" />
-            <div className="hidden sm:flex">
-              <AdminBreadcrumb />
-            </div>
+            <AdminBreadcrumb />
           </div>
 
           <ThemeToggle />
         </header>
+
+        <MobileNav items={SIDEBAR_ITEMS} />
+
         <div className="flex flex-1 flex-col gap-4 p-4">{children}</div>
       </SidebarInset>
     </SidebarProvider>

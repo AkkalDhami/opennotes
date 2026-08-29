@@ -5,5 +5,5 @@ export function getGreeting(name: string): string {
   const greeting =
     hour < 12 ? "Good Morning" : hour < 18 ? "Good Afternoon" : "Good Evening"
 
-  return `${greeting}, ${firstName}`
+  return `${greeting}, ${firstName} 👋`
 }
