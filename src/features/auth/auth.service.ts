@@ -199,12 +199,6 @@ export async function refreshAccessToken(refreshToken: string) {
   return newAccessToken
 }
 
-// ---------------------------------------------------------------------------
-// Session-management feature: reusable Redis-backed helpers.
-// Keep all Redis specifics in this module — components/actions should never
-// touch `redis` directly.
-// ---------------------------------------------------------------------------
-
 export async function getSession(
   sessionId: string
 ): Promise<SessionType | null> {
@@ -270,12 +264,6 @@ function toPublicSession(
   }
 }
 
-/**
- * Revokes a single session, but only if it actually belongs to `userId`.
- * This is the guard that stops a malicious client from submitting someone
- * else's sessionId — never call `redis.del` on a session key directly
- * from a Server Action.
- */
 export async function revokeSession(
   userId: string,
   sessionId: string
@@ -332,28 +320,4 @@ export async function revokeAllSessions(
   await redis.del(key)
 
   return { success: true }
-}
-
-// ---------------------------------------------------------------------------
-// Retained for backwards compatibility with existing call sites. New code
-// should prefer the functions above (`getSession`, `revokeSession`,
-// `revokeOtherSessions`, `revokeAllSessions`).
-// ---------------------------------------------------------------------------
-
-/** @deprecated use `revokeSession` (ownership-checked) instead. */
-export async function deleteSession(userId: string, sessionId: string) {
-  await Promise.all([
-    redis.del(sessionKey(sessionId)),
-    redis.zrem(userSessionsKey(userId), sessionId),
-  ])
-}
-
-/** @deprecated use `revokeSession`. */
-export async function deleteUserSession(userId: string, sessionId: string) {
-  return revokeSession(userId, sessionId)
-}
-
-/** @deprecated use `revokeAllSessions`. */
-export async function deleteAllUserSessions(userId: string) {
-  return revokeAllSessions(userId)
 }
