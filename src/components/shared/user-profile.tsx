@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/dropdown-menu"
 import {
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
@@ -28,6 +27,7 @@ import { toast } from "react-hot-toast"
 import { logoutUser } from "@/lib/auth/logout-user"
 import { useTransition } from "react"
 import { VerifiedUserAvatar } from "./verified-user-avatar"
+import { Button } from "@/components/ui/button"
 
 export function UserProfile({ user }: { user: UserType }) {
   const { isMobile } = useSidebar()
@@ -52,9 +52,7 @@ export function UserProfile({ user }: { user: UserType }) {
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger
-            render={
-              <SidebarMenuButton size="lg" className="aria-expanded:bg-muted" />
-            }
+            render={<Button variant={"ghost"} className="h-16 w-full" />}
           >
             <VerifiedUserAvatar
               displayName={user.name}
