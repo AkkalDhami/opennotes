@@ -29,12 +29,6 @@ const SORT_OPTIONS = [
   { value: "name_desc", label: "Name Z–A" },
 ] as const
 
-/**
- * `Select.Value` renders the raw value when it has no children, which is how the
- * parent picker ended up showing a bare uuid. Here the values are already
- * readable, but a label map keeps the trigger reading "Custom order" rather
- * than "position".
- */
 const SORT_LABELS: Record<string, string> = Object.fromEntries(
   SORT_OPTIONS.map((option) => [option.value, option.label])
 )
@@ -96,7 +90,7 @@ export function CollectionsToolbar({
         />
       </div>
 
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex items-center gap-3">
         <CollectionViewSwitcher value={defaultView || "grid"} />
         <Select
           defaultValue={defaultSort || "position"}
