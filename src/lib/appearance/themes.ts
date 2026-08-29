@@ -123,14 +123,12 @@ export const THEME_SEEDS: ThemeSeed[] = [
     id: "volt",
     name: "Volt",
     description: "Bold & energetic",
-    neutralHue: 105,
-    neutralSat: 0.01,
-
-    primaryHue: 105,
-    primarySat: 0.32,
-
-    accentHue: 100,
-    accentSat: 0.14,
+    neutralHue: 80,
+    neutralSat: 0,
+    primaryHue: 80,
+    primarySat: 100,
+    accentHue: 80,
+    accentSat: 100,
   },
   {
     id: "midnight",
