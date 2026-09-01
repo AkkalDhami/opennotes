@@ -56,7 +56,7 @@ export default async function UserLayout({
         }}
       />
       <SidebarInset>
-        <header className="sticky top-0 right-0 left-0 z-50 flex h-16 shrink-0 items-center justify-between gap-2 border-b bg-background px-4 sm:px-0 sm:pr-6">
+        <header className="sticky top-0 right-0 left-0 z-50 flex h-14 shrink-0 items-center justify-between gap-2 border-b bg-background px-4 sm:h-16 sm:px-0 sm:pr-6">
           <div className="sm:hidden">
             <Logo />
           </div>
@@ -71,7 +71,7 @@ export default async function UserLayout({
 
         <MobileNav items={SIDEBAR_ITEMS} />
 
-        <div className="flex flex-1 flex-col gap-4 p-4">{children}</div>
+        <div className="flex flex-1 flex-col gap-4 p-4 pb-24">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   )

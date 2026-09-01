@@ -6,13 +6,17 @@ import { getUserSessions } from "@/features/auth/auth.service"
 import { getAuthenticatedSession } from "@/lib/auth/current-session"
 import { PublicSessionType } from "@/types/session"
 import { Metadata } from "next"
+import { getCurrentUser } from "@/lib/auth/get-current-user"
 
 export const metadata: Metadata = {
   title: "Settings",
   description: `Manage your ${APP_NAME} account, appearance, accessibility, and preferences.`,
 }
 export default async function SettingsPage() {
-  const auth = await getAuthenticatedSession()
+  const [auth, user] = await Promise.all([
+    getAuthenticatedSession(),
+    getCurrentUser(),
+  ])
   const sessions: PublicSessionType[] = auth
     ? await getUserSessions(auth.userId, auth.sessionId)
     : []
@@ -24,7 +28,7 @@ export default async function SettingsPage() {
         description={`Customize your ${APP_NAME} experience and account preferences.`}
       />
 
-      <SettingsTabs sessions={sessions} />
+      <SettingsTabs sessions={sessions} user={user} />
     </DashboardContainer>
   )
 }
