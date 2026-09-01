@@ -11,11 +11,13 @@ export function VerifiedUserAvatar({
   avatarUrl,
   className,
   size = "sm",
+  emailVerified = true,
 }: {
   avatarUrl?: string | null
   displayName: string
   className?: string
   size?: "sm" | "md" | "lg"
+  emailVerified?: boolean
 }) {
   return (
     <div className={cn("relative", className)}>
@@ -35,19 +37,22 @@ export function VerifiedUserAvatar({
           {getInitials(displayName)}
         </AvatarFallback>
       </Avatar>
-      <HugeiconsIcon
-        icon={CheckmarkBadge01Icon}
-        size={24}
-        color="currentColor"
-        strokeWidth={2}
-        className={cn(
-          "size-5 fill-blue-600 stroke-blue-600 text-white",
-          "absolute -right-0.5 bottom-0.5 flex items-center justify-center rounded-full bg-background",
-          size === "sm" && "size-3",
-          size === "md" && "size-4",
-          size === "lg" && "size-5"
-        )}
-      />
+      {emailVerified && (
+        <HugeiconsIcon
+          icon={CheckmarkBadge01Icon}
+          size={24}
+          color="currentColor"
+          strokeWidth={2}
+          className={cn(
+            "size-5",
+            "absolute -right-0.5 bottom-0.5 flex items-center justify-center rounded-full bg-background",
+            emailVerified && "fill-blue-600 stroke-blue-600 text-white",
+            size === "sm" && "size-3",
+            size === "md" && "size-4",
+            size === "lg" && "size-5"
+          )}
+        />
+      )}
     </div>
   )
 }
