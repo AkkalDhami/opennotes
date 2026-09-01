@@ -18,9 +18,9 @@
     "db:seed": "tsx src/db/seed.ts",
     "prepare": "husky",
     "generate:themes": "tsx scripts/generate-theme-css.ts",
-    "test:e2e": "npx playwright test tests/e2e/report-flow.spec.ts",
-    "test:in": "npx vitest tests/integration/submit-note-report.test.ts",
-    "test:unit": "npx vitest tests/unit/report-schema.test"
+    "test:e2e:report-flow": "npx playwright test tests/e2e/report-flow.spec.ts",
+    "test:in:submit-note-report": "npx vitest tests/integration/submit-note-report.test.ts",
+    "test:unit:report-schema": "npx vitest tests/unit/report-schema.test"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [
