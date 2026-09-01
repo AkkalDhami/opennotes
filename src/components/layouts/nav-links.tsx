@@ -17,7 +17,7 @@ export function NavLinks() {
   return (
     <nav
       onMouseLeave={() => setHoveredIndex(null)}
-      className="hidden items-center gap-6 rounded-full border bg-background px-3 py-2 font-medium backdrop-blur md:flex"
+      className="hidden items-center gap-6 rounded-full border bg-background px-2 py-2 font-medium backdrop-blur md:flex"
     >
       {NAV_LINKS.map((l, i) => {
         const isActive = isActiveLink(pathname, l.href)

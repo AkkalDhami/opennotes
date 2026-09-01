@@ -8,7 +8,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { SubHeading } from "@/components/ui/sub-heading"
 import { sliceContent } from "@/utils/slice-content"
 import { NoteCard } from "./note-card"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { buttonVariants } from "@/components/ui/button"
 
 interface ContributorPreviewProps {
@@ -85,17 +84,17 @@ export function ContributorPreview({
       </div>
 
       {notes && notes?.length > 0 && (
-        <ScrollArea className="space-y-6 pb-3 lg:max-h-140">
+        <div className="scrollbar-none space-y-6 overflow-y-auto pb-3 lg:max-h-140">
           <SubHeading as="h3" className="mb-4">
             More from {sliceContent(contributor.name)}:
           </SubHeading>
 
           <div className="flex flex-wrap gap-4 space-y-4">
             {notes?.map((note) => (
-              <NoteCard key={note.id} note={note} />
+              <NoteCard key={note.id} note={note} from="contributor" />
             ))}
           </div>
-        </ScrollArea>
+        </div>
       )}
     </div>
   )
