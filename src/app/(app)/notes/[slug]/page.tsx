@@ -1,6 +1,6 @@
 import { Metadata, Route } from "next"
 import Link from "next/link"
-import { notFound } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
   ArrowLeft02Icon,
@@ -43,21 +43,14 @@ export async function generateMetadata({
   const note = await getPublishedNoteBySlug(slug)
 
   if (!note) {
-    return {
-      title: "Note Not Found",
-      description: "The requested educational note could not be found.",
-      robots: {
-        index: false,
-        follow: false,
-      },
-    }
+    redirect("/notes")
   }
 
-  const title = `${note.title} — ${note.subject} ${note.grade} Notes`
+  const title = `${note.title} — ${slugToTitle(note.subject)} ${slugToTitle(note.grade ?? "")} Notes`
 
   const description =
     note.description?.slice(0, 155) ||
-    `${note.title} — ${note.subject} notes for ${note.grade}. View and download this educational PDF shared by ${note.contributor.name}.`
+    `${note.title} — ${slugToTitle(note.subject)} notes for ${slugToTitle(note.grade ?? "")}. View and download this educational PDF shared by @${note.contributor.username}.`
 
   const url = absoluteUrl(`/notes/${note.slug}`)
 
@@ -76,6 +69,7 @@ export async function generateMetadata({
       title,
       description,
       url,
+      authors: [note.contributor.name],
     },
 
     twitter: {
@@ -148,7 +142,7 @@ export default async function NoteDetailPage({ params }: NoteDetailPageProps) {
             initialBookmarked={note.isBookmarked}
           />
 
-          <div className="flex flex-wrap items-center gap-2 text-base font-medium text-muted-foreground uppercase">
+          <div className="flex flex-wrap items-center gap-2 text-base font-medium text-muted-foreground">
             {formatNoteMeta([
               slugToTitle(note.educationLevel),
               slugToTitle(note.course),

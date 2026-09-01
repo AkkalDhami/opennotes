@@ -6,6 +6,7 @@ import { generateTokenAndHashedToken } from "@/helpers/token.helper"
 import { getCurrentUser } from "@/lib/auth/get-current-user"
 import { env } from "@/configs/env"
 import { getClientIP } from "@/lib/custom-rate-limiter"
+import { revalidatePath } from "next/cache"
 
 export async function POST(
   request: NextRequest,
@@ -26,6 +27,7 @@ export async function POST(
     const [note] = await db
       .select({
         id: notes.id,
+        slug: notes.slug,
       })
       .from(notes)
       .where(and(eq(notes.id, id), eq(notes.status, "PUBLISHED")))
@@ -64,6 +66,8 @@ export async function POST(
         })
         .where(eq(notes.id, note.id))
     }
+
+    revalidatePath(`/notes/${note.slug}`)
 
     return NextResponse.json({
       success: true,
