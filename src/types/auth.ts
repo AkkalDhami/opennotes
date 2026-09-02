@@ -18,4 +18,5 @@ export type UserType = {
   avatar: string | null
   avatarId?: string | null
   role: "ADMIN" | "MODERATOR" | "USER"
+  createdAt?: Date
 }

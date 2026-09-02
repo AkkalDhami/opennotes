@@ -1,23 +1,8 @@
-/**
- * Applies src/db/sql/notes-search.sql — the PostgreSQL full-text search
- * infrastructure that `drizzle-kit push` cannot express (extension, trigger,
- * weighted tsvector, GIN indexes).
- *
- *   npm run db:search              apply / repair (idempotent)
- *   npm run db:search -- --rebuild also recompute every row's vector
- *
- * Run this after any `db:push` that touched the `notes` table.
- *
- * Deliberately a standalone script rather than a drizzle migration: this
- * project's workflow is `db:push`, and there is no migrations folder to slot
- * into. The SQL is written to be safely re-runnable so "did someone already
- * apply this?" is never a question you have to answer.
- */
+import env from "@next/env"
 
 import { readFile } from "node:fs/promises"
 import path from "node:path"
 
-import { loadEnvConfig } from "@next/env"
 import { Pool } from "@neondatabase/serverless"
 
 const SQL_FILE = path.join(
@@ -64,7 +49,7 @@ async function main() {
 
   // Next.js env files aren't loaded automatically outside `next dev`/`next
   // build`, so pull in .env / .env.local the same way Next itself does.
-  loadEnvConfig(process.cwd())
+  env.loadEnvConfig(process.cwd())
 
   const connectionString = process.env.DATABASE_URL
   if (!connectionString) {
