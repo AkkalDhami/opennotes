@@ -26,6 +26,9 @@
   );
 
   --font-sans: var(--font-sans);
+  --font-manrope: var(--font-manrope);
+  --font-inter: var(--font-inter);
+  --font-geist: var(--font-geist);
   --font-serif: var(--font-instrument-serif);
   --font-mono: var(--font-mono);
 
@@ -85,7 +88,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background font-manrope text-foreground;
   }
    ::view-transition-group(root) {
     animation-timing-function: var(--expo-out);

@@ -15,7 +15,7 @@ export function MobileNav({ items }: { items: NavigationItem[] }) {
   return (
     <nav
       aria-label="Mobile navigation"
-      className="fixed inset-x-0 bottom-0 z-50 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 sm:hidden"
+      className="fixed inset-x-0 bottom-0 z-50 border-t bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/80 sm:hidden"
     >
       <div className="mx-auto grid h-16 max-w-md grid-cols-5 px-2">
         {items.map(({ title, url, icon: Icon }) => {
@@ -37,8 +37,7 @@ export function MobileNav({ items }: { items: NavigationItem[] }) {
               {Icon && (
                 <span
                   className={cn(
-                    "flex size-8 items-center justify-center rounded-lg transition-colors",
-                    isActive && "bg-primary/10"
+                    "flex size-6 items-center justify-center rounded-lg transition-colors"
                   )}
                 >
                   <HugeiconsIcon
