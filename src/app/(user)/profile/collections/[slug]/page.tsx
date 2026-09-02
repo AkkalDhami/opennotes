@@ -90,9 +90,6 @@ export default async function page(
 
   return (
     <DashboardContainer>
-      {/* Breadcrumb doubles as the way back. A separate "back" button above a
-          trail that already contains the parent would say the same thing
-          twice. */}
       <nav
         aria-label="Breadcrumb"
         className="flex items-center gap-1 overflow-x-auto text-xs text-muted-foreground"
@@ -195,9 +192,7 @@ export default async function page(
         <CollectionDetailActions collection={collection} />
       </header>
 
-      {/* gap-px over the border colour: hairlines in both axes without
-          `divide-x` breaking when the grid wraps to two columns. */}
-      <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-lg bg-border sm:grid-cols-4">
+      <dl className="grid grid-cols-2 overflow-hidden rounded-lg sm:grid-cols-4">
         {figures.map((figure) => (
           <div key={figure.label} className="bg-card px-4 py-3.5">
             <dd className="text-2xl leading-none font-semibold tabular-nums">
