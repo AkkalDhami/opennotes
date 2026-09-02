@@ -3,6 +3,7 @@
 import * as React from "react"
 import { ThemeProvider as NextThemesProvider, useTheme } from "next-themes"
 import { useAppearanceStore } from "@/hooks/use-appearance-store"
+import { APP_NAME } from "@/constants/app.constants"
 
 function ThemeProvider({
   children,
@@ -14,6 +15,7 @@ function ThemeProvider({
       defaultTheme="system"
       enableSystem
       disableTransitionOnChange
+      storageKey={`${APP_NAME.toLocaleLowerCase()}-preferences`}
       {...props}
     >
       <ThemeHotkey />

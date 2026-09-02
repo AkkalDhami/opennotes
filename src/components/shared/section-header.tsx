@@ -24,7 +24,7 @@ export function SectionHeader({
 }: SectionHeaderProps) {
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-      <div className="space-y-3">
+      <div className="space-y-2">
         <Heading id={headingId}>{title}</Heading>
         <SubHeading>{description}</SubHeading>
       </div>
