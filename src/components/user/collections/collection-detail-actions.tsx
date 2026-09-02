@@ -23,13 +23,6 @@ type DetailCollection = Pick<
   "id" | "name" | "slug" | "description" | "visibility"
 >
 
-/**
- * The action cluster on a collection's own page.
- *
- * One component rather than five button files: they all read from the same modal
- * store, and keeping them together is what lets the share controls decide
- * between the device sheet and the link/QR dialog in one place.
- */
 export function CollectionDetailActions({
   collection,
 }: {
@@ -99,8 +92,6 @@ export function CollectionDetailActions({
         Edit
       </Button>
 
-      {/* Straight to the OS share sheet, where there is one and the link
-          actually resolves for other people. */}
       {isPublic && canShareLink && (
         <Button
           variant="outline"
@@ -143,7 +134,7 @@ export function CollectionDetailActions({
       )}
 
       <Button
-        variant="ghost"
+        variant="destructive"
         aria-label={`Delete ${collection.name}`}
         onClick={() =>
           open("delete-collection", {

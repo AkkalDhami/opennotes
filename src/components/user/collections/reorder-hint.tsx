@@ -17,7 +17,7 @@ export function ReorderHint({
         size={14}
         color="currentColor"
         strokeWidth={2}
-        className="mt-0.5 shrink-0"
+        className="mt-px shrink-0"
       />
       {isReorderable
         ? "Drag a collection by its handle to reorder it, or use Move up / Move down in its menu."
