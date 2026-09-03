@@ -46,12 +46,13 @@ export async function getCurrentUser() {
         id: users.id,
         name: users.name,
         email: users.email,
-        emailVerified: users.emailVerified,
+        emailVerified: users.emailVerified ?? false,
         bio: users.bio,
         avatar: users.avatarUrl,
         avatarId: users.avatarId,
         role: users.role,
         username: users.username,
+        createdAt: users.createdAt,
       })
       .from(users)
       .where(eq(users.id, payload.sub))

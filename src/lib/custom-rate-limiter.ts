@@ -38,16 +38,17 @@ export const RATE_LIMITS = {
     maxRequests: 30,
   },
 
-  // Autocomplete fires once per debounce interval while someone types, so it
-  // needs a much higher ceiling than a submitted search. Each request is a
-  // handful of prefix-indexed lookups, so this is about stopping scrapers,
-  // not about protecting the database from ordinary typing.
   suggest: {
     windowMs: 60 * 1000,
     maxRequests: 120,
   },
 
   download: {
+    windowMs: 60 * 1000, // 1 minute
+    maxRequests: 20,
+  },
+
+  bookmark: {
     windowMs: 60 * 1000, // 1 minute
     maxRequests: 20,
   },
