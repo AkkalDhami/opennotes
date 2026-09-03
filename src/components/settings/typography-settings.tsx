@@ -11,7 +11,7 @@ export function TypographySettings() {
   const setFontSize = useAppearanceStore((s) => s.setFontSize)
 
   return (
-    <SettingsSection title="Typography">
+    <SettingsSection title="Typography" className="hidden">
       <div className="space-y-5">
         <div>
           <label className="mb-2 block text-sm font-medium text-card-foreground">
