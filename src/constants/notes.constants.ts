@@ -46,6 +46,7 @@ export const SUBJECTS = [
   { id: "object-oriented-programming", name: "Object Oriented Programming" },
   { id: "digital-logic", name: "Digital Logic" },
   { id: "programming", name: "Programming" },
+  { id: "system-design", name: "System Design" },
   { id: "microprocessor", name: "Microprocessor" },
   {
     id: "data-structures-and-algorithms",
@@ -356,7 +357,7 @@ export const COURSE_LEVELS = [
   },
   {
     id: "bsc-csit",
-    name: "BSc. CSIT",
+    name: "BSc.CSIT",
     level: "bachelor",
   },
   {
@@ -562,7 +563,7 @@ export const COURSE_LEVELS = [
   },
   {
     id: "msc-csit",
-    name: "MSc. CSIT",
+    name: "MSc.CSIT",
     level: "master",
   },
   {
@@ -783,14 +784,14 @@ export const GRADES = [
   { id: "bachelor-year-4", name: "4th Year", level: "bachelor" },
 
   // Bachelor's Semesters
-  { id: "semester-1", name: "1st Semester", level: "bachelor" },
-  { id: "semester-2", name: "2nd Semester", level: "bachelor" },
-  { id: "semester-3", name: "3rd Semester", level: "bachelor" },
-  { id: "semester-4", name: "4th Semester", level: "bachelor" },
-  { id: "semester-5", name: "5th Semester", level: "bachelor" },
-  { id: "semester-6", name: "6th Semester", level: "bachelor" },
-  { id: "semester-7", name: "7th Semester", level: "bachelor" },
-  { id: "semester-8", name: "8th Semester", level: "bachelor" },
+  { id: "semester-i", name: "1st Semester", level: "bachelor" },
+  { id: "semester-ii", name: "2nd Semester", level: "bachelor" },
+  { id: "semester-iii", name: "3rd Semester", level: "bachelor" },
+  { id: "semester-iv", name: "4th Semester", level: "bachelor" },
+  { id: "semester-v", name: "5th Semester", level: "bachelor" },
+  { id: "semester-vi", name: "6th Semester", level: "bachelor" },
+  { id: "semester-vii", name: "7th Semester", level: "bachelor" },
+  { id: "semester-viii", name: "8th Semester", level: "bachelor" },
 
   // Master's
   { id: "master-year-1", name: "1st Year", level: "master" },
