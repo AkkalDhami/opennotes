@@ -133,7 +133,7 @@ export const THEME_SEEDS: ThemeSeed[] = [
   {
     id: "midnight",
     name: "Midnight",
-    description: "Deep blue & luminous",
+    description: "Midnight & dark",
     neutralHue: 0,
     neutralSat: 0,
     primaryHue: 0,
