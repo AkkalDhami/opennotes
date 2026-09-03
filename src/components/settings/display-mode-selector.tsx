@@ -7,7 +7,10 @@ import {
   ComputerIcon,
   Tick02Icon,
 } from "@hugeicons/core-free-icons"
-import { DISPLAY_MODE_OPTIONS } from "@/lib/appearance/preferences"
+import {
+  AppearanceMode,
+  DISPLAY_MODE_OPTIONS,
+} from "@/lib/appearance/preferences"
 import { cn } from "@/lib/utils"
 import { useAppearanceStore } from "@/hooks/use-appearance-store"
 import { handleRadioGroupKeyDown } from "@/hooks/use-roving-radio-group"
@@ -21,6 +24,15 @@ const ICONS = {
 export function DisplayModeSelector() {
   const mode = useAppearanceStore((s) => s.mode)
   const setMode = useAppearanceStore((s) => s.setMode)
+
+  function toggleTheme(mode: AppearanceMode) {
+    if (!document.startViewTransition) {
+      setMode(mode)
+      return
+    }
+
+    document.startViewTransition(() => setMode(mode))
+  }
 
   return (
     <div
@@ -38,7 +50,7 @@ export function DisplayModeSelector() {
             role="radio"
             aria-checked={selected}
             tabIndex={selected ? 0 : -1}
-            onClick={() => setMode(option.value)}
+            onClick={() => toggleTheme(option.value)}
             className={cn(
               "rounded-lg border bg-card p-3 text-left transition-colors outline-none",
               "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
