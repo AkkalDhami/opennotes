@@ -192,8 +192,6 @@ export const createNoteFromFormData = async ({
     topic: fields.topic || null,
     academicYear: fields.academicYear || null,
 
-    originalFileName: file.name,
-    filePath: uploaded.filePath,
     fileKey: uploaded.fileId,
     fileHash,
     fileSizeBytes,

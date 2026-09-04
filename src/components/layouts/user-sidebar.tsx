@@ -12,11 +12,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import {
-  FileStarIcon,
-  Folder01Icon,
-  HeartIcon,
-} from "@hugeicons/core-free-icons"
+import { Folder01Icon, HeartIcon } from "@hugeicons/core-free-icons"
 import { UserProfile } from "@/components/shared/user-profile"
 
 import {
