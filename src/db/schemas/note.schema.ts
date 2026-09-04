@@ -67,10 +67,6 @@ export const notes = pgTable(
     topic: varchar("topic", { length: 128 }),
     academicYear: varchar("academic_year", { length: 16 }),
 
-    originalFileName: varchar("original_file_name", {
-      length: 255,
-    }),
-    filePath: text("file_path").notNull(),
     fileKey: text("file_key").notNull(), // storage object key, never a raw filename
     fileHash: varchar("file_hash", { length: 64 }).notNull(), // sha-256, for dup detection
     fileSizeBytes: integer("file_size_bytes").notNull(),
