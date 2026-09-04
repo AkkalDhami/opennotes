@@ -16,7 +16,6 @@ export type UserType = {
   emailVerified: boolean
   bio?: string | null
   avatar: string | null
-  avatarId?: string | null
   role: "ADMIN" | "MODERATOR" | "USER"
   createdAt?: Date
 }

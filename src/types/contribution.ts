@@ -16,6 +16,7 @@ export interface ContributionListItem {
   status: NoteStatus
   tags?: string[] | null
   downloadCount: number
+  viewCount: number
   createdAt: Date
   publishedAt: Date | null
   rejectionReason: string | null
