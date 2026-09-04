@@ -119,6 +119,10 @@ export function ContributionDetailsSheet({
             label="Downloads"
             value={contribution.downloadCount.toLocaleString()}
           />
+          <DetailRow
+            label="Views"
+            value={contribution.viewCount.toLocaleString()}
+          />
         </div>
 
         {contribution?.tags && contribution?.tags?.length > 0 ? (

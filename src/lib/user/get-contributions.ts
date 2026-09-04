@@ -31,6 +31,7 @@ const contributionColumns = {
   status: notes.status,
   tags: notes.tags,
   downloadCount: notes.downloadCount,
+  viewCount: notes.viewCount,
   createdAt: notes.createdAt,
   publishedAt: notes.publishedAt,
   rejectionReason: notes.rejectionReason,
