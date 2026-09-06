@@ -91,7 +91,9 @@ export async function PATCH(request: NextRequest) {
         .where(eq(users.id, user.id))
 
       if (user.avatarId) {
-        await imagekitClient.files.delete(user.avatarId)
+        try {
+          await imagekitClient.files.delete(user.avatarId)
+        } catch {}
       }
     }
 
