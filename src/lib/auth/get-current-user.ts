@@ -49,6 +49,7 @@ export async function getCurrentUser() {
         emailVerified: users.emailVerified ?? false,
         bio: users.bio,
         avatar: users.avatarUrl,
+        avatarId: users.avatarId,
         role: users.role,
         username: users.username,
         createdAt: users.createdAt,
