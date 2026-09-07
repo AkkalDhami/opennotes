@@ -1,7 +1,8 @@
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
 import Link from "next/link"
-
+import { getContributorSummary } from "@/lib/contributors/sync"
+import { getEarnedBadgeSlugs } from "@/lib/contributors/queries"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ContributorNotes } from "@/components/admin/contributors/contributor-notes"
 import {
@@ -30,6 +31,7 @@ import { NoteContributionGraph } from "@/components/contributions/contribution-g
 import { RankMedal } from "@/components/shared/rank-medal"
 import { getContributorRank } from "@/lib/contributors/get-contributor-rank"
 import { absoluteUrl } from "@/lib/seo"
+import { ContributorDashboard } from "@/components/badge/contributor-dashboard"
 
 interface ContributorDetailPageProps {
   params: Promise<{ username: string }>
@@ -99,6 +101,11 @@ export default async function ContributorDetailPage({
       getContributorRank(contributor.id),
     ])
 
+  const [summary, earnedBadgeSlugs] = await Promise.all([
+    getContributorSummary(contributor.id),
+    getEarnedBadgeSlugs(contributor.id),
+  ])
+
   return (
     <main className="space-y-6">
       <Link
@@ -117,6 +124,11 @@ export default async function ContributorDetailPage({
         />{" "}
         All Contributors
       </Link>
+
+      <ContributorDashboard
+        summary={summary}
+        earnedBadgeSlugs={earnedBadgeSlugs}
+      />
 
       <div className="flex flex-wrap-reverse justify-between gap-6">
         <div className="space-y-4">
