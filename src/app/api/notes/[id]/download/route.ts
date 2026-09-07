@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server"
 import { and, eq, sql } from "drizzle-orm"
 
 import { db, downloads, notes } from "@/db"
-import { getFileUrl } from "@/utils/get-file-url"
 import { generateHashDownloader } from "@/helpers/token.helper"
 import {
   checkRateLimit,
@@ -10,6 +9,7 @@ import {
   RATE_LIMITS,
 } from "@/lib/custom-rate-limiter"
 import { getCurrentUser } from "@/lib/auth/get-current-user"
+import { resolveNoteFileUrl } from "@/lib/notes/file-url"
 
 type DownloadMode = "file" | "url"
 
@@ -66,9 +66,8 @@ export async function GET(
     const [note] = await db
       .select({
         id: notes.id,
-        filePath: notes.filePath,
-        originalFileName: notes.originalFileName,
         slug: notes.slug,
+        fileKey: notes.fileKey,
       })
       .from(notes)
       .where(and(eq(notes.id, id), eq(notes.status, "PUBLISHED")))
@@ -107,19 +106,21 @@ export async function GET(
         .where(eq(notes.id, note.id))
     }
 
-    const fileUrl = getFileUrl(note.filePath)
+    const fileUrl = await resolveNoteFileUrl(note.fileKey)
 
     // Return the URL instead of downloading the file.
     if (mode === "url") {
       return NextResponse.json({
         success: true,
         url: fileUrl,
-        fileName: note.originalFileName ?? `${note.slug}.pdf`,
+        fileName: `${note.slug}.pdf`,
       })
     }
 
     // Fetch and stream the actual file.
-    const response = await fetch(fileUrl)
+    const response = await fetch(
+      fileUrl + `?ik-sdk-version=javascript-1.4.3&ik-sdk-platform=web`
+    )
 
     if (!response.ok || !response.body) {
       return NextResponse.json(
@@ -134,7 +135,7 @@ export async function GET(
     const contentType =
       response.headers.get("content-type") ?? "application/pdf"
 
-    const fileName = note.originalFileName ?? `${note.slug}.pdf`
+    const fileName = `${note.slug}.pdf`
 
     return new NextResponse(response.body, {
       status: 200,

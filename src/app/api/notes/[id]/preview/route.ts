@@ -3,7 +3,7 @@ import { and, eq } from "drizzle-orm"
 
 import { db, notes } from "@/db"
 import { getCurrentUser } from "@/lib/auth/get-current-user"
-import { getFileUrl } from "@/utils/get-file-url"
+import { resolveNoteFileUrl } from "@/lib/notes/file-url"
 
 export async function GET(
   _request: NextRequest,
@@ -22,9 +22,8 @@ export async function GET(
   const [note] = await db
     .select({
       id: notes.id,
-      filePath: notes.filePath,
-      originalFileName: notes.originalFileName,
       slug: notes.slug,
+      fileKey: notes.fileKey,
     })
     .from(notes)
     .where(
@@ -42,7 +41,11 @@ export async function GET(
   }
 
   try {
-    const response = await fetch(getFileUrl(note.filePath))
+    const response = await fetch(
+      resolveNoteFileUrl(note.fileKey) +
+        `?ik-sdk-version=javascript-1.4.3&ik-sdk-platform=web`,
+      {}
+    )
 
     if (!response.ok || !response.body) {
       throw new Error("Unable to fetch note file.")
@@ -52,7 +55,7 @@ export async function GET(
       headers: {
         "Content-Type":
           response.headers.get("content-type") ?? "application/pdf",
-        "Content-Disposition": `inline; filename="${note.originalFileName ?? `${note.slug}.pdf`}"`,
+        "Content-Disposition": `inline; filename="${note.slug}.pdf"`,
         "Cache-Control": "private, no-store",
       },
     })
