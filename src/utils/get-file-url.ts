@@ -1,5 +1,6 @@
 import { env } from "@/configs/env"
 import { db, notes } from "@/db"
+import { resolveNoteFileUrl } from "@/lib/notes/file-url"
 import { eq } from "drizzle-orm"
 
 export function getFileUrl(filePath: string) {
@@ -13,7 +14,7 @@ export async function getNoteBySlug(slug: string) {
     return null
   }
 
-  const fileUrl = getFileUrl(note.filePath)
+  const fileUrl = await resolveNoteFileUrl(note.fileKey)
 
   return {
     ...note,
