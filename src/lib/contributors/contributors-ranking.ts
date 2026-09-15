@@ -30,17 +30,12 @@ export async function getContributorsRanking(
       `.as("published_notes"),
 
       downloads: sql<number>`
-        COALESCE((
-          SELECT COUNT(*)
-          FROM ${downloads}
-          INNER JOIN ${notes} n2
-            ON n2.id = ${downloads.noteId}
-          WHERE n2.contributor_id = ${users.id}
-        ), 0)::int
+        COUNT(${downloads.id})::int
       `.as("downloads"),
     })
     .from(users)
     .innerJoin(notes, eq(notes.contributorId, users.id))
+    .leftJoin(downloads, eq(downloads.noteId, notes.id))
     .where(eq(notes.status, "PUBLISHED"))
     .groupBy(users.id, users.name, users.username, users.avatarUrl)
 
