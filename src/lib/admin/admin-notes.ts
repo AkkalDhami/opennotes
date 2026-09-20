@@ -199,7 +199,7 @@ export async function getAdminNoteById(
     ...toListItem(row),
     description: row.note.description,
     grade: row.note.grade,
-    fileUrl: getFileUrl(row.note.filePath),
+    fileUrl: getFileUrl(row.note.fileKey),
     fileSizeBytes: row.note.fileSizeBytes,
     pageCount: row.note.pageCount,
     fileHash: row.note.fileHash,

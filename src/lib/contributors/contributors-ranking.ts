@@ -1,6 +1,6 @@
 import "server-only"
 
-import { db, notes, users, downloads } from "@/db"
+import { db, notes, users } from "@/db"
 import { eq, sql } from "drizzle-orm"
 
 export interface ContributorRanking {
@@ -30,12 +30,11 @@ export async function getContributorsRanking(
       `.as("published_notes"),
 
       downloads: sql<number>`
-        COUNT(${downloads.id})::int
+        COALESCE(SUM(${notes.downloadCount}), 0)::int
       `.as("downloads"),
     })
     .from(users)
     .innerJoin(notes, eq(notes.contributorId, users.id))
-    .leftJoin(downloads, eq(downloads.noteId, notes.id))
     .where(eq(notes.status, "PUBLISHED"))
     .groupBy(users.id, users.name, users.username, users.avatarUrl)
 
