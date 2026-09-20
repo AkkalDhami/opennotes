@@ -138,7 +138,6 @@ export async function getSavedNotes({
     tags: note.tags ?? [],
     pageCount: note.pageCount,
     fileSizeBytes: note.fileSizeBytes,
-    filePath: note.filePath,
     viewCount: note.viewCount,
     downloadCount: note.downloadCount,
     publishedAt: note.publishedAt ? new Date(note.publishedAt) : new Date(),

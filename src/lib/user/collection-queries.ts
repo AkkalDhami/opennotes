@@ -289,8 +289,6 @@ export async function getCollectionNotes(
       tags: notes.tags,
       pageCount: notes.pageCount,
       fileSizeBytes: notes.fileSizeBytes,
-      filePath: notes.filePath,
-
       sourceType: notes.sourceType,
       sourceUrl: notes.sourceUrl,
       originalAuthor: notes.originalAuthor,
@@ -345,8 +343,6 @@ export async function getCollectionNotes(
         tags: row.tags || [],
         pageCount: row.pageCount,
         fileSizeBytes: row.fileSizeBytes,
-        filePath: row.filePath,
-
         sourceType: row.sourceType,
         sourceUrl: row.sourceUrl,
         originalAuthor: row.originalAuthor,

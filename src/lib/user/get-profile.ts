@@ -29,6 +29,7 @@ export async function getCurrentUserProfile(): Promise<ProfileData | null> {
       bio: users.bio,
       email: users.email,
       avatarUrl: users.avatarUrl,
+      avatarId: users.avatarId,
       role: users.role,
       createdAt: users.createdAt,
     })
@@ -58,6 +59,7 @@ export async function getCurrentUserProfile(): Promise<ProfileData | null> {
     bio: profileRow.bio,
     email: profileRow.email,
     avatarUrl: profileRow.avatarUrl,
+    avatarId: profileRow.avatarId,
     role: profileRow.role,
     createdAt: profileRow.createdAt,
     totalContributions,
