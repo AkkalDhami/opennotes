@@ -39,7 +39,7 @@ export interface PublicNote {
   tags: string[] | []
   pageCount: number | null
   fileSizeBytes: number | null
-  filePath: string
+  fileUrl?: string | null
   viewCount: number
   downloadCount: number
   publishedAt: Date

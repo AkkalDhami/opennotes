@@ -8,6 +8,7 @@ export interface ProfileData {
   bio: string | null
   email: string
   avatarUrl: string | null
+  avatarId: string | null
   role: string | null
   createdAt: Date
   totalContributions: number

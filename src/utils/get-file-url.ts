@@ -3,8 +3,8 @@ import { db, notes } from "@/db"
 import { resolveNoteFileUrl } from "@/lib/notes/file-url"
 import { eq } from "drizzle-orm"
 
-export function getFileUrl(filePath: string) {
-  return `${env.IMAGEKIT_URL_ENDPOINT}${env.IMAGEKIT_ID}${filePath}`
+export function getFileUrl(fileKey: string) {
+  return `${env.IMAGEKIT_URL_ENDPOINT}${env.IMAGEKIT_ID}${fileKey}`
 }
 
 export async function getNoteBySlug(slug: string) {
