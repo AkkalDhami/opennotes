@@ -125,6 +125,7 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
                     username: profile.username,
                     avatar: profile.avatarUrl,
                     bio: profile.bio,
+                    avatarId: profile.avatarId,
                   },
                 })
               }

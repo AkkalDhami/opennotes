@@ -28,7 +28,7 @@ export function TrendingNoteContent({ notes }: TrendingNotesProps) {
       </Reveal>
 
       <StaggerGroup className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {notes.map((note, index) => (
+        {notes?.map((note, index) => (
           <StaggerItem
             key={note.id}
             className={index === 3 ? "hidden xl:block" : undefined}

@@ -27,6 +27,7 @@ export function ProfileSettings({ user }: { user: UserType }) {
                   name: user.name,
                   username: user.username,
                   avatar: user.avatar,
+                  avatarId: user.avatarId,
                   bio: user.bio,
                 },
               })
