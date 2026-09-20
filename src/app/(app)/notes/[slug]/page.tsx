@@ -18,7 +18,6 @@ import { ContributorPreview } from "@/components/notes/contributor-preview"
 import { RelatedNotes } from "@/components/notes/related-notes"
 import { formatFileSize, formatCompactNumber } from "@/lib/notes/format"
 import { APP_NAME } from "@/constants/app.constants"
-import { getFileUrl } from "@/utils/get-file-url"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import { slugToTitle } from "@/utils/slug"
@@ -93,7 +92,7 @@ export default async function NoteDetailPage({ params }: NoteDetailPageProps) {
     notFound()
   }
 
-  const fileUrl = getFileUrl(note?.filePath)
+  const fileUrl = note.fileUrl ?? ""
 
   const publishedDate = new Date(note.publishedAt)
 

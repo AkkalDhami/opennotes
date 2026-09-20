@@ -100,6 +100,7 @@ export function UserProfile({ user }: { user: UserType }) {
                       bio: user.bio,
                       username: user.username,
                       avatar: user.avatar,
+                      avatarId: user.avatarId,
                     },
                   })
                 }

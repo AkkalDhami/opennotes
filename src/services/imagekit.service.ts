@@ -24,7 +24,6 @@ export const uploadToImageKit = async (
   try {
     const fileName = options.fileName || `file-${Date.now()}`
     const file = await toFile(buffer, fileName)
-
     const result = await imagekitClient.files.upload({
       file: file,
       fileName: fileName,

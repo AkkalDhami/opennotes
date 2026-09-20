@@ -71,7 +71,6 @@ function noteSelection(isBookmarked: SQL<boolean>) {
     tags: notes.tags,
     pageCount: notes.pageCount,
     fileSizeBytes: notes.fileSizeBytes,
-    filePath: notes.filePath,
     viewCount: notes.viewCount,
     downloadCount: notes.downloadCount,
     sourceType: notes.sourceType,
@@ -106,7 +105,6 @@ type NoteRow = {
   tags: string[] | null
   pageCount: number | null
   fileSizeBytes: number
-  filePath: string
   viewCount: number
   downloadCount: number
   sourceType: PublicNote["sourceType"]
@@ -136,7 +134,6 @@ function toPublicNote(row: NoteRow): PublicNote {
     tags: row.tags ?? [],
     pageCount: row.pageCount,
     fileSizeBytes: row.fileSizeBytes,
-    filePath: row.filePath,
     viewCount: row.viewCount,
     downloadCount: row.downloadCount,
     sourceType: row.sourceType,
