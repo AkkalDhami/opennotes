@@ -3,6 +3,7 @@ import { db } from "@/db"
 import { notes, users } from "@/db"
 import { PublicNote } from "@/types/note"
 import { getCurrentUser } from "@/lib/auth/get-current-user"
+import { resolveNoteFileUrl } from "@/lib/notes/file-url"
 
 export async function getPublishedNoteBySlug(
   slug: string
@@ -24,7 +25,7 @@ export async function getPublishedNoteBySlug(
       tags: notes.tags,
       pageCount: notes.pageCount,
       fileSizeBytes: notes.fileSizeBytes,
-      filePath: notes.filePath,
+      fileKey: notes.fileKey,
 
       sourceType: notes.sourceType,
       sourceUrl: notes.sourceUrl,
@@ -60,6 +61,8 @@ export async function getPublishedNoteBySlug(
 
   if (!row) return null
 
+  const fileUrl = await resolveNoteFileUrl(row.fileKey)
+
   return {
     id: row.id,
     slug: row.slug,
@@ -74,7 +77,7 @@ export async function getPublishedNoteBySlug(
     tags: row.tags || [],
     pageCount: row.pageCount,
     fileSizeBytes: row.fileSizeBytes,
-    filePath: row.filePath,
+    fileUrl,
 
     sourceType: row.sourceType,
     sourceUrl: row.sourceUrl,

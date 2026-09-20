@@ -69,7 +69,6 @@ export async function getRelatedNotes({
       contributorName: users.name,
       contributorUsername: users.username,
       contributorAvatarUrl: users.avatarUrl,
-      filePath: notes.filePath,
       score: matchScore,
 
       sourceType: notes.sourceType,
@@ -118,7 +117,6 @@ export async function getRelatedNotes({
     pageCount: row.pageCount,
     fileSizeBytes: row.fileSizeBytes,
     downloadCount: row.downloadCount,
-    filePath: row.filePath,
     viewCount: row.viewCount,
     publishedAt: row.publishedAt ? new Date(row.publishedAt) : new Date(),
     lastModifiedAt: row.lastModifiedAt ? new Date(row.lastModifiedAt) : null,
@@ -171,8 +169,6 @@ export async function getRelatedNotesByContributor({
       contributorName: users.name,
       contributorUsername: users.username,
       contributorAvatarUrl: users.avatarUrl,
-      filePath: notes.filePath,
-
       sourceType: notes.sourceType,
       sourceUrl: notes.sourceUrl,
       originalAuthor: notes.originalAuthor,
@@ -212,7 +208,6 @@ export async function getRelatedNotesByContributor({
     fileSizeBytes: row.fileSizeBytes,
     downloadCount: row.downloadCount,
     viewCount: row.viewCount,
-    filePath: row.filePath,
     publishedAt: row.publishedAt ? new Date(row.publishedAt) : new Date(),
     lastModifiedAt: row.lastModifiedAt ? new Date(row.lastModifiedAt) : null,
     contributor: {

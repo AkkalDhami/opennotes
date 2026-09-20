@@ -31,7 +31,6 @@ export async function getTrendingNotes(
         grade: notes.grade,
         topic: notes.topic,
         academicYear: notes.academicYear,
-        originalFileName: notes.originalFileName,
         fileSizeBytes: notes.fileSizeBytes,
         pageCount: notes.pageCount,
         downloadCount: notes.downloadCount,
@@ -39,8 +38,6 @@ export async function getTrendingNotes(
         lastModifiedAt: notes.updatedAt,
         createdAt: notes.createdAt,
         tags: notes.tags,
-        filePath: notes.filePath,
-
         contributorId: users.id,
         contributorName: users.name,
         contributorUsername: users.username,
@@ -106,8 +103,6 @@ export async function getTrendingNotes(
       fileType: "PDF",
       pageCount: row.pageCount,
       fileSizeBytes: row.fileSizeBytes,
-      filePath: row.filePath,
-
       downloadCount: row.downloadCount,
       viewCount: row.viewCount,
       isBookmarked: row.isBookmarked,
