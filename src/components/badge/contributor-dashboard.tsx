@@ -56,7 +56,7 @@ export function ContributorDashboard({
   const hasContributed = summary.publishedNotes > 0
 
   return (
-    <Card className="overflow-hidden border-stone-200 dark:border-stone-800">
+    <Card className="hidden overflow-hidden border-stone-200 dark:border-stone-800">
       <CardHeader className="flex flex-row items-start justify-between gap-4 border-b border-dashed border-stone-300 pb-4 dark:border-stone-700">
         <div>
           <p className="font-mono text-[11px] tracking-[0.2em] text-muted-foreground uppercase">

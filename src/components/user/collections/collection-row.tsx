@@ -123,7 +123,7 @@ export function CollectionRow({
             aria-label={
               expanded ? `Collapse ${node.name}` : `Expand ${node.name}`
             }
-            className="flex size-6 shrink-0 items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+            className="flex size-4 shrink-0 items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
           >
             <HugeiconsIcon
               icon={expanded ? ArrowDown01Icon : ArrowRight01Icon}
@@ -133,7 +133,7 @@ export function CollectionRow({
             />
           </button>
         ) : (
-          <span className="size-6 shrink-0" aria-hidden />
+          <span className="size-3 shrink-0" aria-hidden />
         )}
 
         {/* Opens the details dialog rather than navigating: the list stays put,
