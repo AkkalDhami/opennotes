@@ -2,6 +2,7 @@ import "server-only"
 
 import { db, notes, users } from "@/db"
 import { eq, sql } from "drizzle-orm"
+import { calculateScore } from "./scoring"
 
 export interface ContributorRanking {
   rank: number
@@ -12,6 +13,7 @@ export interface ContributorRanking {
 
   publishedNotes: number
   downloads: number
+  views: number
   score: number
 }
 
@@ -32,6 +34,14 @@ export async function getContributorsRanking(
       downloads: sql<number>`
         COALESCE(SUM(${notes.downloadCount}), 0)::int
       `.as("downloads"),
+
+      views: sql<number>`
+        COALESCE(SUM(${notes.viewCount}), 0)::int
+      `.as("views"),
+
+      earliestAchievement: sql<Date>`
+        MIN(${notes.publishedAt})
+      `.as("earliest_achievement"),
     })
     .from(users)
     .innerJoin(notes, eq(notes.contributorId, users.id))
@@ -42,8 +52,13 @@ export async function getContributorsRanking(
     .map((row) => {
       const publishedNotes = Number(row.publishedNotes)
       const downloadsCount = Number(row.downloads)
+      const views = Number(row.views)
 
-      const score = publishedNotes * 10 + downloadsCount * 3
+      const score = calculateScore({
+        publishedNotes,
+        downloads: downloadsCount,
+        views,
+      })
 
       return {
         userId: row.userId,
@@ -53,6 +68,8 @@ export async function getContributorsRanking(
 
         publishedNotes,
         downloads: downloadsCount,
+        views,
+        earliestAchievement: row.earliestAchievement,
 
         score,
       }
@@ -62,11 +79,26 @@ export async function getContributorsRanking(
         return b.score - a.score
       }
 
+      if (b.downloads !== a.downloads) {
+        return b.downloads - a.downloads
+      }
+
+      if (b.views !== a.views) {
+        return b.views - a.views
+      }
+
       if (b.publishedNotes !== a.publishedNotes) {
         return b.publishedNotes - a.publishedNotes
       }
 
-      return b.downloads - a.downloads
+      const achievementDifference =
+        a.earliestAchievement.getTime() - b.earliestAchievement.getTime()
+
+      if (achievementDifference !== 0) {
+        return achievementDifference
+      }
+
+      return a.userId.localeCompare(b.userId)
     })
     .slice(0, limit)
 

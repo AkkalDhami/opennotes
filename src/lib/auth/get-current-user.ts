@@ -18,7 +18,15 @@ export async function getCurrentUser() {
   const accessToken = cookieStore.get("access_token")?.value
   const refreshToken = cookieStore.get("refresh_token")?.value
 
-  let payload = accessToken ? verifyAccessToken(accessToken) : null
+  let payload = null
+
+  if (accessToken) {
+    try {
+      payload = verifyAccessToken(accessToken)
+    } catch {
+      // Fall through to refresh the access token below.
+    }
+  }
 
   if (!payload?.sub && refreshToken) {
     try {

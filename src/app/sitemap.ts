@@ -1,8 +1,10 @@
 import { MetadataRoute } from "next"
 import { db, notes, users } from "@/db"
-import { eq, sql } from "drizzle-orm"
+import { eq } from "drizzle-orm"
 
 import { SITE_URL } from "@/constants/app.constants"
+
+export const dynamic = "force-dynamic"
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [publicNotes, contributors] = await Promise.all([
@@ -22,11 +24,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         updatedAt: users.updatedAt,
       })
       .from(users)
-      .innerJoin(
-        notes,
-        sql`${notes.contributorId} = ${users.id}
-          AND ${notes.status} = 'PUBLISHED'`
-      )
+      .innerJoin(notes, eq(notes.contributorId, users.id))
+      .where(eq(notes.status, "PUBLISHED"))
       .groupBy(users.id, users.username, users.updatedAt),
   ])
 
