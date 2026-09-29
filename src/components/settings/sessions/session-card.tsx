@@ -79,7 +79,7 @@ export function SessionCard({
       {!session.isCurrent && (
         <Button
           type="button"
-          variant="outline"
+          variant="destructive"
           size="sm"
           className="self-start sm:self-center"
           onClick={() =>

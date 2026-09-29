@@ -82,7 +82,7 @@ export function HeroSection({ className }: HeroSectionProps) {
 
   return (
     <>
-      <div className="pointer-events-none absolute inset-0 hidden h-screen dark:hidden">
+      <div className="dark:blockk pointer-events-none absolute inset-0 hidden h-screen">
         <LiquidEther
           colors={["#080e07", "#fcfaed", "#080e07"]}
           mouseForce={20}
@@ -101,7 +101,7 @@ export function HeroSection({ className }: HeroSectionProps) {
           autoRampDuration={0.6}
         />
       </div>
-      <div className="pointer-events-none absolute inset-0 hidden h-screen">
+      <div className="pointer-events-none absolute inset-0 h-screen">
         <SideRays
           rayColor1="#f6f1df"
           rayColor2="#080e07"
