@@ -32,6 +32,7 @@ import { RankMedal } from "@/components/shared/rank-medal"
 import { getContributorRank } from "@/lib/contributors/get-contributor-rank"
 import { absoluteUrl } from "@/lib/seo"
 import { ContributorDashboard } from "@/components/badge/contributor-dashboard"
+import { RankCard } from "@/components/shared/rank-card"
 
 interface ContributorDetailPageProps {
   params: Promise<{ username: string }>
@@ -90,6 +91,7 @@ export default async function ContributorDetailPage({
   const page = Math.max(1, Number(pageParam) || 1)
 
   const contributor = await getContributorByUsername(username)
+
   if (!contributor) notFound()
 
   const [{ notes, totalPages }, contributionActivity, contributorRank] =
@@ -129,6 +131,8 @@ export default async function ContributorDetailPage({
         summary={summary}
         earnedBadgeSlugs={earnedBadgeSlugs}
       />
+
+      {/* <EChartsLatencyAreaChart /> */}
 
       <div className="flex flex-wrap-reverse justify-between gap-6">
         <div className="space-y-4">
@@ -210,7 +214,7 @@ export default async function ContributorDetailPage({
                 <span className="font-medium text-foreground">
                   {contributorRank?.downloads
                     ? contributorRank.downloads.toLocaleString()
-                    : "N/A"}
+                    : "0"}
                 </span>
               </p>
             </div>
@@ -229,7 +233,7 @@ export default async function ContributorDetailPage({
                 <span className="font-medium text-foreground">
                   {contributorRank?.score
                     ? contributorRank.score.toLocaleString()
-                    : "N/A"}
+                    : "0"}
                 </span>
               </p>
             </div>
@@ -261,7 +265,14 @@ export default async function ContributorDetailPage({
           )}
         </div>
         {contributorRank?.rank && (
-          <RankMedal rank={contributorRank?.rank} showLabel={false} />
+          <>
+            <RankMedal rank={contributorRank?.rank} showLabel={false} />
+            <RankCard
+              rank={contributorRank?.rank}
+              totalScore={contributorRank?.score || 0}
+              scoreUnit="pts"
+            />
+          </>
         )}
       </div>
 

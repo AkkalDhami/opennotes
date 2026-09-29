@@ -130,7 +130,7 @@ export default async function ContributorsPage({
         </>
       )}
 
-      <ContributorMedalShowcase />
+      <ContributorMedalShowcase minimal />
     </section>
   )
 }
