@@ -77,6 +77,7 @@ export function CollectionDetailActions({
             editCollection: {
               id: collection.id,
               name: collection.name,
+              slug: collection.slug,
               description: collection.description,
               visibility: collection.visibility,
             },

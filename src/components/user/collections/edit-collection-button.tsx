@@ -23,6 +23,7 @@ export function EditCollectionButton({
             description: collection.description,
             id: collection.id,
             name: collection.name,
+            slug: collection.slug,
             visibility: collection.visibility,
           },
         })

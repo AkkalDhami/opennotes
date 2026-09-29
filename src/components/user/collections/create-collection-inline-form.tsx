@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useTransition } from "react"
+import { useEffect, useMemo, useRef, useTransition } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -20,9 +20,24 @@ import { createCollection } from "@/lib/user/collections"
 import { CollectionNameSchema } from "@/validations/collection"
 import { CollectionParentPicker } from "@/components/user/collections/collection-parent-picker"
 import { buildTreeFromDepthList } from "@/lib/user/collection-option-tree"
+import { slugify } from "@/utils/slug"
+
+function generateCollectionSlug(value: string) {
+  const trimmed = value.trim()
+  return trimmed ? slugify(trimmed) : ""
+}
 
 const InlineCreateCollectionSchema = z.object({
   name: CollectionNameSchema,
+  slug: z
+    .string()
+    .trim()
+    .max(80)
+    .regex(
+      /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+      "Use lowercase letters, numbers, and hyphens only"
+    )
+    .optional(),
   parentId: z.uuid().nullable().optional(),
 })
 
@@ -47,14 +62,31 @@ export function CreateCollectionInlineForm({
   onCancel,
 }: CreateCollectionInlineFormProps) {
   const [isPending, startTransition] = useTransition()
+  const isSlugManuallyEdited = useRef(false)
 
   const form = useForm<InlineCreateCollectionInput>({
     resolver: zodResolver(InlineCreateCollectionSchema),
     defaultValues: {
       name: "",
+      slug: "",
       parentId: defaultParentId ?? null,
     },
   })
+
+  const nameValue = form.watch("name")
+  const slugValue = form.watch("slug")
+
+  useEffect(() => {
+    if (isSlugManuallyEdited.current) return
+
+    const nextSlug = generateCollectionSlug(nameValue ?? "")
+    if (nextSlug !== (slugValue ?? "")) {
+      form.setValue("slug", nextSlug, {
+        shouldDirty: true,
+        shouldTouch: true,
+      })
+    }
+  }, [form, nameValue, slugValue])
 
   // The caller hands us an already-flattened depth list; rebuild the nesting so
   // the picker can render it as a tree.
@@ -69,6 +101,7 @@ export function CreateCollectionInlineForm({
 
       const result = await createCollection({
         name: values.name,
+        slug: values.slug,
         description: "",
         parentId,
       })
@@ -87,7 +120,8 @@ export function CreateCollectionInlineForm({
         parentId,
       })
 
-      form.reset({ name: "", parentId: null })
+      isSlugManuallyEdited.current = false
+      form.reset({ name: "", slug: "", parentId: null })
     })
   }
 
@@ -112,6 +146,29 @@ export function CreateCollectionInlineForm({
                 maxLength={120}
                 autoFocus
                 aria-invalid={fieldState.invalid}
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          name="slug"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor="inline-collection-slug">Slug</FieldLabel>
+              <Input
+                {...field}
+                value={field.value ?? ""}
+                id="inline-collection-slug"
+                placeholder="data-structures-revision"
+                maxLength={80}
+                aria-invalid={fieldState.invalid}
+                onChange={(event) => {
+                  isSlugManuallyEdited.current = true
+                  field.onChange(event)
+                }}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
