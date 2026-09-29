@@ -72,7 +72,7 @@ export interface ModalData {
   deleteCollection?: Pick<CollectionRecord, "id" | "name">
   editCollection?: Pick<
     CollectionRecord,
-    "id" | "name" | "description" | "visibility"
+    "id" | "name" | "slug" | "description" | "visibility"
   >
   addNoteToCollectionsDialog?: AddNoteToCollectionsDialogType
   shareCollection?: ShareCollectionDialogType

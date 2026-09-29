@@ -1,8 +1,9 @@
 /** Points awarded per unit of eligible contribution. */
 export const CONTRIBUTOR_SCORE = {
   PUBLISHED_NOTE: 100,
-  DOWNLOAD: 1,
+  DOWNLOAD: 2,
   VIEW: 0.1,
+  BOOKMARK: 5,
 } as const
 
 /** Inclusive score bands. Bands must be contiguous and cover 0 → Infinity. */

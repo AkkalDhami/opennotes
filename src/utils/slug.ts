@@ -5,11 +5,24 @@ export const slugify = (input: string): string => {
     .toLowerCase()
     .normalize("NFKD")
     .replace(/[\u0300-\u036f]/g, "") // strip accents
-    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/[^a-z0-9-]+/g, "-")
+    .replace(/-+/g, "-")
     .replace(/^-+|-+$/g, "")
     .slice(0, 200) // leave room for a numeric/uuid suffix under the 255 cap
 
   return base.length > 0 ? base : "note"
+}
+
+export const normalizeSlugDraft = (input: string): string => {
+  const draft = input
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9-]+/g, "-")
+    .replace(/-+/g, "-")
+    .slice(0, 80)
+
+  return draft
 }
 
 /**

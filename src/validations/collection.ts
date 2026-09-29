@@ -14,8 +14,19 @@ export const CollectionDescriptionSchema = z
   .optional()
   .or(z.literal(""))
 
+export const CollectionSlugSchema = z
+  .string()
+  .trim()
+  .min(1, "Slug is required")
+  .max(80, "Slug must be under 80 characters")
+  .regex(
+    /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+    "Use lowercase letters, numbers, and hyphens only"
+  )
+
 export const CreateCollectionSchema = z.object({
   name: CollectionNameSchema,
+  slug: z.union([CollectionSlugSchema, z.literal("")]).optional(),
   description: CollectionDescriptionSchema,
   parentId: z.uuid().or(z.literal("none")).nullable().optional(),
   visibility: z.enum(COLLECTION_VISIBLITY).default("PRIVATE").optional(),
@@ -25,6 +36,7 @@ export type CreateCollectionInput = z.infer<typeof CreateCollectionSchema>
 export const UpdateCollectionSchema = z.object({
   id: z.uuid(),
   name: CollectionNameSchema,
+  slug: z.union([CollectionSlugSchema, z.literal("")]).optional(),
   description: CollectionDescriptionSchema,
   visibility: z.enum(COLLECTION_VISIBLITY).optional(),
 })
