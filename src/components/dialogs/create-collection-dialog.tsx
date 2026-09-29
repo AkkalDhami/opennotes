@@ -1,8 +1,15 @@
 "use client"
 
-import { useEffect, useMemo, useTransition } from "react"
+import {
+  FormEvent,
+  SyntheticEvent,
+  useEffect,
+  useMemo,
+  useRef,
+  useTransition,
+} from "react"
 import { useRouter } from "next/navigation"
-import { Controller, useForm } from "react-hook-form"
+import { Controller, useForm, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import toast from "react-hot-toast"
 
@@ -39,6 +46,16 @@ import { cn } from "@/lib/utils"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { CollectionParentPicker } from "@/components/user/collections/collection-parent-picker"
 import { buildOptionTree } from "@/lib/user/collection-option-tree"
+import { normalizeSlugDraft, slugify } from "@/utils/slug"
+
+function generateCollectionSlug(value: string) {
+  const trimmed = value.trim()
+  return trimmed ? slugify(trimmed) : ""
+}
+
+function normalizeSlugInput(value: string) {
+  return normalizeSlugDraft(value)
+}
 
 export function CreateCollectionDialog() {
   const router = useRouter()
@@ -46,6 +63,7 @@ export function CreateCollectionDialog() {
 
   const isModalOpen = isOpen && type === "create-collection"
   const [isPending, startTransition] = useTransition()
+  const isSlugManuallyEdited = useRef(false)
 
   const { collectionFormDialog } = data
 
@@ -56,6 +74,7 @@ export function CreateCollectionDialog() {
     resolver: zodResolver(CreateCollectionSchema),
     defaultValues: {
       name: collection?.name ?? "",
+      slug: "",
       description: collection?.description ?? "",
       parentId: fixedParentId ?? null,
       visibility: "PRIVATE",
@@ -71,12 +90,36 @@ export function CreateCollectionDialog() {
     if (!isModalOpen) return
     form.reset({
       name: "",
+      slug: "",
       description: "",
       parentId: fixedParentId ?? null,
       visibility: "PRIVATE",
     })
+    isSlugManuallyEdited.current = false
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isModalOpen, fixedParentId])
+
+  const nameValue = useWatch({
+    name: "name",
+    control: form.control,
+  })
+
+  const slugValue = useWatch({
+    name: "slug",
+    control: form.control,
+  })
+
+  useEffect(() => {
+    if (!isModalOpen || isSlugManuallyEdited.current) return
+
+    const nextSlug = generateCollectionSlug(nameValue ?? "")
+    if (nextSlug !== (slugValue ?? "")) {
+      form.setValue("slug", nextSlug, {
+        shouldDirty: true,
+        shouldTouch: true,
+      })
+    }
+  }, [form, isModalOpen, nameValue, slugValue])
 
   const parentTree = useMemo(
     () => buildOptionTree(parentOptions ?? []),
@@ -85,8 +128,10 @@ export function CreateCollectionDialog() {
 
   function handleClose() {
     close()
+    isSlugManuallyEdited.current = false
     form.reset({
       name: "",
+      slug: "",
       description: "",
       parentId: null,
       visibility: "PRIVATE",
@@ -97,6 +142,7 @@ export function CreateCollectionDialog() {
     startTransition(async () => {
       const result = await createCollection({
         name: values.name,
+        slug: values.slug,
         description: values.description,
         parentId: values.parentId === "none" ? null : values.parentId,
         visibility: values.visibility,
@@ -115,6 +161,10 @@ export function CreateCollectionDialog() {
     })
   }
 
+  const handleFormSubmit = (event: SyntheticEvent) => {
+    void form.handleSubmit(handleSubmit)(event)
+  }
+
   return (
     <Dialog
       open={isModalOpen}
@@ -125,10 +175,7 @@ export function CreateCollectionDialog() {
       }}
     >
       <DialogContent className="sm:max-w-md">
-        <form
-          onSubmit={form.handleSubmit(handleSubmit)}
-          id="create-collection-form"
-        >
+        <form onSubmit={handleFormSubmit} id="create-collection-form">
           <FieldGroup>
             <DialogHeader>
               <DialogTitle>{title}</DialogTitle>
@@ -168,6 +215,37 @@ export function CreateCollectionDialog() {
                       autoFocus
                       aria-invalid={fieldState.invalid}
                     />
+
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+
+              <Controller
+                name="slug"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="collection-slug">Slug</FieldLabel>
+
+                    <Input
+                      {...field}
+                      value={field.value ?? ""}
+                      id="collection-slug"
+                      placeholder="bca-1st-semester"
+                      maxLength={80}
+                      aria-invalid={fieldState.invalid}
+                      onChange={(event) => {
+                        isSlugManuallyEdited.current = true
+                        field.onChange(normalizeSlugInput(event.target.value))
+                      }}
+                    />
+
+                    <FieldDescription>
+                      Optional. Lowercase letters, numbers, and hyphens only.
+                    </FieldDescription>
 
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />

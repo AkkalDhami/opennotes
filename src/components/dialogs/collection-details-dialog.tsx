@@ -245,7 +245,7 @@ function OverviewSkeleton({ name }: { name?: string }) {
           <Skeleton className="h-4 w-3/4" />
         </div>
       </div>
-      <Skeleton className="mt-5 h-[70px] w-full rounded-lg" />
+      <Skeleton className="mt-5 h-17.5 w-full rounded-lg" />
       <div className="mt-6 space-y-2">
         <Skeleton className="h-3 w-28" />
         <Skeleton className="h-14 w-full rounded-lg" />
@@ -590,6 +590,7 @@ export function CollectionDetailsDialog() {
                   editCollection: {
                     id: collection.id,
                     name: collection.name,
+                    slug: collection.slug,
                     description: collection.description,
                     visibility: collection.visibility,
                   },

@@ -1,8 +1,8 @@
 "use client"
 
-import { useEffect, useTransition } from "react"
+import { SyntheticEvent, useEffect, useRef, useTransition } from "react"
 import { useRouter } from "next/navigation"
-import { Controller, useForm } from "react-hook-form"
+import { Controller, useForm, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Globe02Icon, IncognitoIcon } from "@hugeicons/core-free-icons"
@@ -37,11 +37,22 @@ import {
 import { useModal } from "@/hooks/use-modal-store"
 import { COLLECTION_VISIBLITY } from "@/db"
 import { HugeiconsIcon } from "@hugeicons/react"
+import { normalizeSlugDraft, slugify } from "@/utils/slug"
+
+function generateCollectionSlug(value: string) {
+  const trimmed = value.trim()
+  return trimmed ? slugify(trimmed) : ""
+}
+
+function normalizeSlugInput(value: string) {
+  return normalizeSlugDraft(value)
+}
 
 /** Blank baseline, used before a collection is loaded and again on close. */
 const EMPTY_VALUES: UpdateCollectionInput = {
   id: "",
   name: "",
+  slug: "",
   description: "",
   visibility: "PRIVATE",
 }
@@ -52,6 +63,7 @@ export function EditCollectionDialog() {
 
   const isModalOpen = isOpen && type === "edit-collection"
   const [isPending, startTransition] = useTransition()
+  const isSlugManuallyEdited = useRef(false)
 
   const { editCollection } = data ?? {}
 
@@ -60,31 +72,44 @@ export function EditCollectionDialog() {
     defaultValues: EMPTY_VALUES,
   })
 
-  /**
-   * Load the collection into the form each time the dialog opens.
-   *
-   * This has to be a `reset`, not a set of `setValue` calls. The dialog is
-   * mounted once at the app root with an empty modal store, so `defaultValues`
-   * is evaluated before any collection exists — and the previous version never
-   * wrote `id` afterwards. `UpdateCollectionSchema` requires a uuid there, so
-   * the resolver rejected every submit before it reached the action, with no
-   * field on screen to show the error: the Save button simply did nothing.
-   *
-   * `reset` also re-baselines `isDirty`, which is what gates the Save button.
-   */
   useEffect(() => {
     if (!isModalOpen || !editCollection) return
     form.reset({
       id: editCollection.id,
       name: editCollection.name,
+      slug: editCollection.slug ?? "",
       description: editCollection.description ?? "",
       visibility: editCollection.visibility,
     })
+    isSlugManuallyEdited.current = false
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isModalOpen, editCollection?.id])
 
+  const nameValue = useWatch({
+    name: "name",
+    control: form.control,
+  })
+
+  const slugValue = useWatch({
+    name: "slug",
+    control: form.control,
+  })
+
+  useEffect(() => {
+    if (!isModalOpen || isSlugManuallyEdited.current) return
+
+    const nextSlug = generateCollectionSlug(nameValue ?? "")
+    if (nextSlug !== (slugValue ?? "")) {
+      form.setValue("slug", nextSlug, {
+        shouldDirty: true,
+        shouldTouch: true,
+      })
+    }
+  }, [form, isModalOpen, nameValue, slugValue])
+
   function handleClose() {
     close()
+    isSlugManuallyEdited.current = false
     form.reset(EMPTY_VALUES)
   }
 
@@ -95,6 +120,7 @@ export function EditCollectionDialog() {
       const result = await updateCollection({
         id: editCollection.id,
         name: values.name,
+        slug: values.slug,
         description: values.description,
         visibility: values.visibility,
       })
@@ -112,6 +138,10 @@ export function EditCollectionDialog() {
     })
   }
 
+  const handleFormSubmit = (event: SyntheticEvent) => {
+    void form.handleSubmit(handleSubmit)(event)
+  }
+
   return (
     <Dialog
       open={isModalOpen}
@@ -122,10 +152,7 @@ export function EditCollectionDialog() {
       }}
     >
       <DialogContent className="sm:max-w-md">
-        <form
-          onSubmit={form.handleSubmit(handleSubmit)}
-          id="edit-collection-form"
-        >
+        <form onSubmit={handleFormSubmit} id="edit-collection-form">
           <FieldGroup>
             <DialogHeader>
               <DialogTitle>Edit collection</DialogTitle>
@@ -153,6 +180,37 @@ export function EditCollectionDialog() {
                       autoFocus
                       aria-invalid={fieldState.invalid}
                     />
+
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+
+              <Controller
+                name="slug"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="edit-collection-slug">Slug</FieldLabel>
+
+                    <Input
+                      {...field}
+                      value={field.value ?? ""}
+                      id="edit-collection-slug"
+                      placeholder="bca-1st-semester"
+                      maxLength={80}
+                      aria-invalid={fieldState.invalid}
+                      onChange={(event) => {
+                        isSlugManuallyEdited.current = true
+                        field.onChange(normalizeSlugInput(event.target.value))
+                      }}
+                    />
+
+                    <FieldDescription>
+                      Lowercase letters, numbers, and hyphens only.
+                    </FieldDescription>
 
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
