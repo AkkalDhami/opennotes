@@ -114,7 +114,12 @@ const LEFT_BRANCH = buildBranch(150, 95, 5, 80)
 const RIGHT_BRANCH = buildBranch(30, 85, 5, 80)
 
 const iconVariants: Variants = {
-  hidden: { opacity: 0, scale: 0.6, rotate: -8, y: 10 },
+  hidden: {
+    opacity: 0,
+    scale: 0.6,
+    rotate: -8,
+    y: 10,
+  },
   visible: (delay: number) => ({
     opacity: 1,
     scale: 1,
@@ -164,7 +169,7 @@ function PodiumIcon({
       variants={iconVariants}
       initial="hidden"
       animate="visible"
-      whileHover={{ scale: 1.06, y: -6, rotate: 0 }}
+      whileHover={{ scale: 1, y: 0, rotate: 0 }}
       transition={{ type: "spring", stiffness: 300, damping: 16 }}
       style={{ filter: `drop-shadow(0 10px 20px ${tone.glow})` }}
     >

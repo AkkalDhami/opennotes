@@ -77,7 +77,7 @@ export function ContributorMedalShowcase({
               </span>
             </Link>
           }
-          className="group relative h-12 w-48 overflow-hidden rounded-full bg-background p-1 ps-14 pe-4 text-sm font-medium text-foreground transition-all duration-500 group-hover:ps-0 group-hover:pe-14 hover:bg-background/10"
+          className="group relative h-12 w-48 overflow-hidden rounded-full bg-background p-1 ps-14 pe-4 text-sm font-medium text-foreground transition-all duration-500 group-hover:ps-0 group-hover:pe-14 hover:bg-background"
         ></Button>
       </section>
     )
