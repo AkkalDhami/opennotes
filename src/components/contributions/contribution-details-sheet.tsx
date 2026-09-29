@@ -54,7 +54,7 @@ export function ContributionDetailsSheet({
 }: ContributionDetailsSheetProps) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="max-w-200 overflow-y-auto p-4">
+      <SheetContent className="max-w-250 overflow-y-auto p-4">
         <SheetHeader className="p-0">
           <SheetTitle className={"text-lg font-medium"}>
             {contribution.title}
@@ -99,11 +99,11 @@ export function ContributionDetailsSheet({
           />
           <DetailRow
             label="Course"
-            value={slugToTitle(contribution.course || "")}
+            value={slugToTitle(contribution.course || "")?.toUpperCase()}
           />
           <DetailRow
             label="Grade"
-            value={slugToTitle(contribution.grade || "")}
+            value={slugToTitle(contribution.grade || "")?.toUpperCase()}
           />
           <DetailRow label="Topic" value={contribution.topic} />
           <DetailRow label="Academic Year" value={contribution.academicYear} />

@@ -48,7 +48,7 @@ export function ContributionTable({ contributions }: ContributionTableProps) {
               <TableCell className="max-w-xs">
                 <div className="space-y-0.5">
                   <p className="truncate font-medium text-foreground">
-                    {slugToTitle(contribution.title)}
+                    {contribution.title}
                   </p>
                   {contribution.description ? (
                     <p className="truncate text-xs text-muted-foreground">
