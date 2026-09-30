@@ -1,5 +1,5 @@
 import { and, eq, sql } from "drizzle-orm"
-import { db } from "@/db"
+import { bookmarks, db } from "@/db"
 import { notes } from "@/db"
 import {
   CONSISTENCY_MONTHS_THRESHOLD,
@@ -21,6 +21,7 @@ export interface ContributorRawCounts {
   publishedNotes: number
   downloads: number
   views: number
+  bookmarks: number
   activeMonths: number
   distinctSubjects: number
 }
@@ -35,6 +36,7 @@ const EMPTY_COUNTS: ContributorRawCounts = {
   publishedNotes: 0,
   downloads: 0,
   views: 0,
+  bookmarks: 0,
   activeMonths: 0,
   distinctSubjects: 0,
 }
@@ -45,15 +47,17 @@ const EMPTY_COUNTS: ContributorRawCounts = {
  * hitting the database twice.
  */
 export function calculateScore(
-  counts: Pick<ContributorRawCounts, "publishedNotes" | "downloads" | "views">
+  counts: Pick<
+    ContributorRawCounts,
+    "publishedNotes" | "downloads" | "views" | "bookmarks"
+  >
 ): number {
   const raw =
     counts.publishedNotes * CONTRIBUTOR_SCORE.PUBLISHED_NOTE +
     counts.downloads * CONTRIBUTOR_SCORE.DOWNLOAD +
-    counts.views * CONTRIBUTOR_SCORE.VIEW
+    counts.views * CONTRIBUTOR_SCORE.VIEW +
+    counts.bookmarks * CONTRIBUTOR_SCORE.BOOKMARK
 
-  // Scores are always whole numbers for display purposes even though VIEW
-  // contributes fractional points.
   return Math.round(raw)
 }
 
@@ -70,28 +74,41 @@ export function calculateTier(score: number): { tier: number; label: string } {
  * directly from the `notes` table. No caching, no stored counters — this
  * always reflects the note table's current state.
  */
+
 export async function getContributorRawCounts(
   userId: string
 ): Promise<ContributorRawCounts> {
   const [row] = await db
     .select({
-      publishedNotes: sql<number>`count(*)::int`,
-      downloads: sql<number>`coalesce(sum(${notes.downloadCount}), 0)::int`,
-      views: sql<number>`coalesce(sum(${notes.viewCount}), 0)::int`,
-      activeMonths: sql<number>`count(distinct date_trunc('month', ${notes.publishedAt}))::int`,
-      distinctSubjects: sql<number>`count(distinct ${notes.subject})::int`,
+      publishedNotes: sql<number>`count(distinct ${notes.id})::int`,
+
+      downloads: sql<number>`
+        coalesce(sum(${notes.downloadCount}), 0)::int
+      `,
+
+      views: sql<number>`
+        coalesce(sum(${notes.viewCount}), 0)::int
+      `,
+
+      bookmarks: sql<number>`
+        count(${bookmarks.noteId})::int
+      `,
+
+      activeMonths: sql<number>`
+        count(distinct date_trunc('month', ${notes.publishedAt}))::int
+      `,
+
+      distinctSubjects: sql<number>`
+        count(distinct ${notes.subject})::int
+      `,
     })
     .from(notes)
+    .leftJoin(bookmarks, eq(bookmarks.noteId, notes.id))
     .where(and(eq(notes.contributorId, userId), eq(notes.status, "PUBLISHED")))
 
   return row ?? EMPTY_COUNTS
 }
 
-/**
- * Full metrics for a single contributor: raw counts + derived score/tier.
- * This is the function everything else (badges, dashboard, profile) should
- * call — it is always safe to call repeatedly and always reflects reality.
- */
 export async function calculateContributorScore(
   userId: string
 ): Promise<ContributorMetrics> {
@@ -102,14 +119,6 @@ export async function calculateContributorScore(
   return { ...counts, score, tier, tierLabel: label }
 }
 
-/**
- * Alias kept for readability at call sites that are explicitly triggering
- * a recompute after a moderation event (publish/remove/republish), as
- * opposed to a read-only dashboard fetch. Behaves identically to
- * `calculateContributorScore` — recomputing from current state *is* the
- * recalculation. There is no separate incremental code path to keep in
- * sync with this one.
- */
 export const recalculateContributorScore = calculateContributorScore
 
 export function isConsistentContributor(counts: ContributorRawCounts): boolean {
