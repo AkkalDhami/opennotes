@@ -1,11 +1,27 @@
 "use server"
 
-import { and, eq } from "drizzle-orm"
+import { and, count, eq } from "drizzle-orm"
 
 import { db } from "@/db"
 import { bookmarks, notes } from "@/db"
 import { getCurrentUser } from "@/lib/auth/get-current-user"
 import { revalidatePath } from "next/cache"
+
+export async function getContributorBookmarkCount(
+  contributorId: string
+): Promise<number> {
+  const [result] = await db
+    .select({
+      count: count(),
+    })
+    .from(bookmarks)
+    .innerJoin(notes, eq(bookmarks.noteId, notes.id))
+    .where(
+      and(eq(notes.contributorId, contributorId), eq(notes.status, "PUBLISHED"))
+    )
+
+  return result?.count ?? 0
+}
 
 export async function addBookmark(noteId: string) {
   const user = await getCurrentUser()

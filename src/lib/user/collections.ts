@@ -1,6 +1,6 @@
 "use server"
 
-import { and, eq, inArray, isNull, sql } from "drizzle-orm"
+import { and, eq, inArray, isNull, ne, sql } from "drizzle-orm"
 import { revalidatePath } from "next/cache"
 
 import { getCurrentUser } from "@/lib/auth/get-current-user"
@@ -197,7 +197,13 @@ export async function createCollection(
     }
   }
 
-  const { name, description, parentId, visibility } = parsed.data
+  const {
+    name,
+    description,
+    parentId,
+    visibility,
+    slug: requestedSlug,
+  } = parsed.data
 
   // If nested, verify that the parent belongs to the current user.
   if (parentId) {
@@ -211,7 +217,12 @@ export async function createCollection(
     }
   }
 
-  const slug = await ensureUniqueSlug(user.id, parentId ?? null, slugify(name))
+  const sourceSlug = requestedSlug?.trim() ? requestedSlug.trim() : name
+  const slug = await ensureUniqueSlug(
+    user.id,
+    parentId ?? null,
+    slugify(sourceSlug)
+  )
 
   // New collections land at the end of their sibling group. Inserting at 0
   // (the old behaviour) gave every collection the same position, which left
@@ -263,6 +274,7 @@ export async function createSubcollection(
 ): Promise<ActionResult<{ id: string; slug: string }>> {
   return createCollection({
     name: input.name,
+    slug: "",
     description: input.description,
     parentId: input.parentId,
   })
@@ -288,10 +300,44 @@ export async function updateCollection(
   )
   if (error || !collection) return { ok: false, error: error ?? "Not found" }
 
+  const requestedSlug = parsed.data.slug?.trim() || ""
+  const desiredSlug = requestedSlug
+    ? slugify(requestedSlug)
+    : slugify(parsed.data.name)
+
+  let nextSlug = desiredSlug
+  if (desiredSlug !== collection.slug) {
+    let candidate = desiredSlug
+    let suffix = 2
+
+    while (true) {
+      const [existing] = await db
+        .select({ id: collections.id })
+        .from(collections)
+        .where(
+          and(
+            eq(collections.ownerId, user.id),
+            eq(collections.slug, candidate),
+            ne(collections.id, collection.id)
+          )
+        )
+        .limit(1)
+
+      if (!existing) {
+        nextSlug = candidate
+        break
+      }
+
+      candidate = `${desiredSlug}-${suffix}`
+      suffix += 1
+    }
+  }
+
   await db
     .update(collections)
     .set({
       name: parsed.data.name,
+      slug: nextSlug,
       description: parsed.data.description || null,
       // `visibility` was parsed and then dropped, so the edit dialog's Public /
       // Private radio never persisted: a collection could not be made public,
@@ -306,6 +352,9 @@ export async function updateCollection(
     .where(eq(collections.id, collection.id))
 
   revalidateCollectionPaths(collection.slug)
+  if (nextSlug !== collection.slug) {
+    revalidatePath(`/profile/collections/${nextSlug}`)
+  }
   return { ok: true, data: undefined }
 }
 
