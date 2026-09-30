@@ -65,13 +65,13 @@ export function EChartsLatencyAreaChart() {
             type="button"
             onClick={() => setSelected((prev) => (prev === key ? null : key))}
             className={cn(
-              "flex cursor-pointer flex-row items-center gap-1.5 border-border px-3 text-left transition-opacity sm:flex-col sm:items-start sm:gap-1.5 sm:px-4 sm:first:pl-1 sm:[&:not(:first-child)]:border-l [&:nth-child(even)]:border-l",
+              "flex cursor-pointer flex-row items-center gap-1.5 border-border px-3 text-left transition-opacity even:border-l sm:flex-col sm:items-start sm:gap-1.5 sm:px-4 sm:not-first:border-l sm:first:pl-1",
               selected !== null && selected !== key && "opacity-40"
             )}
           >
             <div className="flex items-center gap-1.5 text-xs font-medium text-primary sm:gap-2">
               <span
-                className="size-2 shrink-0 rounded-[2px]"
+                className="size-2 shrink-0 rounded-xs"
                 style={{ backgroundColor: color }}
               />
               {label}

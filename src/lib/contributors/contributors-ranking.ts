@@ -3,6 +3,7 @@ import "server-only"
 import { db, notes, users } from "@/db"
 import { eq, sql } from "drizzle-orm"
 import { calculateScore } from "./scoring"
+import { getContributorBookmarkCount } from "../user/bookmarks"
 
 export interface ContributorRanking {
   rank: number
@@ -15,6 +16,7 @@ export interface ContributorRanking {
   downloads: number
   views: number
   score: number
+  bookmarks: number
 }
 
 export async function getContributorsRanking(
@@ -48,16 +50,20 @@ export async function getContributorsRanking(
     .where(eq(notes.status, "PUBLISHED"))
     .groupBy(users.id, users.name, users.username, users.avatarUrl)
 
-  const ranked = rows
-    .map((row) => {
+  const contributors = await Promise.all(
+    rows.map(async (row) => {
       const publishedNotes = Number(row.publishedNotes)
-      const downloadsCount = Number(row.downloads)
+      const downloads = Number(row.downloads)
       const views = Number(row.views)
+
+      // Get total bookmarks received across this contributor's notes
+      const bookmarks = await getContributorBookmarkCount(row.userId)
 
       const score = calculateScore({
         publishedNotes,
-        downloads: downloadsCount,
+        downloads,
         views,
+        bookmarks,
       })
 
       return {
@@ -67,13 +73,17 @@ export async function getContributorsRanking(
         avatarUrl: row.avatarUrl,
 
         publishedNotes,
-        downloads: downloadsCount,
+        downloads,
         views,
+        bookmarks,
         earliestAchievement: row.earliestAchievement,
 
         score,
       }
     })
+  )
+
+  const ranked = contributors
     .sort((a, b) => {
       if (b.score !== a.score) {
         return b.score - a.score
@@ -81,6 +91,10 @@ export async function getContributorsRanking(
 
       if (b.downloads !== a.downloads) {
         return b.downloads - a.downloads
+      }
+
+      if (b.bookmarks !== a.bookmarks) {
+        return b.bookmarks - a.bookmarks
       }
 
       if (b.views !== a.views) {
@@ -92,7 +106,8 @@ export async function getContributorsRanking(
       }
 
       const achievementDifference =
-        a.earliestAchievement.getTime() - b.earliestAchievement.getTime()
+        (a.earliestAchievement?.getTime() ?? Infinity) -
+        (b.earliestAchievement?.getTime() ?? Infinity)
 
       if (achievementDifference !== 0) {
         return achievementDifference
@@ -102,12 +117,8 @@ export async function getContributorsRanking(
     })
     .slice(0, limit)
 
-  return ranked.map((contributor, index) => {
-    const rank = index + 1
-
-    return {
-      ...contributor,
-      rank,
-    }
-  })
+  return ranked.map((contributor, index) => ({
+    ...contributor,
+    rank: index + 1,
+  }))
 }
