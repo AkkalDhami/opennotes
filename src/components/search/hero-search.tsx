@@ -95,8 +95,7 @@ export function HeroSearch({
 
       <InputGroup
         className={cn(
-          "h-14 rounded-lg border bg-background px-2",
-          "shadow-sm transition-all duration-200",
+          "h-14 rounded-full border bg-background px-2",
           "focus-within:border-primary/50",
           "focus-within:ring-4 focus-within:ring-primary/10"
         )}
@@ -119,7 +118,7 @@ export function HeroSearch({
           value={query}
           onChange={handleChange}
           placeholder={placeholder}
-          className="h-full text-base"
+          className="h-full rounded-full text-base"
           {...autocomplete.inputProps}
         />
       </InputGroup>
