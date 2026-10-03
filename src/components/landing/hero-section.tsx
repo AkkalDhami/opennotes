@@ -101,7 +101,7 @@ export function HeroSection({ className }: HeroSectionProps) {
           autoRampDuration={0.6}
         />
       </div>
-      <div className="pointer-events-none absolute inset-0 h-screen">
+      <div className="pointer-events-none absolute inset-0 hidden h-screen">
         <SideRays
           rayColor1="#f6f1df"
           rayColor2="#080e07"

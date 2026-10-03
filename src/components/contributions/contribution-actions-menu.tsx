@@ -32,7 +32,6 @@ export function ContributionActionsMenu({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        // nativeButton={false}
         render={
           <Button variant="ghost" size="icon" className="size-8">
             <HugeiconsIcon
@@ -79,21 +78,25 @@ export function ContributionActionsMenu({
         ></DropdownMenuItem>
 
         {contribution.status === "DRAFT" ? (
-          <DropdownMenuItem
-            nativeButton={false}
-            render={
-              <Link href={`/profile/contributions/${contribution.id}` as Route}>
-                <HugeiconsIcon
-                  icon={Edit02Icon}
-                  size={16}
-                  color="currentColor"
-                  strokeWidth={2}
-                  className="mr-2 size-4"
-                />
-                Continue Editing
-              </Link>
-            }
-          ></DropdownMenuItem>
+          <>
+            <DropdownMenuItem
+              nativeButton={false}
+              render={
+                <Link
+                  href={`/profile/contributions/${contribution.id}` as Route}
+                >
+                  <HugeiconsIcon
+                    icon={Edit02Icon}
+                    size={16}
+                    color="currentColor"
+                    strokeWidth={2}
+                    className="mr-2 size-4"
+                  />
+                  Continue Editing
+                </Link>
+              }
+            ></DropdownMenuItem>
+          </>
         ) : null}
 
         {contribution.status === "REJECTED" ? (

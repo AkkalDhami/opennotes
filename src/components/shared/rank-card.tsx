@@ -35,7 +35,7 @@ export function RankCard({
   rank,
   totalScore,
   scoreUnit = "",
-  medalSize,
+  medalSize = 130,
   delay = 0,
   className = "",
 }: RankCardProps) {
@@ -49,10 +49,7 @@ export function RankCard({
       initial="hidden"
       animate="visible"
       className={[
-        "relative flex items-center gap-6 overflow-hidden rounded-xl p-6",
-        // "bg-linear-to-br from-emerald-50/70 via-white to-white",
-        // "shadow-[0_1px_2px_rgba(16,24,40,0.04),0_8px_24px_-8px_rgba(16,24,40,0.10)]",
-        // "ring-1 ring-black/4",
+        "relative flex items-center gap-6 overflow-hidden rounded-lg p-4",
         "bg-primary/10",
         className,
       ].join(" ")}
@@ -75,7 +72,7 @@ export function RankCard({
             variants={statVariants}
             initial="hidden"
             animate="visible"
-            className="text-3xl leading-none font-semibold"
+            className="text-xl leading-none font-semibold"
           >
             #{rank}
           </motion.span>
@@ -98,7 +95,7 @@ export function RankCard({
             variants={statVariants}
             initial="hidden"
             animate="visible"
-            className="text-2xl leading-none font-semibold"
+            className="text-xl leading-none font-semibold"
           >
             {totalScore.toLocaleString()} {scoreUnit}
           </motion.span>

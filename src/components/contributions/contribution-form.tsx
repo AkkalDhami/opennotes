@@ -251,9 +251,9 @@ export function ContributionForm({
         isEditing
           ? adminEdit
             ? "/admin/notes"
-            : "/profile/contributions"
+            : "/profile/notes"
           : isDraft
-            ? "/profile/contributions"
+            ? "/profile/notes"
             : "/"
       )
     } catch (error) {
