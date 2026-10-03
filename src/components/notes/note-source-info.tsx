@@ -50,7 +50,7 @@ export function NoteSourceInfo({
   return (
     <section
       aria-labelledby="note-source-heading"
-      className="rounded-lg border bg-muted/20 p-4"
+      className="my-6 rounded-lg border bg-muted/20 p-4"
     >
       <div className="flex gap-3">
         <div className="flex size-10 shrink-0 items-center justify-center rounded-md bg-primary/10">
@@ -105,7 +105,7 @@ export function NoteSourceInfo({
                 rel="noopener noreferrer"
                 className={cn(
                   "mt-1 inline-flex max-w-full items-center gap-1.5",
-                  "text-primary hover:underline",
+                  "text-primary underline-offset-2 hover:underline",
                   "break-all"
                 )}
               >

@@ -35,6 +35,7 @@ export async function Navbar() {
         </div> */}
 
         <div className="flex items-center gap-2">
+          <ThemeToggle />
           {user?.id ? (
             <UserMenu user={user} />
           ) : (
@@ -50,8 +51,6 @@ export async function Navbar() {
               Login
             </Link>
           )}
-
-          <ThemeToggle />
 
           <DropdownMenu>
             <DropdownMenuTrigger
