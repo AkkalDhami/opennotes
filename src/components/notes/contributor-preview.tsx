@@ -20,7 +20,7 @@ export function ContributorPreview({
   notes,
 }: ContributorPreviewProps) {
   return (
-    <div className="space-y-4 p-4 lg:shadow-[0px_0px_50px_1px_#00000024] dark:lg:shadow-[0px_0px_50px_1px_#ffffff24]">
+    <div className="space-y-4 sm:p-4 lg:shadow-[0px_0px_50px_1px_#00000024] dark:lg:shadow-[0px_0px_50px_1px_#ffffff24]">
       <SubHeading as="h3">Contributor Profile</SubHeading>
 
       <div className="space-y-4">
