@@ -171,7 +171,7 @@ export function ContributionStats({ data }: { data: ContributionStatsData }) {
           <span className="flex size-8 items-center justify-center text-emerald-600">
             <HugeiconsIcon icon={Analytics01Icon} size={24} strokeWidth={1.8} />
           </span>
-          <CardTitle className="text-base font-medium">
+          <CardTitle className="text-base font-semibold">
             Contribution Score Breakdown
           </CardTitle>
         </CardHeader>

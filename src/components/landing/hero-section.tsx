@@ -132,7 +132,7 @@ export function HeroSection({ className }: HeroSectionProps) {
         >
           <AnimatedText
             className="font-heading relative text-xs font-medium tracking-[0.14em] text-muted-foreground uppercase sm:text-sm"
-            text="BUILT BY LEARNERS, SHARED WITH EVERYONE"
+            text="SHARED BY LEARNERS. BUILT FOR EVERYONE."
           />
 
           <div ref={scope}>
@@ -159,14 +159,12 @@ export function HeroSection({ className }: HeroSectionProps) {
 
           <AnimatedText
             className="mx-auto max-w-150 text-base leading-relaxed text-muted-foreground sm:max-w-170 sm:text-lg"
-            text="Discover notes and study materials shared by students and educators.
-            Upload your own notes, build your contributor profile, and help
-            others learn."
+            text="Discover notes and study materials shared by students and educators. Share your own notes, build your contributor profile, and help others learn."
           />
 
           <motion.div variants={item} className="w-full max-w-2xl">
             <Suspense fallback={<div className="h-14" />}>
-              <HeroSearch placeholder="Search notes, subjects, topics, courses, and contributors" />
+              <HeroSearch placeholder="Search notes, subjects, or contributors" />
             </Suspense>
           </motion.div>
 
@@ -206,7 +204,7 @@ export function HeroSection({ className }: HeroSectionProps) {
           </motion.div>
 
           <motion.p variants={item} className="text-sm text-muted-foreground">
-            No private groups. No USB drives. Just share the link.
+            No sign-up walls. No paywalls. Just share the link.
           </motion.p>
         </motion.div>
       </Section>
