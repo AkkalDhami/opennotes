@@ -45,7 +45,7 @@ export async function generateMetadata({
     redirect("/notes")
   }
 
-  const title = `${note.title} — ${slugToTitle(note.subject)} ${slugToTitle(note.grade ?? "")} Notes`
+  const title = `${note.title} — ${slugToTitle(note.subject)} ${slugToTitle(note.grade ?? "")} Notes — ${note.contributor.name} (@${note.contributor.username})`
 
   const description =
     note.description?.slice(0, 155) ||
@@ -192,6 +192,7 @@ export default async function NoteDetailPage({ params }: NoteDetailPageProps) {
               />
             )}
           </div>
+
           <NoteActions note={note} fileUrl={fileUrl} />
 
           {note.sourceType !== "ORIGINAL" && (
