@@ -41,38 +41,36 @@ export function UserMenu({
   }
 
   return (
-    <div>
-      <DropdownMenu>
-        <DropdownMenuTrigger>
-          <UserAvatar avatarUrl={user.avatar ?? ""} name={user?.name ?? ""} />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className={"w-44"}>
-          <DropdownMenuGroup>
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuItem render={<Link href={"/profile"} />}>
-              <HugeiconsIcon icon={UserIcon} strokeWidth={2} />
-              My Profile
+    <DropdownMenu>
+      <DropdownMenuTrigger>
+        <UserAvatar avatarUrl={user.avatar ?? ""} name={user?.name ?? ""} />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className={"w-44"}>
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuItem render={<Link href={"/profile"} />}>
+            <HugeiconsIcon icon={UserIcon} strokeWidth={2} />
+            My Profile
+          </DropdownMenuItem>
+          {user.role === "ADMIN" && (
+            <DropdownMenuItem render={<Link href={"/admin/dashboard"} />}>
+              <HugeiconsIcon icon={DashboardSquare03Icon} strokeWidth={2} />
+              Admin Dashboard
             </DropdownMenuItem>
-            {user.role === "ADMIN" && (
-              <DropdownMenuItem render={<Link href={"/admin/dashboard"} />}>
-                <HugeiconsIcon icon={DashboardSquare03Icon} strokeWidth={2} />
-                Admin Dashboard
-              </DropdownMenuItem>
-            )}
-          </DropdownMenuGroup>
-          <DropdownMenuSeparator />
-          <DropdownMenuGroup>
-            <DropdownMenuItem
-              onClick={handleLogout}
-              disabled={isPending}
-              variant="destructive"
-            >
-              <HugeiconsIcon icon={LogoutIcon} strokeWidth={2} />
-              Log out
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
+          )}
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem
+            onClick={handleLogout}
+            disabled={isPending}
+            variant="destructive"
+          >
+            <HugeiconsIcon icon={LogoutIcon} strokeWidth={2} />
+            Log out
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }

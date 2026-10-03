@@ -1,18 +1,28 @@
 /* eslint-disable @next/next/no-img-element */
+
 import { ImageResponse } from "next/og"
+
 import { eq } from "drizzle-orm"
 
 import { db, notes, users } from "@/db"
-import { APP_NAME } from "@/constants/app.constants"
-import { slugToTitle } from "@/utils/slug"
 
+import { APP_NAME } from "@/constants/app.constants"
 export const runtime = "edge"
 
 export const alt = APP_NAME
+
 export const size = {
   width: 1200,
   height: 630,
 }
+
+const slugToTitle = (slug: string): string => {
+  return slug
+    .trim()
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase())
+}
+
 export const contentType = "image/png"
 
 interface Props {
