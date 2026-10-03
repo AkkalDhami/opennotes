@@ -1,5 +1,5 @@
 import { eq, sql } from "drizzle-orm"
-import { db } from "@/db"
+import { bookmarks, db } from "@/db"
 import { notes } from "@/db/"
 import { calculateScore } from "./scoring"
 
@@ -13,21 +13,54 @@ export interface LeaderboardEntry {
 }
 
 async function computeFullLeaderboard(): Promise<LeaderboardEntry[]> {
+  const bookmarkCounts = db
+    .select({
+      userId: notes.contributorId,
+      bookmarks: sql<number>`
+        count(${bookmarks.noteId})::int
+      `,
+    })
+    .from(bookmarks)
+    .innerJoin(notes, eq(bookmarks.noteId, notes.id))
+    .where(eq(notes.status, "PUBLISHED"))
+    .groupBy(notes.contributorId)
+    .as("bookmark_counts")
+
   const rows = await db
     .select({
       userId: notes.contributorId,
-      publishedNotes: sql<number>`count(*)::int`,
-      downloads: sql<number>`coalesce(sum(${notes.downloadCount}), 0)::int`,
-      views: sql<number>`coalesce(sum(${notes.viewCount}), 0)::int`,
+
+      publishedNotes: sql<number>`
+        count(*)::int
+      `,
+
+      downloads: sql<number>`
+        coalesce(sum(${notes.downloadCount}), 0)::int
+      `,
+
+      views: sql<number>`
+        coalesce(sum(${notes.viewCount}), 0)::int
+      `,
+
+      bookmarks: sql<number>`
+        coalesce(${bookmarkCounts.bookmarks}, 0)::int
+      `,
     })
     .from(notes)
+    .leftJoin(bookmarkCounts, eq(notes.contributorId, bookmarkCounts.userId))
     .where(eq(notes.status, "PUBLISHED"))
-    .groupBy(notes.contributorId)
+    .groupBy(notes.contributorId, bookmarkCounts.bookmarks)
 
   return rows
-    .map((row) => ({ ...row, score: calculateScore(row) }))
+    .map((row) => ({
+      ...row,
+      score: calculateScore(row),
+    }))
     .sort((a, b) => b.score - a.score)
-    .map((row, index) => ({ ...row, rank: index + 1 }))
+    .map((row, index) => ({
+      ...row,
+      rank: index + 1,
+    }))
 }
 
 export async function getLeaderboard(limit = 50): Promise<LeaderboardEntry[]> {
