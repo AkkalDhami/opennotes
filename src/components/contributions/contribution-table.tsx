@@ -20,6 +20,9 @@ import {
 import { ContributionListItem } from "@/types/contribution"
 import { slugToTitle } from "@/utils/slug"
 import { formatDate } from "@/utils/format-date"
+import { submitDraftContribution } from "@/lib/user/submit-contribution"
+import { useRouter } from "next/navigation"
+import toast from "react-hot-toast"
 
 interface ContributionTableProps {
   contributions: ContributionListItem[]
@@ -27,6 +30,14 @@ interface ContributionTableProps {
 
 export function ContributionTable({ contributions }: ContributionTableProps) {
   const details = useContributionDetailsSheet()
+  const router = useRouter()
+  const submitDraft = async (contribution: ContributionListItem) => {
+    const result = await submitDraftContribution(contribution.id)
+    if (!result.success) return toast.error(result.error)
+    toast.success(result.message)
+    details.close()
+    router.refresh()
+  }
 
   return (
     <div className="hidden overflow-hidden rounded-lg border p-4 md:block">
@@ -88,6 +99,7 @@ export function ContributionTable({ contributions }: ContributionTableProps) {
                 <ContributionActionsMenu
                   contribution={contribution}
                   onViewDetails={details.view}
+                  onSubmitDraft={submitDraft}
                 />
               </TableCell>
             </TableRow>
@@ -100,6 +112,7 @@ export function ContributionTable({ contributions }: ContributionTableProps) {
           contribution={details.activeContribution}
           open={details.open}
           onOpenChange={(open) => !open && details.close()}
+          onSubmitDraft={submitDraft}
         />
       ) : null}
     </div>

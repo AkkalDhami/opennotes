@@ -7,6 +7,7 @@ import {
   ViewIcon,
   Edit02Icon,
   Delete02Icon,
+  Upload04Icon,
 } from "@hugeicons/core-free-icons"
 
 import {
@@ -23,11 +24,13 @@ import { Route } from "next"
 interface ContributionActionsMenuProps {
   contribution: ContributionListItem
   onViewDetails: (contribution: ContributionListItem) => void
+  onSubmitDraft: (contribution: ContributionListItem) => void
 }
 
 export function ContributionActionsMenu({
   contribution,
   onViewDetails,
+  onSubmitDraft,
 }: ContributionActionsMenuProps) {
   return (
     <DropdownMenu>
@@ -79,6 +82,16 @@ export function ContributionActionsMenu({
 
         {contribution.status === "DRAFT" ? (
           <>
+            <DropdownMenuItem onClick={() => onSubmitDraft(contribution)}>
+              <HugeiconsIcon
+                icon={Upload04Icon}
+                size={16}
+                color="currentColor"
+                strokeWidth={2}
+                className="mr-2 size-4"
+              />
+              Submit for Review
+            </DropdownMenuItem>
             <DropdownMenuItem
               nativeButton={false}
               render={

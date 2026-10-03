@@ -13,6 +13,9 @@ import {
 import { ContributionListItem } from "@/types/contribution"
 import { formatDate } from "@/utils/format-date"
 import { slugToTitle } from "@/utils/slug"
+import { submitDraftContribution } from "@/lib/user/submit-contribution"
+import { useRouter } from "next/navigation"
+import toast from "react-hot-toast"
 
 interface ContributionCardListProps {
   contributions: ContributionListItem[]
@@ -22,6 +25,14 @@ export function ContributionCardList({
   contributions,
 }: ContributionCardListProps) {
   const details = useContributionDetailsSheet()
+  const router = useRouter()
+  const submitDraft = async (contribution: ContributionListItem) => {
+    const result = await submitDraftContribution(contribution.id)
+    if (!result.success) return toast.error(result.error)
+    toast.success(result.message)
+    details.close()
+    router.refresh()
+  }
 
   return (
     <div className="flex flex-col gap-3 md:hidden">
@@ -41,6 +52,7 @@ export function ContributionCardList({
               <ContributionActionsMenu
                 contribution={contribution}
                 onViewDetails={details.view}
+                onSubmitDraft={submitDraft}
               />
             </div>
 
@@ -105,6 +117,7 @@ export function ContributionCardList({
           contribution={details.activeContribution}
           open={details.open}
           onOpenChange={(open) => !open && details.close()}
+          onSubmitDraft={submitDraft}
         />
       ) : null}
     </div>

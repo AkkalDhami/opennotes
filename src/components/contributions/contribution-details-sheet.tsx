@@ -2,7 +2,11 @@
 
 import { useState } from "react"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { Edit03Icon, Link04Icon } from "@hugeicons/core-free-icons"
+import {
+  Edit03Icon,
+  Link04Icon,
+  Upload04Icon,
+} from "@hugeicons/core-free-icons"
 
 import {
   Sheet,
@@ -23,6 +27,7 @@ interface ContributionDetailsSheetProps {
   contribution: ContributionListItem
   open: boolean
   onOpenChange: (open: boolean) => void
+  onSubmitDraft: (contribution: ContributionListItem) => void
 }
 
 function formatDate(date: Date | null) {
@@ -51,6 +56,7 @@ export function ContributionDetailsSheet({
   contribution,
   open,
   onOpenChange,
+  onSubmitDraft,
 }: ContributionDetailsSheetProps) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -140,6 +146,21 @@ export function ContributionDetailsSheet({
         ) : null}
 
         <div className="grid gap-2 sm:grid-cols-2">
+          {contribution.status === "DRAFT" ? (
+            <Button
+              className="w-full gap-2"
+              onClick={() => onSubmitDraft(contribution)}
+            >
+              <HugeiconsIcon
+                icon={Upload04Icon}
+                size={16}
+                color="currentColor"
+                strokeWidth={2}
+                className="size-4"
+              />
+              Submit for Review
+            </Button>
+          ) : null}
           {contribution.status === "PUBLISHED" ? (
             <Button
               nativeButton={false}
