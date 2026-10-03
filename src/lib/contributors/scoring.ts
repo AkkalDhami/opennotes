@@ -8,15 +8,6 @@ import {
   MULTI_SUBJECT_THRESHOLD,
 } from "@/constants/badge.constants"
 
-/**
- * Raw counts pulled straight from currently-PUBLISHED notes. This is the
- * only place eligibility is decided: a note counts if and only if its
- * `status` is 'PUBLISHED' right now. There is no separate "contribution"
- * row to fall out of sync — remove the note (status flips away from
- * PUBLISHED) and it stops counting on the very next read; republish it
- * (status flips back) and it counts again. Nothing is ever incremented
- * or decremented, so there is nothing to double-award.
- */
 export interface ContributorRawCounts {
   publishedNotes: number
   downloads: number

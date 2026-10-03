@@ -14,10 +14,10 @@ export interface ContributorRank {
   views: number
   bookmarks: number
 }
+
 export async function getContributorRank(
   contributorId: string
 ): Promise<ContributorRank | null> {
-  // Get all contributors' ranking data
   const rows = await db
     .select({
       contributorId: users.id,

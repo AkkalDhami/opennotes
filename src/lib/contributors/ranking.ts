@@ -35,10 +35,10 @@ export async function getLeaderboard(limit = 50): Promise<LeaderboardEntry[]> {
   return full.slice(0, limit)
 }
 
-export async function getContributorRank(
-  userId: string
-): Promise<number | null> {
-  const full = await computeFullLeaderboard()
-  const entry = full.find((row) => row.userId === userId)
-  return entry ? entry.rank : null
-}
+// export async function getContributorRank(
+//   userId: string
+// ): Promise<number | null> {
+//   const full = await computeFullLeaderboard()
+//   const entry = full.find((row) => row.userId === userId)
+//   return entry ? entry.rank : null
+// }
