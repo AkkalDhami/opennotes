@@ -23,16 +23,16 @@ import {
 import { slugToTitle } from "@/utils/slug"
 import { formatDate } from "@/utils/format-date"
 import { cn } from "@/lib/utils"
-import { Separator } from "@/components/ui/separator"
 import { buttonVariants } from "@/components/ui/button"
 import { SubHeading } from "@/components/ui/sub-heading"
 import { getContributionActivity } from "@/lib/contributions/get-contribution-activity"
 import { NoteContributionGraph } from "@/components/contributions/contribution-graph-content"
-import { RankMedal } from "@/components/shared/rank-medal"
 import { getContributorRank } from "@/lib/contributors/get-contributor-rank"
 import { absoluteUrl } from "@/lib/seo"
 import { ContributorDashboard } from "@/components/badge/contributor-dashboard"
 import { RankCard } from "@/components/shared/rank-card"
+import { EChartsLatencyAreaChart } from "@/components/evilcharts/blocks/latency-echarts-area-chart"
+import { ContributionStats } from "@/components/contributions/contribution-stats"
 
 interface ContributorDetailPageProps {
   params: Promise<{ username: string }>
@@ -132,8 +132,6 @@ export default async function ContributorDetailPage({
         earnedBadgeSlugs={earnedBadgeSlugs}
       />
 
-      {/* <EChartsLatencyAreaChart /> */}
-
       <div className="flex flex-wrap-reverse justify-between gap-6">
         <div className="space-y-4">
           <div className="flex items-center gap-2">
@@ -182,7 +180,7 @@ export default async function ContributorDetailPage({
                   : "Published Notes"}
               </p>
             </div>
-            <Separator orientation="vertical" />
+
             <div className="flex items-center gap-2">
               <HugeiconsIcon
                 icon={Calendar04Icon}
@@ -199,7 +197,7 @@ export default async function ContributorDetailPage({
                 })}
               </p>
             </div>
-            <Separator orientation="vertical" />
+
             <div className="flex items-center gap-2">
               <HugeiconsIcon
                 icon={Download01Icon}
@@ -218,7 +216,7 @@ export default async function ContributorDetailPage({
                 </span>
               </p>
             </div>
-            <Separator orientation="vertical" />
+
             <div className="flex items-center gap-2">
               <HugeiconsIcon
                 icon={ChampionIcon}
@@ -266,7 +264,6 @@ export default async function ContributorDetailPage({
         </div>
         {contributorRank?.rank && (
           <>
-            <RankMedal rank={contributorRank?.rank} showLabel={false} />
             <RankCard
               rank={contributorRank?.rank}
               totalScore={contributorRank?.score || 0}
@@ -276,23 +273,39 @@ export default async function ContributorDetailPage({
         )}
       </div>
 
-      <NoteContributionGraph
-        initialData={contributionActivity.days}
-        className="max-w-225"
-      />
-
-      <section className="space-y-4">
-        <SubHeading as="h3">Published Notes:</SubHeading>
-        <div className="mt-4">
-          <ContributorNotes
-            notes={notes}
-            page={page}
-            totalPages={totalPages}
-            username={contributor.username}
-            from="contributor"
+      <div className="flex flex-col gap-6 lg:flex-row">
+        <div className="space-y-6">
+          <NoteContributionGraph
+            initialData={contributionActivity.days}
+            className="max-w-180"
           />
+
+          <section className="space-y-4">
+            <SubHeading as="h3">Published Notes:</SubHeading>
+            <div className="mt-4">
+              <ContributorNotes
+                notes={notes}
+                page={page}
+                totalPages={totalPages}
+                username={contributor.username}
+                from="contributor"
+              />
+            </div>
+          </section>
         </div>
-      </section>
+
+        <ContributionStats
+          data={{
+            publishedNotes: 1,
+            downloads: 1,
+            views: 0,
+            bookmarks: 0,
+            trend: { publishedNotes: 1, downloads: 1 },
+          }}
+        />
+      </div>
+
+      <EChartsLatencyAreaChart />
     </main>
   )
 }

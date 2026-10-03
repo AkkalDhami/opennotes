@@ -5,7 +5,7 @@ import {
   THEMES,
   TOKEN_CSS_VAR_MAP,
   ThemeTokens,
-} from "../src/lib/appearance/themes"
+} from "@/lib/appearance/themes"
 
 function block(selector: string, tokens: ThemeTokens): string {
   const lines = (Object.keys(TOKEN_CSS_VAR_MAP) as (keyof ThemeTokens)[])
