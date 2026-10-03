@@ -31,8 +31,9 @@ import { getContributorRank } from "@/lib/contributors/get-contributor-rank"
 import { absoluteUrl } from "@/lib/seo"
 import { ContributorDashboard } from "@/components/badge/contributor-dashboard"
 import { RankCard } from "@/components/shared/rank-card"
-import { EChartsLatencyAreaChart } from "@/components/evilcharts/blocks/latency-echarts-area-chart"
 import { ContributionStats } from "@/components/contributions/contribution-stats"
+import { ContributionOverviewChart } from "@/components/contributors/contribution-overview-chart"
+import { getContributorChartData } from "@/lib/contributors/get-contributor-chart-data"
 
 interface ContributorDetailPageProps {
   params: Promise<{ username: string }>
@@ -94,14 +95,19 @@ export default async function ContributorDetailPage({
 
   if (!contributor) notFound()
 
-  const [{ notes, totalPages }, contributionActivity, contributorRank] =
-    await Promise.all([
-      getContributorPublishedNotes(contributor.id, page),
-      getContributionActivity({
-        contributorId: contributor.id,
-      }),
-      getContributorRank(contributor.id),
-    ])
+  const [
+    { notes, totalPages },
+    contributionActivity,
+    contributorRank,
+    chartData,
+  ] = await Promise.all([
+    getContributorPublishedNotes(contributor.id, page),
+    getContributionActivity({
+      contributorId: contributor.id,
+    }),
+    getContributorRank(contributor.id),
+    getContributorChartData(contributor.id),
+  ])
 
   const [summary, earnedBadgeSlugs] = await Promise.all([
     getContributorSummary(contributor.id),
@@ -273,39 +279,38 @@ export default async function ContributorDetailPage({
         )}
       </div>
 
-      <div className="flex flex-col gap-6 lg:flex-row">
-        <div className="space-y-6">
+      <ContributionOverviewChart data={chartData} />
+
+      <div className="grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,0.7fr)]">
+        <div className="min-w-0 space-y-6">
           <NoteContributionGraph
             initialData={contributionActivity.days}
-            className="max-w-180"
+            className="w-full"
           />
 
-          <section className="space-y-4">
-            <SubHeading as="h3">Published Notes:</SubHeading>
-            <div className="mt-4">
-              <ContributorNotes
-                notes={notes}
-                page={page}
-                totalPages={totalPages}
-                username={contributor.username}
-                from="contributor"
-              />
-            </div>
+          <section className="min-w-0 space-y-4">
+            <SubHeading as="h3">Published Notes</SubHeading>
+            <ContributorNotes
+              notes={notes}
+              page={page}
+              totalPages={totalPages}
+              username={contributor.username}
+              from="contributor"
+            />
           </section>
         </div>
 
         <ContributionStats
           data={{
-            publishedNotes: 1,
-            downloads: 1,
-            views: 0,
-            bookmarks: 0,
-            trend: { publishedNotes: 1, downloads: 1 },
+            totalScore: contributorRank?.score ?? 0,
+            publishedNotes:
+              contributorRank?.publishedNotes ?? contributor.publishedNoteCount,
+            downloads: contributorRank?.downloads ?? 0,
+            views: contributorRank?.views ?? 0,
+            bookmarks: contributorRank?.bookmarks ?? 0,
           }}
         />
       </div>
-
-      <EChartsLatencyAreaChart />
     </main>
   )
 }

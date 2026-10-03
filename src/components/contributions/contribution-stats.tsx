@@ -12,18 +12,19 @@ import {
 } from "@hugeicons/core-free-icons"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
+import { CONTRIBUTOR_SCORE } from "@/constants/badge.constants"
 
 type Tone = "green" | "blue" | "purple" | "orange"
+type MetricKey = "publishedNotes" | "downloads" | "views" | "bookmarks"
 
+/** Only the values are passed in. Labels, icons, hints and weights are fixed below. */
 export interface ContributionStatsData {
   publishedNotes: number
   downloads: number
   views: number
   bookmarks: number
-  /** Change since last period. 0 renders a dash. */
-  trend?: Partial<
-    Record<"publishedNotes" | "downloads" | "views" | "bookmarks", number>
-  >
+  trend?: Partial<Record<MetricKey, number>>
+  totalScore?: number
 }
 
 const TONES: Record<Tone, { bg: string; fg: string }> = {
@@ -33,61 +34,53 @@ const TONES: Record<Tone, { bg: string; fg: string }> = {
   orange: { bg: "bg-orange-500/10", fg: "text-orange-500" },
 }
 
-type MetricKey = "publishedNotes" | "downloads" | "views" | "bookmarks"
-
+// Static config: label, hint, icon, colors, weight
 const METRICS: {
   key: MetricKey
   label: string
   hint: string
-  breakdownLabel: string
   weight: number
   icon: IconSvgElement
   tone: Tone
+  breakdownTone: Tone
 }[] = [
   {
     key: "publishedNotes",
     label: "Published Notes",
     hint: "Total notes you've shared",
-    breakdownLabel: "Published Notes",
-    weight: 20,
+    weight: CONTRIBUTOR_SCORE.PUBLISHED_NOTE,
     icon: File01Icon,
     tone: "green",
+    breakdownTone: "green",
   },
   {
     key: "downloads",
     label: "Downloads",
     hint: "Total downloads on your notes",
-    breakdownLabel: "Downloads",
-    weight: 3,
+    weight: CONTRIBUTOR_SCORE.DOWNLOAD,
     icon: Download01Icon,
     tone: "green",
+    breakdownTone: "blue",
   },
   {
     key: "views",
     label: "Views",
     hint: "Total views on your notes",
-    breakdownLabel: "Views",
-    weight: 1,
+    weight: CONTRIBUTOR_SCORE.VIEW,
     icon: ViewIcon,
     tone: "blue",
+    breakdownTone: "purple",
   },
   {
     key: "bookmarks",
     label: "Bookmarks",
     hint: "Total bookmarks on your notes",
-    breakdownLabel: "Bookmarks",
-    weight: 5,
+    weight: CONTRIBUTOR_SCORE.BOOKMARK,
     icon: Bookmark01Icon,
     tone: "orange",
+    breakdownTone: "orange",
   },
 ]
-
-const BREAKDOWN_TONES: Record<MetricKey, Tone> = {
-  publishedNotes: "green",
-  downloads: "blue",
-  views: "purple",
-  bookmarks: "orange",
-}
 
 function IconBadge({
   icon,
@@ -143,7 +136,9 @@ function StatCard({
       </CardHeader>
       <CardContent className="px-5">
         <div className="flex items-center gap-3">
-          <span className="text-3xl font-semibold tracking-tight">{value}</span>
+          <span className="text-3xl font-semibold tracking-tight">
+            {value.toLocaleString()}
+          </span>
           <Trend value={trend} />
         </div>
         <p className="mt-1.5 text-sm text-muted-foreground">{metric.hint}</p>
@@ -153,7 +148,9 @@ function StatCard({
 }
 
 export function ContributionStats({ data }: { data: ContributionStatsData }) {
-  const total = METRICS.reduce((sum, m) => sum + data[m.key] * m.weight, 0)
+  const total =
+    data.totalScore ??
+    Math.round(METRICS.reduce((sum, m) => sum + data[m.key] * m.weight, 0))
 
   return (
     <div className="mx-auto w-full max-w-md space-y-5">
@@ -174,11 +171,9 @@ export function ContributionStats({ data }: { data: ContributionStatsData }) {
           <span className="flex size-8 items-center justify-center text-emerald-600">
             <HugeiconsIcon icon={Analytics01Icon} size={24} strokeWidth={1.8} />
           </span>
-          <div>
-            <CardTitle className="text-base font-medium">
-              Contribution Score Breakdown
-            </CardTitle>
-          </div>
+          <CardTitle className="text-base font-medium">
+            Contribution Score Breakdown
+          </CardTitle>
         </CardHeader>
 
         <CardContent className="px-5">
@@ -188,17 +183,15 @@ export function ContributionStats({ data }: { data: ContributionStatsData }) {
                 key={m.key}
                 className="flex items-center gap-3 py-3 first:pt-0"
               >
-                <IconBadge
-                  icon={m.icon}
-                  tone={BREAKDOWN_TONES[m.key]}
-                  size="sm"
-                />
-                <span className="flex-1 text-sm">{m.breakdownLabel}</span>
+                <IconBadge icon={m.icon} tone={m.breakdownTone} size="sm" />
+                <span className="flex-1 text-sm">{m.label}</span>
                 <span className="w-16 text-center text-sm text-muted-foreground tabular-nums">
                   {data[m.key]} × {m.weight}
                 </span>
                 <span className="w-10 text-right text-sm font-semibold tabular-nums">
-                  {data[m.key] * m.weight}
+                  {(data[m.key] * m.weight).toLocaleString(undefined, {
+                    maximumFractionDigits: 1,
+                  })}
                 </span>
               </li>
             ))}
@@ -207,7 +200,7 @@ export function ContributionStats({ data }: { data: ContributionStatsData }) {
           <div className="flex items-center justify-between border-t pt-4">
             <span className="text-sm font-semibold">Total Score</span>
             <span className="flex items-center gap-1.5 text-xl font-bold tabular-nums">
-              {total}
+              {total.toLocaleString()}
               <HugeiconsIcon
                 icon={StarIcon}
                 size={20}
