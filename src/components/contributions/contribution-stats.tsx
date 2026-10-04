@@ -109,7 +109,7 @@ function IconBadge({
   )
 }
 
-function Trend({ value }: { value?: number }) {
+export function Trend({ value }: { value?: number }) {
   if (!value) return <span className="text-sm text-muted-foreground">—</span>
   return (
     <span className="inline-flex items-center gap-0.5 text-sm font-medium text-emerald-600">
@@ -122,28 +122,22 @@ function Trend({ value }: { value?: number }) {
 function StatCard({
   metric,
   value,
-  trend,
 }: {
   metric: (typeof METRICS)[number]
   value: number
-  trend?: number
 }) {
   return (
-    <Card className="gap-4 rounded-2xl py-5 shadow-none">
-      <CardHeader className="flex flex-row items-center gap-3 px-5">
-        <IconBadge icon={metric.icon} tone={metric.tone} />
-        <CardTitle className="text-base font-medium">{metric.label}</CardTitle>
-      </CardHeader>
-      <CardContent className="px-5">
-        <div className="flex items-center gap-3">
-          <span className="text-3xl font-semibold tracking-tight">
-            {value.toLocaleString()}
-          </span>
-          <Trend value={trend} />
-        </div>
-        <p className="mt-1.5 text-sm text-muted-foreground">{metric.hint}</p>
-      </CardContent>
-    </Card>
+    <div className="flex flex-row items-center gap-3">
+      <IconBadge icon={metric.icon} tone={metric.tone} size="md" />
+      <div className="flex flex-col gap-0">
+        <h5 className="text-xs font-medium text-muted-foreground">
+          {metric.label}
+        </h5>
+        <span className="text-base font-semibold tracking-tight">
+          {value.toLocaleString()}
+        </span>
+      </div>
+    </div>
   )
 }
 
@@ -156,12 +150,7 @@ export function ContributionStats({ data }: { data: ContributionStatsData }) {
     <div className="mx-auto w-full max-w-md space-y-5">
       <div className="grid grid-cols-2 gap-4">
         {METRICS.map((m) => (
-          <StatCard
-            key={m.key}
-            metric={m}
-            value={data[m.key]}
-            trend={data.trend?.[m.key]}
-          />
+          <StatCard key={m.key} metric={m} value={data[m.key]} />
         ))}
       </div>
 

@@ -140,34 +140,46 @@ export default async function ContributorDetailPage({
 
       <div className="flex flex-wrap-reverse justify-between gap-6">
         <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <div className="relative">
-              <Avatar className="size-18 border">
-                <AvatarImage
-                  src={contributor.avatarUrl ?? undefined}
-                  alt={`${contributor.displayName}'s avatar`}
+          <div className="flex flex-wrap-reverse justify-between gap-6">
+            <div className="flex items-center gap-2">
+              <div className="relative">
+                <Avatar className="size-18 border">
+                  <AvatarImage
+                    src={contributor.avatarUrl ?? undefined}
+                    alt={`${contributor.displayName}'s avatar`}
+                  />
+                  <AvatarFallback className="text-lg">
+                    {getInitials(contributor.displayName)}
+                  </AvatarFallback>
+                </Avatar>
+                <HugeiconsIcon
+                  icon={CheckmarkBadge01Icon}
+                  size={24}
+                  color="currentColor"
+                  strokeWidth={2}
+                  className={cn(
+                    "size-5 fill-blue-600 stroke-blue-600 text-white",
+                    "absolute -right-0.5 bottom-0.5 flex items-center justify-center rounded-full bg-background"
+                  )}
                 />
-                <AvatarFallback className="text-lg">
-                  {getInitials(contributor.displayName)}
-                </AvatarFallback>
-              </Avatar>
-              <HugeiconsIcon
-                icon={CheckmarkBadge01Icon}
-                size={24}
-                color="currentColor"
-                strokeWidth={2}
-                className={cn(
-                  "size-5 fill-blue-600 stroke-blue-600 text-white",
-                  "absolute -right-0.5 bottom-0.5 flex items-center justify-center rounded-full bg-background"
-                )}
-              />
+              </div>
+              <div className="space-y-1">
+                <h3 className="text-xl font-medium text-foreground">
+                  {contributor.displayName}
+                </h3>
+                <p className="text-muted-foreground">@{contributor.username}</p>
+              </div>
             </div>
-            <div className="space-y-1">
-              <h3 className="text-xl font-medium text-foreground">
-                {contributor.displayName}
-              </h3>
-              <p className="text-muted-foreground">@{contributor.username}</p>
-            </div>
+            {contributorRank?.rank && (
+              <>
+                <RankCard
+                  rank={contributorRank?.rank}
+                  totalScore={contributorRank?.score || 0}
+                  scoreUnit="pts"
+                  className="hidden"
+                />
+              </>
+            )}
           </div>
 
           <div className="flex flex-wrap items-center gap-4">
@@ -180,27 +192,13 @@ export default async function ContributorDetailPage({
                 className="size-4 text-muted-foreground"
               />
               <p className="font-medium text-muted-foreground">
-                {contributor.publishedNoteCount.toLocaleString()}{" "}
                 {contributor.publishedNoteCount === 1
-                  ? "Note Shared"
+                  ? "Published Note"
                   : "Published Notes"}
-              </p>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <HugeiconsIcon
-                icon={Calendar04Icon}
-                size={24}
-                color="currentColor"
-                strokeWidth={2}
-                className="size-4 text-muted-foreground"
-              />
-
-              <p className="text-muted-foreground">
-                Member since{" "}
-                {formatDate(contributor.joinedAt, {
-                  dateStyle: "medium",
-                })}
+                :{" "}
+                <span className="font-medium text-foreground">
+                  {contributor.publishedNoteCount.toLocaleString()}
+                </span>
               </p>
             </div>
 
@@ -241,6 +239,23 @@ export default async function ContributorDetailPage({
                 </span>
               </p>
             </div>
+
+            <div className="flex items-center gap-2">
+              <HugeiconsIcon
+                icon={Calendar04Icon}
+                size={24}
+                color="currentColor"
+                strokeWidth={2}
+                className="size-4 text-muted-foreground"
+              />
+
+              <p className="text-muted-foreground">
+                Member since{" "}
+                {formatDate(contributor.joinedAt, {
+                  dateStyle: "medium",
+                })}
+              </p>
+            </div>
           </div>
 
           {contributor.bio && (
@@ -261,22 +276,19 @@ export default async function ContributorDetailPage({
               >
                 {contributor.subjects.map((subject) => (
                   <li key={subject} className="list-inside pl-2">
-                    {slugToTitle(subject)}
+                    <Link
+                      href={`/notes?subject=${subject}`}
+                      key={subject}
+                      className="underline-offset-2 hover:text-foreground hover:underline"
+                    >
+                      {slugToTitle(subject)}
+                    </Link>
                   </li>
                 ))}
               </ul>
             </div>
           )}
         </div>
-        {contributorRank?.rank && (
-          <>
-            <RankCard
-              rank={contributorRank?.rank}
-              totalScore={contributorRank?.score || 0}
-              scoreUnit="pts"
-            />
-          </>
-        )}
       </div>
 
       <ContributionOverviewChart data={chartData} />

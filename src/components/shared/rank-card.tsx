@@ -3,6 +3,7 @@
 import { motion, type Variants } from "motion/react"
 import { RankMedal, type Rank } from "./rank-medal"
 import { Separator } from "@/components/ui/separator"
+import { cn } from "@/lib/utils"
 
 interface RankCardProps {
   rank: Rank
@@ -48,11 +49,11 @@ export function RankCard({
       variants={cardVariants}
       initial="hidden"
       animate="visible"
-      className={[
+      className={cn(
         "relative flex items-center gap-6 overflow-hidden rounded-lg p-4",
         "bg-primary/10",
-        className,
-      ].join(" ")}
+        className
+      )}
     >
       <RankMedal rank={rank} size={medalSize} delay={delay} />
 
