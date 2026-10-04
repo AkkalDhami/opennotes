@@ -10,14 +10,11 @@ import {
   File01Icon,
   Folder01Icon,
   FolderLibraryIcon,
-  Globe02Icon,
   ViewIcon,
 } from "@hugeicons/core-free-icons"
 
 import { NoteCard } from "@/components/notes/note-card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { buttonVariants } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
 import { APP_NAME } from "@/constants/app.constants"
 import { cn } from "@/lib/utils"
 import { createMetadata } from "@/lib/seo"
@@ -30,12 +27,10 @@ import {
 } from "@/lib/user/collection-queries"
 import { buildCollectionSharePath } from "@/lib/user/collection-share"
 import { formatCompactNumber } from "@/utils/format"
-import { getInitials } from "@/utils/get-initials"
+import { formatRelativeTime } from "@/utils/format-date"
+import { VerifiedUserAvatar } from "@/components/shared/verified-user-avatar"
 
 type PublicCollectionPageProps = {
-  // Not `PageProps<"/collections/[slug]">`: the generated route types only
-  // exist after `next dev`/`next build` has run, so relying on them makes a
-  // clean-checkout `npm run typecheck` fail.
   params: Promise<{ slug: string }>
 }
 
@@ -64,13 +59,6 @@ export async function generateMetadata({
   })
 }
 
-/**
- * Public, read-only view of a collection — the destination for share links.
- *
- * A private collection 404s rather than 403s: "you're not allowed to see this"
- * would confirm the collection exists, which is itself a leak given slugs are
- * guessable from a contributor's public profile.
- */
 export default async function page({ params }: PublicCollectionPageProps) {
   const { slug } = await params
 
@@ -131,8 +119,8 @@ export default async function page({ params }: PublicCollectionPageProps) {
         </nav>
       )}
 
-      <div className="flex items-start gap-4">
-        <div className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+      <div className="flex items-start gap-4 sm:items-center">
+        <div className="flex size-15 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
           <HugeiconsIcon
             icon={Folder01Icon}
             size={28}
@@ -145,45 +133,45 @@ export default async function page({ params }: PublicCollectionPageProps) {
           <h1 className="text-2xl font-medium tracking-tight text-foreground sm:text-3xl">
             {collection.name}
           </h1>
-          {collection.description && (
-            <p className="max-w-2xl text-muted-foreground">
-              {collection.description}
-            </p>
-          )}
+          <p className="text-sm text-muted-foreground">
+            Updated {formatRelativeTime(new Date(collection.updatedAt))}
+          </p>
         </div>
-
-        <span className="hidden shrink-0 items-center gap-1.5 rounded-full border px-3 py-1 text-xs text-muted-foreground sm:inline-flex">
-          <HugeiconsIcon
-            icon={Globe02Icon}
-            size={14}
-            color="currentColor"
-            strokeWidth={2}
-          />
-          Public
-        </span>
+        {collection.description && (
+          <p className="max-w-2xl text-muted-foreground">
+            {collection.description}
+          </p>
+        )}
       </div>
 
       {owner && (
         <div className="flex items-center gap-3">
-          <Avatar className="size-10 border">
+          {/* <Avatar className="size-10 border">
             <AvatarImage
               src={owner.avatarUrl ?? undefined}
               alt={`${ownerLabel}'s avatar`}
             />
             <AvatarFallback>{getInitials(ownerLabel)}</AvatarFallback>
-          </Avatar>
+          </Avatar> */}
+
+          <VerifiedUserAvatar
+            avatarUrl={owner.avatarUrl}
+            displayName={ownerLabel}
+          />
 
           <div className="text-sm">
             <p className="text-muted-foreground">Curated by</p>
             {owner.username ? (
               <Link
                 href={`/contributors/${owner.username}` as Route}
-                className="font-medium text-foreground hover:underline"
+                className="text-base font-medium text-foreground hover:underline"
               >
                 {ownerLabel}
               </Link>
             ) : (
-              <span className="font-medium text-foreground">{ownerLabel}</span>
+              <span className="text-base font-medium text-foreground">
+                {ownerLabel}
+              </span>
             )}
           </div>
         </div>
@@ -199,7 +187,6 @@ export default async function page({ params }: PublicCollectionPageProps) {
           />
           {formatCompactNumber(noteCount)} {noteCount === 1 ? "Note" : "Notes"}
         </span>
-        <Separator orientation="vertical" />
         <span className="flex items-center gap-1.5">
           <HugeiconsIcon
             icon={Download01Icon}
@@ -209,7 +196,6 @@ export default async function page({ params }: PublicCollectionPageProps) {
           />
           {formatCompactNumber(downloadCount)} Downloads
         </span>
-        <Separator orientation="vertical" />
         <span className="flex items-center gap-1.5">
           <HugeiconsIcon
             icon={ViewIcon}
@@ -221,7 +207,6 @@ export default async function page({ params }: PublicCollectionPageProps) {
         </span>
         {children.length > 0 && (
           <>
-            <Separator orientation="vertical" />
             <span className="flex items-center gap-1.5">
               <HugeiconsIcon
                 icon={FolderLibraryIcon}
@@ -238,7 +223,7 @@ export default async function page({ params }: PublicCollectionPageProps) {
 
       {children.length > 0 && (
         <section className="space-y-3">
-          <h2 className="text-sm font-semibold tracking-wide text-muted-foreground uppercase">
+          <h2 className="font-semibold text-muted-foreground">
             Subcollections
           </h2>
           <div className="divide-y divide-border rounded-lg border bg-card">
@@ -273,9 +258,7 @@ export default async function page({ params }: PublicCollectionPageProps) {
       )}
 
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold tracking-wide text-muted-foreground uppercase">
-          Notes
-        </h2>
+        <h2 className="text-base font-semibold text-muted-foreground">Notes</h2>
         {notes.length === 0 ? (
           <p className="text-sm text-muted-foreground">
             This collection doesn&apos;t have any published notes yet.

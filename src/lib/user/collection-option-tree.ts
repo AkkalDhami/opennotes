@@ -1,14 +1,3 @@
-/**
- * Builds nestable trees out of the flat collection lists that dialogs receive.
- *
- * The picker components render a tree, but the two call sites hand us different
- * shapes: `getOwnerCollectionOptions` returns `{id, name, parentId}` rows, while
- * `CreateCollectionInlineForm` receives an already-flattened `{id, name, depth}`
- * list. This module normalizes both into {@link CollectionOptionNode}.
- *
- * Deliberately free of server-only imports — the pickers are client components.
- */
-
 export type CollectionOptionNode = {
   id: string
   name: string
@@ -22,12 +11,6 @@ function sortByName(nodes: CollectionOptionNode[]): CollectionOptionNode[] {
   return nodes
 }
 
-/**
- * `{id, name, parentId}[]` -> tree. A row whose `parentId` points at something
- * not present in the list is surfaced at the top level rather than dropped:
- * `collections.parent_id` has no foreign key, so a dangling pointer is possible
- * and silently hiding the collection would be worse than showing it flat.
- */
 export function buildOptionTree(
   options: { id: string; name: string; parentId: string | null }[]
 ): CollectionOptionNode[] {
