@@ -108,7 +108,14 @@ export default function RootLayout({
         <ThemeScript />
       </head>
       <body>
-        <ThemeProvider>
+        <ThemeProvider
+          enableSystem
+          disableTransitionOnChange
+          enableColorScheme
+          storageKey="opennotes-theme"
+          defaultTheme="system"
+          attribute="class"
+        >
           <AppearanceProvider>
             <Analytics />
             <DialogProvider />

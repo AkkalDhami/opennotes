@@ -165,12 +165,14 @@ export function ContributionStats({ data }: { data: ContributionStatsData }) {
         ))}
       </div>
 
-      {/* Contribution score breakdown */}
       <Card className="gap-5 rounded-lg py-5 shadow-none">
-        <CardHeader className="flex flex-row items-center gap-3 px-5">
-          <span className="flex size-8 items-center justify-center text-emerald-600">
-            <HugeiconsIcon icon={Analytics01Icon} size={24} strokeWidth={1.8} />
-          </span>
+        <CardHeader className="flex flex-row items-center gap-2 px-5">
+          <HugeiconsIcon
+            icon={Analytics01Icon}
+            size={24}
+            strokeWidth={1.8}
+            className="text-primary"
+          />
           <CardTitle className="text-base font-semibold">
             Contribution Score Breakdown
           </CardTitle>

@@ -77,12 +77,13 @@ export function ContributorCard({
                     <p className="text-lg text-muted-foreground">@{username}</p>
                   </div>
                 </div>
-
-                <p className="text-base text-foreground">
+                <p className="text-base text-muted-foreground">
                   <span className="text-lg font-semibold text-foreground">
                     {publishedNoteCount.toLocaleString()}
                   </span>{" "}
-                  {publishedNoteCount === 1 ? "Note Shared" : "Published Notes"}
+                  {publishedNoteCount === 1
+                    ? "Published Note"
+                    : "Published Notes"}
                 </p>
 
                 {/* {topSubject && (
