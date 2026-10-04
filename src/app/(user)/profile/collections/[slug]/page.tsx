@@ -26,6 +26,7 @@ import {
 } from "@/lib/user/collection-queries"
 import { formatCompactNumber } from "@/utils/format"
 import { formatRelativeTime } from "@/utils/format-date"
+import { cn } from "@/lib/utils"
 
 export const metadata: Metadata = {
   title: "My Collections",
@@ -44,11 +45,11 @@ function SectionHeading({
 }) {
   return (
     <div className="mb-4 flex items-center gap-3">
-      <h2 className="text-[11px] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
+      <h2 className="text-base font-semibold text-muted-foreground capitalize">
         {label}
       </h2>
       {count !== undefined && (
-        <span className="text-[11px] font-medium text-muted-foreground tabular-nums">
+        <span className="flex size-6 items-center justify-center rounded-full border text-sm font-medium text-muted-foreground tabular-nums">
           {formatCompactNumber(count)}
         </span>
       )}
@@ -92,7 +93,7 @@ export default async function page(
     <DashboardContainer>
       <nav
         aria-label="Breadcrumb"
-        className="flex items-center gap-1 overflow-x-auto text-xs text-muted-foreground"
+        className="flex items-center gap-1 overflow-x-auto text-sm text-muted-foreground"
       >
         <Link
           href="/profile/collections"
@@ -157,8 +158,13 @@ export default async function page(
                 {collection.name}
               </h1>
               <Badge
-                variant={isPublic ? "secondary" : "outline"}
-                className="gap-1"
+                variant={"outline"}
+                className={cn(
+                  "gap-1 px-1.5",
+                  !isPublic
+                    ? "border-amber-500/40 bg-amber-500/10 text-amber-500"
+                    : "border-blue-500/40 bg-blue-500/10 text-blue-500"
+                )}
               >
                 <HugeiconsIcon
                   icon={isPublic ? Globe02Icon : IncognitoIcon}
@@ -166,7 +172,9 @@ export default async function page(
                   color="currentColor"
                   strokeWidth={2}
                 />
-                {isPublic ? "Public" : "Private"}
+                <span className="text-sm">
+                  {isPublic ? "Public" : "Private"}
+                </span>
               </Badge>
             </div>
 
@@ -176,7 +184,7 @@ export default async function page(
               </p>
             )}
 
-            <p className="mt-2 text-xs text-muted-foreground">
+            <p className="mt-1 text-sm text-muted-foreground">
               Updated {formatRelativeTime(new Date(collection.updatedAt))}
               {descendantCount > 0 && (
                 <>
@@ -206,7 +214,7 @@ export default async function page(
       </dl>
 
       {descendantCount > 0 && (
-        <p className="-mt-3 text-xs text-muted-foreground">
+        <p className="mt-2 text-sm text-muted-foreground">
           Views and downloads include everything nested below this collection.
         </p>
       )}

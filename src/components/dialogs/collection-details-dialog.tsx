@@ -50,11 +50,6 @@ type Crumb = { id: string; name: string }
 
 const NOTE_PREVIEW_LIMIT = 6
 
-/**
- * A section label, a hairline that runs to the end of the row, and a count.
- * The rule is doing the work a box would otherwise do — this theme is
- * monochrome, so structure has to come from type and line weight.
- */
 function SectionHeading({
   label,
   count,
@@ -103,7 +98,7 @@ function StatGrid({ overview }: { overview: CollectionOverview }) {
       </dl>
 
       {overview.descendantCount > 0 && (
-        <p className="mt-2 text-xs text-muted-foreground">
+        <p className="mt-2 text-sm text-muted-foreground">
           Views and downloads include the{" "}
           {formatCompactNumber(overview.descendantCount)} nested collection
           {overview.descendantCount === 1 ? "" : "s"} below this one.
@@ -268,17 +263,10 @@ export function CollectionDetailsDialog() {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, startLoading] = useTransition()
 
-  /**
-   * Per-opening cache, so stepping back up the trail is instant. Cleared when
-   * the dialog closes rather than kept around: an edit, move, or duplicate
-   * between openings would leave these entries wrong.
-   */
   const cache = useRef(new Map<string, CollectionOverview>())
 
   const activeId = trail.length > 0 ? trail[trail.length - 1].id : null
 
-  // Start the trail at whichever collection was clicked, and drop everything on
-  // close so the next opening doesn't inherit the last drill-down.
   useEffect(() => {
     if (isModalOpen && seed) {
       setTrail([{ id: seed.id, name: seed.name }])
@@ -290,6 +278,7 @@ export function CollectionDetailsDialog() {
       setError(null)
       cache.current.clear()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isModalOpen, seed?.id, seed?.name])
 
   useEffect(() => {
@@ -352,11 +341,9 @@ export function CollectionDetailsDialog() {
       }}
     >
       <DialogContent className="gap-0 overflow-hidden p-0 sm:max-w-2xl">
-        {/* The trail is both breadcrumb and history: every collection opened
-            from inside the dialog appends a step, and each step goes back. */}
         <nav
           aria-label="Collection trail"
-          className="flex items-center gap-1 overflow-x-auto border-b border-border px-4 py-2.5 pr-14"
+          className="flex items-center gap-1 overflow-x-auto border-b border-border px-4 pt-4 pr-14 pb-4"
         >
           {trail.length > 1 && (
             <Button
@@ -382,7 +369,7 @@ export function CollectionDetailsDialog() {
                 {index > 0 && (
                   <span
                     aria-hidden
-                    className="px-1 text-xs text-muted-foreground/60"
+                    className="px-1 text-sm text-muted-foreground/60"
                   >
                     /
                   </span>
@@ -390,7 +377,7 @@ export function CollectionDetailsDialog() {
                 {isLast ? (
                   <span
                     aria-current="page"
-                    className="max-w-[16ch] truncate text-xs font-medium sm:max-w-[28ch]"
+                    className="max-w-[16ch] truncate text-sm font-medium sm:max-w-[28ch]"
                   >
                     {crumb.name}
                   </span>
@@ -398,7 +385,7 @@ export function CollectionDetailsDialog() {
                   <button
                     type="button"
                     onClick={() => setTrail((prev) => prev.slice(0, index + 1))}
-                    className="max-w-[12ch] truncate rounded text-xs text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:max-w-[20ch]"
+                    className="max-w-[12ch] truncate rounded text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:max-w-[20ch]"
                   >
                     {crumb.name}
                   </button>
@@ -408,7 +395,7 @@ export function CollectionDetailsDialog() {
           })}
         </nav>
 
-        <div className="max-h-[62vh] overflow-y-auto">
+        <div className="max-h-[62vh] scroll-fade-y scrollbar-none overflow-y-auto">
           {error ? (
             <div className="px-6 py-10 text-center">
               <DialogTitle className="text-base">
@@ -422,7 +409,7 @@ export function CollectionDetailsDialog() {
             />
           ) : (
             <>
-              <DialogHeader className="px-6 pt-5 pb-6">
+              <DialogHeader className="p-5">
                 <div className="flex items-start gap-4">
                   <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
                     <HugeiconsIcon
@@ -438,13 +425,18 @@ export function CollectionDetailsDialog() {
                   </span>
 
                   <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
                       <DialogTitle className="text-xl tracking-tight">
                         {collection.name}
                       </DialogTitle>
                       <Badge
-                        variant={isPublic ? "secondary" : "outline"}
-                        className="gap-1"
+                        variant={"outline"}
+                        className={cn(
+                          "gap-1 px-1.5",
+                          !isPublic
+                            ? "border-amber-500/40 bg-amber-500/10 text-amber-500"
+                            : "border-blue-500/40 bg-blue-500/10 text-blue-500"
+                        )}
                       >
                         <HugeiconsIcon
                           icon={isPublic ? Globe02Icon : IncognitoIcon}
@@ -452,11 +444,13 @@ export function CollectionDetailsDialog() {
                           color="currentColor"
                           strokeWidth={2}
                         />
-                        {isPublic ? "Public" : "Private"}
+                        <span className="text-sm">
+                          {isPublic ? "Public" : "Private"}
+                        </span>
                       </Badge>
                     </div>
 
-                    <DialogDescription className="mt-1.5">
+                    <DialogDescription className="mt-1">
                       {collection.description ||
                         `Updated ${formatRelativeTime(new Date(collection.updatedAt))}.`}
                     </DialogDescription>

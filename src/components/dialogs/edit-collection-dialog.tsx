@@ -261,7 +261,7 @@ export function EditCollectionDialog() {
                     <RadioGroup
                       value={field.value}
                       onValueChange={field.onChange}
-                      className="grid gap-2 sm:grid-cols-2"
+                      className="grid grid-cols-2 gap-2"
                     >
                       {COLLECTION_VISIBLITY.map((opt) => (
                         <label
@@ -295,7 +295,7 @@ export function EditCollectionDialog() {
                               {opt.toLowerCase()}
                             </span>
 
-                            <span className="text-xs text-muted-foreground">
+                            <span className="hidden text-xs text-muted-foreground sm:inline-block">
                               {opt === "PUBLIC"
                                 ? "Anyone can view this collection"
                                 : "Only you can see this collection"}

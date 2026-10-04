@@ -3,16 +3,6 @@
 import { useCallback, useEffect, useState } from "react"
 import toast from "react-hot-toast"
 
-/**
- * What actually happened, so call sites can stay quiet when the user simply
- * closed the share sheet.
- *
- * - `shared` — handed off to the OS successfully
- * - `dismissed` — the user closed the sheet (Web Share throws `AbortError`)
- * - `copied` — no Web Share here, so the link went to the clipboard instead
- * - `unsupported` — nothing we could do on this device
- * - `failed` — something went wrong
- */
 export type WebShareResult =
   "shared" | "dismissed" | "copied" | "unsupported" | "failed"
 
@@ -32,15 +22,6 @@ function isAbort(error: unknown) {
   return error instanceof Error && error.name === "AbortError"
 }
 
-/**
- * The browser's native share sheet, with a clipboard fallback.
- *
- * Capabilities are read after mount rather than during render: `navigator.share`
- * only exists on secure origins and mostly on mobile, and `navigator.canShare`
- * (needed before sharing a *file* rather than a URL) is newer still — so a
- * server-rendered "Share via device" button would disagree with the client on
- * most desktops and hydrate wrong.
- */
 export function useWebShare() {
   const [canShareLink, setCanShareLink] = useState(false)
   const [canShareFiles, setCanShareFiles] = useState(false)
@@ -75,9 +56,6 @@ export function useWebShare() {
         }
       }
 
-      // Desktop Chrome and Firefox have no share sheet. Putting the link on the
-      // clipboard is the same end result in one fewer step, so the button is
-      // still worth showing.
       try {
         await navigator.clipboard.writeText(payload.url)
         return "copied"
