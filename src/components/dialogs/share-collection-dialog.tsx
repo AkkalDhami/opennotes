@@ -198,7 +198,7 @@ export function ShareCollectionDialog() {
         {showQr && shareUrl && (
           <QrCode
             value={shareUrl}
-            size={200}
+            size={250}
             fileName={fileName}
             alt={`QR code linking to the ${name} collection`}
             showDownload={false}

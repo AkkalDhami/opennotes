@@ -9,7 +9,9 @@ import { CollectionRecord } from "@/lib/user/collection-queries"
 
 export function ShareCollectionButton({
   collection,
+  label = "Share",
 }: {
+  label?: string
   collection: CollectionRecord
 }) {
   const { open } = useModal()
@@ -35,7 +37,7 @@ export function ShareCollectionButton({
         color="currentColor"
         strokeWidth={2}
       />
-      Share
+      {label}
     </Button>
   )
 }

@@ -77,7 +77,7 @@ export function QrCode({
           alt={alt}
           width={size}
           height={size}
-          className="rounded-lg border bg-white p-3"
+          className="rounded-lg border bg-white p-2"
         />
       ) : (
         <div

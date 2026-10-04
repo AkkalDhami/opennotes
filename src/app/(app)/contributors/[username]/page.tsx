@@ -182,7 +182,7 @@ export default async function ContributorDetailPage({
             )}
           </div>
 
-          <div className="flex flex-wrap items-center gap-4">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-4">
             <div className="flex items-center gap-2">
               <HugeiconsIcon
                 icon={NotebookIcon}

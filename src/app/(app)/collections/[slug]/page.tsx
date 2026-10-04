@@ -29,6 +29,7 @@ import { buildCollectionSharePath } from "@/lib/user/collection-share"
 import { formatCompactNumber } from "@/utils/format"
 import { formatRelativeTime } from "@/utils/format-date"
 import { VerifiedUserAvatar } from "@/components/shared/verified-user-avatar"
+import { ShareCollectionButton } from "@/components/user/collections/share-collection-button"
 
 type PublicCollectionPageProps = {
   params: Promise<{ slug: string }>
@@ -85,18 +86,24 @@ export default async function page({ params }: PublicCollectionPageProps) {
 
   return (
     <>
-      <Link
-        href={"/notes" as Route}
-        className={cn(buttonVariants({ variant: "secondary" }), "w-fit")}
-      >
-        <HugeiconsIcon
-          icon={ArrowLeft02Icon}
-          size={22}
-          color="currentColor"
-          strokeWidth={1.5}
-        />{" "}
-        Browse Notes
-      </Link>
+      <div className="flex flex-wrap justify-between gap-3">
+        <Link
+          href={"/notes" as Route}
+          className={cn(buttonVariants({ variant: "secondary" }), "w-fit")}
+        >
+          <HugeiconsIcon
+            icon={ArrowLeft02Icon}
+            size={22}
+            color="currentColor"
+            strokeWidth={1.5}
+          />{" "}
+          Browse Notes
+        </Link>
+        <ShareCollectionButton
+          collection={collection}
+          label="Share Collection"
+        />
+      </div>
 
       {ancestors.length > 0 && (
         <nav aria-label="Breadcrumb">
@@ -146,21 +153,13 @@ export default async function page({ params }: PublicCollectionPageProps) {
 
       {owner && (
         <div className="flex items-center gap-3">
-          {/* <Avatar className="size-10 border">
-            <AvatarImage
-              src={owner.avatarUrl ?? undefined}
-              alt={`${ownerLabel}'s avatar`}
-            />
-            <AvatarFallback>{getInitials(ownerLabel)}</AvatarFallback>
-          </Avatar> */}
-
           <VerifiedUserAvatar
             avatarUrl={owner.avatarUrl}
             displayName={ownerLabel}
           />
 
           <div className="text-sm">
-            <p className="text-muted-foreground">Curated by</p>
+            <p className="text-muted-foreground">Created by</p>
             {owner.username ? (
               <Link
                 href={`/contributors/${owner.username}` as Route}
