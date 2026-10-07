@@ -143,6 +143,7 @@ export async function getUserContributionStats(): Promise<ContributionStats> {
     draft: 0,
     removed: 0,
     totalDownloads: 0,
+    totalViews: 0,
   }
 
   if (!currentUser) {
@@ -160,12 +161,24 @@ export async function getUserContributionStats(): Promise<ContributionStats> {
       rejected: statusCountExpr("REJECTED"),
       draft: statusCountExpr("DRAFT"),
       removed: statusCountExpr("REMOVED"),
-      totalDownloads: sql<number>`COALESCE(SUM(${notes.downloadCount}), 0)`,
+      totalDownloads: sql<number>`COALESCE(SUM(${notes.downloadCount}), 0)::int`,
+      totalViews: sql<number>`COALESCE(SUM(${notes.viewCount}), 0)::int`,
     })
     .from(notes)
     .where(eq(notes.contributorId, currentUser.id))
 
-  return row ?? empty
+  if (!row) return empty
+
+  return {
+    total: Number(row.total),
+    published: Number(row.published),
+    pendingReview: Number(row.pendingReview),
+    rejected: Number(row.rejected),
+    draft: Number(row.draft),
+    removed: Number(row.removed),
+    totalDownloads: Number(row.totalDownloads),
+    totalViews: Number(row.totalViews),
+  }
 }
 
 export interface ContributionFilterOptions {
