@@ -10,8 +10,7 @@ import {
 } from "@hugeicons/core-free-icons"
 import { PublicNote } from "@/types/note"
 import { formatFileSize, formatCompactNumber } from "@/lib/notes/format"
-import { slugToTitle } from "@/utils/slug"
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { getInitials } from "@/utils/get-initials"
 import { cn } from "@/lib/utils"
 import { DownloadNoteButton } from "@/components/shared/download-note-button"
@@ -23,6 +22,8 @@ import { formatNoteMeta } from "@/utils/format"
 import { BookmarkButton } from "@/components/shared/bookmark-button"
 import { useModal } from "@/hooks/use-modal-store"
 
+import { getEducationNames } from "@/utils/get-edu-name"
+
 interface NoteCardProps {
   note: PublicNote
   from?: "contributor"
@@ -30,6 +31,14 @@ interface NoteCardProps {
 
 export function NoteCard({ note, from }: NoteCardProps) {
   const { open } = useModal()
+
+  const { subject, educationLevel, course, grade } = getEducationNames({
+    subject: note.subject,
+    educationLevel: note.educationLevel,
+    course: note.course,
+    grade: note.grade,
+  })
+
   return (
     <Tilt isRevese>
       <div className="group relative flex h-full flex-col space-y-2 overflow-hidden rounded-lg border bg-card p-4 transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
@@ -74,12 +83,7 @@ export function NoteCard({ note, from }: NoteCardProps) {
           </button>
 
           <p className="pr-8 text-sm font-medium text-muted-foreground">
-            {formatNoteMeta([
-              slugToTitle(note.educationLevel ?? ""),
-              slugToTitle(note.course ?? ""),
-              note.grade ? slugToTitle(note.grade) : "",
-              slugToTitle(note.subject),
-            ])}
+            {formatNoteMeta([educationLevel, course, grade, subject])}
           </p>
 
           {from !== "contributor" && (

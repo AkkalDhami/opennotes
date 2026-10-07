@@ -75,7 +75,7 @@ export function NoteSearch() {
         size={16}
         color="currentColor"
         strokeWidth={2}
-        className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+        className="pointer-events-none absolute top-1/2 left-5 size-4 -translate-y-1/2 text-muted-foreground"
       />
       <Input
         type="text"
@@ -85,7 +85,7 @@ export function NoteSearch() {
         onChange={(e) => handleChange(e.target.value)}
         placeholder="Search by title, subject, topic, tags, contributor..."
         aria-label="Search notes"
-        className="pr-9 pl-9"
+        className="rounded-fulll h-14 pr-6 pl-12"
         {...autocomplete.inputProps}
       />
       {value && (

@@ -1,13 +1,9 @@
-import {
-  APP_NAME,
-  BASE_GITHUB_REPO,
-  GITHUB_REPO,
-} from "@/constants/app.constants"
+import { APP_NAME, GITHUB_REPO, PORTFOLIO_URL } from "@/constants/app.constants"
 import { AxeIcon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Route } from "next"
 import Link from "next/link"
-// import { NoiseTexture } from "@/components/ui/noise-texture"
+import { Signature } from "../ui/signature"
 
 const footerLinks = [
   { href: "/terms", label: "Terms" },
@@ -51,9 +47,9 @@ export function Footer() {
             />
             by{" "}
             <Link
-              href={BASE_GITHUB_REPO}
+              href={PORTFOLIO_URL}
               target="_blank"
-              className="text-muted-foreground underline underline-offset-2 hover:text-foreground"
+              className="text-muted-foreground underline underline-offset-2 hover:text-primary"
             >
               Akkal Dhami
             </Link>
@@ -64,11 +60,19 @@ export function Footer() {
             <Link
               href={GITHUB_REPO}
               target="_blank"
-              className="text-muted-foreground underline underline-offset-2 hover:text-foreground"
+              className="text-muted-foreground underline underline-offset-2 hover:text-primary"
             >
               GitHub
             </Link>
           </p>
+        </div>
+
+        <div className="flex items-center justify-center mask-b-from-40%">
+          <Signature
+            text="Akkal Dhami."
+            fontSize={20}
+            color="var(--color-primary)"
+          />
         </div>
       </div>
     </footer>
