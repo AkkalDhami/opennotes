@@ -11,7 +11,7 @@ import { APP_NAME, BASE_GITHUB_REPO, SITE_URL } from "@/constants/app.constants"
 import { DEFAULT_DESCRIPTION, DEFAULT_KEYWORDS } from "@/lib/seo"
 import { ThemeScript } from "@/components/providers/theme-script"
 import { AppearanceProvider } from "@/components/providers/appearance-provider"
-import { FONT_VARIABLES } from "@/lib/appearance/fonts"
+import { alexBrush, FONT_VARIABLES } from "@/lib/appearance/fonts"
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -101,6 +101,7 @@ export default function RootLayout({
       className={cn(
         "antialiased",
         FONT_VARIABLES,
+        alexBrush.variable,
         "selection:bg-primary selection:text-primary-foreground"
       )}
     >

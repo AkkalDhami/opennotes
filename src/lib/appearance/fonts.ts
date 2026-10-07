@@ -28,6 +28,7 @@ import {
   IBM_Plex_Mono,
   Instrument_Serif,
   Instrument_Sans,
+  Alex_Brush,
 } from "next/font/google"
 import type { FontFamily } from "./preferences"
 
@@ -179,6 +180,12 @@ const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
   variable: "--font-instrument-serif",
   display: "swap",
+})
+export const alexBrush = Alex_Brush({
+  subsets: ["latin"],
+  variable: "--font-signature",
+  display: "swap",
+  weight: "400",
 })
 
 export const FONT_VARIABLES = [

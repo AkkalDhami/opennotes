@@ -1,6 +1,6 @@
 /** Points awarded per unit of eligible contribution. */
 export const CONTRIBUTOR_SCORE = {
-  PUBLISHED_NOTE: 5,
+  PUBLISHED_NOTE: 3,
   DOWNLOAD: 1.5,
   VIEW: 0.1,
   BOOKMARK: 1.5,
