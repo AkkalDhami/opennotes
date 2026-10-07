@@ -30,6 +30,7 @@ export interface ContributionStats {
   draft: number
   removed: number
   totalDownloads: number
+  totalViews: number
 }
 
 export interface ContributionFilters {

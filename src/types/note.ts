@@ -31,11 +31,12 @@ export interface PublicNote {
   title: string
   description: string | null
   subject: string
-  course: string
+  course?: string | null
   grade: string | null
-  educationLevel: string
+  category?: string | null
+  educationLevel?: string | null
   topic: string | null
-  academicYear: string | null
+  academicYear?: string | null
   tags: string[] | []
   pageCount: number | null
   fileSizeBytes: number | null
