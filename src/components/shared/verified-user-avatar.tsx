@@ -1,7 +1,7 @@
 "use client"
 
 import { getInitials } from "@/utils/get-initials"
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { CheckmarkBadge01Icon } from "@hugeicons/core-free-icons"
 import { cn } from "@/lib/utils"

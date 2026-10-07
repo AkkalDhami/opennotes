@@ -105,7 +105,7 @@ export function CollectionParentPicker<T extends PickerCollectionNode>({
         </div>
       )}
 
-      <div className="max-h-56 overflow-y-auto p-2">
+      <div className="max-h-56 scroll-fade-y scrollbar-none overflow-y-auto p-2">
         <button
           type="button"
           onClick={() => onChange(null)}

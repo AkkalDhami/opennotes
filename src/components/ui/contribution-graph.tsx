@@ -21,7 +21,7 @@ import {
   useContext,
   useMemo,
 } from "react"
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
 
 export type Activity = {
@@ -378,9 +378,11 @@ export const ContributionGraphCalendar = ({
   return (
     <ScrollArea
       aria-orientation="horizontal"
-      className={cn("max-w-full overflow-x-auto overflow-y-hidden", className)}
+      className={cn(
+        "max-w-full scroll-fade-x overflow-x-auto overflow-y-hidden",
+        className
+      )}
     >
-      <ScrollBar orientation="horizontal" />
       <div {...props}>
         <svg
           className="block overflow-visible"
