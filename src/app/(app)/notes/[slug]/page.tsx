@@ -22,13 +22,15 @@ import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import { slugToTitle } from "@/utils/slug"
 import { Heading } from "@/components/ui/heading"
-import { formatDate } from "@/utils/format-date"
+import { formatDate, formatRelativeTime } from "@/utils/format-date"
 import { getRelatedNotesByContributor } from "@/lib/notes/get-related-notes"
 import { NoteSourceInfo } from "@/components/notes/note-source-info"
 import { absoluteUrl } from "@/lib/seo"
 import { NoteJsonLd } from "@/components/seo/note-json-ld"
 import { formatNoteMeta } from "@/utils/format"
 import { BookmarkButton } from "@/components/shared/bookmark-button"
+import { getEducationNames } from "@/utils/get-edu-name"
+import { Signature } from "@/components/ui/signature"
 
 interface NoteDetailPageProps {
   params: Promise<{ slug: string }>
@@ -102,8 +104,16 @@ export default async function NoteDetailPage({ params }: NoteDetailPageProps) {
 
   const filteredNotes = contributorNotes.filter((n) => n.slug !== note.slug)
 
+  const educationNames = getEducationNames({
+    subject: note.subject,
+    category: note.category,
+    educationLevel: note.educationLevel,
+    course: note.course,
+    grade: note.grade,
+  })
+
   return (
-    <>
+    <div>
       <NoteJsonLd
         note={{
           contributor: note.contributor,
@@ -143,11 +153,13 @@ export default async function NoteDetailPage({ params }: NoteDetailPageProps) {
 
           <div className="flex flex-wrap items-center gap-2 text-base font-medium text-muted-foreground">
             {formatNoteMeta([
-              slugToTitle(note.educationLevel),
-              slugToTitle(note.course),
-              note.grade && slugToTitle(note.grade),
-              slugToTitle(note.subject),
+              educationNames.educationLevel,
+              educationNames.course,
+              educationNames.grade,
+              educationNames.subject,
+              educationNames.category,
               note.topic,
+              note.academicYear,
             ])}
           </div>
           <Heading>{note.title}</Heading>
@@ -224,7 +236,7 @@ export default async function NoteDetailPage({ params }: NoteDetailPageProps) {
             )}
 
             <div className="flex flex-wrap items-center gap-3">
-              <p className="flex items-center gap-2 text-base text-muted-foreground">
+              <p className="flex gap-2 text-base text-muted-foreground sm:items-center">
                 <HugeiconsIcon
                   icon={Calendar04Icon}
                   size={24}
@@ -244,7 +256,7 @@ export default async function NoteDetailPage({ params }: NoteDetailPageProps) {
                   formatDate(publishedDate, {
                     dateStyle: "full",
                   }).toLocaleLowerCase() && (
-                  <p className="flex items-center gap-2 text-base text-muted-foreground">
+                  <p className="flex gap-2 text-base text-muted-foreground sm:items-center">
                     <HugeiconsIcon
                       icon={Calendar04Icon}
                       size={24}
@@ -252,10 +264,7 @@ export default async function NoteDetailPage({ params }: NoteDetailPageProps) {
                       strokeWidth={2}
                       className="size-4"
                     />
-                    Last Updated{" "}
-                    {formatDate(note.lastModifiedAt, {
-                      dateStyle: "full",
-                    })}
+                    Updated {formatRelativeTime(new Date(note.lastModifiedAt))}
                   </p>
                 )}
             </div>
@@ -270,7 +279,14 @@ export default async function NoteDetailPage({ params }: NoteDetailPageProps) {
           />
         </div>
       </div>
-    </>
+      <div className="flex items-center justify-end mask-b-from-40%">
+        <Signature
+          text={`- ${note.contributor.name}`}
+          fontSize={20}
+          color="var(--color-primary)"
+        />
+      </div>
+    </div>
   )
 }
 

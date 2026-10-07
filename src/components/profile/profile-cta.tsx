@@ -13,7 +13,7 @@ import {
   HeartIcon,
 } from "@hugeicons/core-free-icons"
 import { cn } from "@/lib/utils"
-import { useSidebar } from "../ui/sidebar"
+import { useSidebar } from "@/components/ui/sidebar"
 
 type ProfileCtaProps = {
   icon: IconSvgElement

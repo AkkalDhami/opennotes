@@ -5,6 +5,7 @@ import {
   Clock01Icon,
   Alert02Icon,
   Download01Icon,
+  ViewIcon,
 } from "@hugeicons/core-free-icons"
 import { IconSvgElement } from "@hugeicons/react"
 
@@ -49,10 +50,15 @@ export function ProfileStats({ stats }: ProfileStatsProps) {
       value: stats.totalDownloads,
       icon: Download01Icon,
     },
+    {
+      label: "Total Views",
+      value: stats.totalViews,
+      icon: ViewIcon,
+    },
   ]
 
   return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
       {cards.map((card) => (
         <Card key={card.label} className="border-0 p-4">
           <CardContent className="flex flex-col gap-2 p-0">

@@ -194,7 +194,7 @@ export function CreateCollectionDialog() {
               </DialogDescription>
             </DialogHeader>
 
-            <div className="grid max-h-90 gap-4 overflow-y-auto px-2">
+            <div className="grid max-h-90 scroll-fade-y scrollbar-none gap-4 overflow-y-auto px-2">
               {/* Description */}
 
               <Controller

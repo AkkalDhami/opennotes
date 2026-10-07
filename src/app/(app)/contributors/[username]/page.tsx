@@ -3,20 +3,17 @@ import { notFound } from "next/navigation"
 import Link from "next/link"
 import { getContributorSummary } from "@/lib/contributors/sync"
 import { getEarnedBadgeSlugs } from "@/lib/contributors/queries"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ContributorNotes } from "@/components/admin/contributors/contributor-notes"
 import {
   getContributorByUsername,
   getContributorPublishedNotes,
 } from "@/lib/admin/queries"
-import { getInitials } from "@/utils/get-initials"
 import { APP_NAME } from "@/constants/app.constants"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
   ArrowLeft02Icon,
   Calendar04Icon,
   ChampionIcon,
-  CheckmarkBadge01Icon,
   Download01Icon,
   NotebookIcon,
 } from "@hugeicons/core-free-icons"
@@ -34,6 +31,8 @@ import { RankCard } from "@/components/shared/rank-card"
 import { ContributionStats } from "@/components/contributions/contribution-stats"
 import { ContributionOverviewChart } from "@/components/contributors/contribution-overview-chart"
 import { getContributorChartData } from "@/lib/contributors/get-contributor-chart-data"
+import { VerifiedUserAvatar } from "@/components/shared/verified-user-avatar"
+import { Signature } from "@/components/ui/signature"
 
 interface ContributorDetailPageProps {
   params: Promise<{ username: string }>
@@ -142,25 +141,18 @@ export default async function ContributorDetailPage({
         <div className="space-y-4">
           <div className="flex flex-wrap-reverse justify-between gap-6">
             <div className="flex items-center gap-2">
+              {contributorRank?.rank && (
+                <h2 className="text-6xl font-semibold">
+                  #{contributorRank?.rank}.
+                </h2>
+              )}
+
               <div className="relative">
-                <Avatar className="size-18 border">
-                  <AvatarImage
-                    src={contributor.avatarUrl ?? undefined}
-                    alt={`${contributor.displayName}'s avatar`}
-                  />
-                  <AvatarFallback className="text-lg">
-                    {getInitials(contributor.displayName)}
-                  </AvatarFallback>
-                </Avatar>
-                <HugeiconsIcon
-                  icon={CheckmarkBadge01Icon}
-                  size={24}
-                  color="currentColor"
-                  strokeWidth={2}
-                  className={cn(
-                    "size-5 fill-blue-600 stroke-blue-600 text-white",
-                    "absolute -right-0.5 bottom-0.5 flex items-center justify-center rounded-full bg-background"
-                  )}
+                <VerifiedUserAvatar
+                  displayName={contributor.displayName}
+                  avatarUrl={contributor.avatarUrl}
+                  emailVerified={!contributor.email}
+                  size="md"
                 />
               </div>
               <div className="space-y-1">
@@ -321,6 +313,14 @@ export default async function ContributorDetailPage({
             views: contributorRank?.views ?? 0,
             bookmarks: contributorRank?.bookmarks ?? 0,
           }}
+        />
+      </div>
+
+      <div className="flex items-center justify-end mask-b-from-40%">
+        <Signature
+          text={`- ${contributor.displayName}`}
+          fontSize={20}
+          color="var(--color-primary)"
         />
       </div>
     </main>

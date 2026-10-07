@@ -6,13 +6,14 @@ import { ContributionTable } from "@/components/contributions/contribution-table
 import { ContributionCardList } from "@/components/contributions/contribution-card"
 import { ContributionEmptyState } from "@/components/contributions/contribution-empty-state"
 import { ContributionPagination } from "@/components/contributions/contribution-pagination"
+import { NotesViewSwitcher } from "@/components/profile/notes-view-switcher"
 import { ContributionListResult } from "@/types/contribution"
-import { Heading } from "../ui/heading"
-import { SubHeading } from "../ui/sub-heading"
+import { NotesView } from "@/lib/user/parse-contribution-filters"
 
 interface ProfileContributionsProps {
   result: ContributionListResult
   hasActiveFilters: boolean
+  view: NotesView
   filterOptions: {
     subjectOptions: FilterOption[]
     levelOptions: FilterOption[]
@@ -23,16 +24,16 @@ interface ProfileContributionsProps {
 export function ProfileContributions({
   result,
   hasActiveFilters,
+  view,
   filterOptions,
 }: ProfileContributionsProps) {
   return (
     <section className="space-y-6">
-      <div className="space-y-2">
-        <Heading>My Contributions</Heading>
-        <SubHeading>
-          Manage and track the notes you&apos;ve shared with the OpenNotes
-          community.
-        </SubHeading>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-sm text-muted-foreground" aria-live="polite">
+          {result.totalCount} {result.totalCount === 1 ? "note" : "notes"}
+        </p>
+        <NotesViewSwitcher value={view} />
       </div>
 
       <ContributionFilters {...filterOptions} />
@@ -43,8 +44,11 @@ export function ProfileContributions({
         />
       ) : (
         <>
-          <ContributionTable contributions={result.items} />
-          <ContributionCardList contributions={result.items} />
+          {view === "table" ? (
+            <ContributionTable contributions={result.items} />
+          ) : (
+            <ContributionCardList contributions={result.items} layout="grid" />
+          )}
           <ContributionPagination
             page={result.page}
             totalPages={result.totalPages}
