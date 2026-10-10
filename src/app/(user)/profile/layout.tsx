@@ -1,7 +1,10 @@
 import { AdminBreadcrumb } from "@/components/admin/admin-breadcrumb"
 import { MobileNav } from "@/components/layouts/mobile-nav"
 
-import { SIDEBAR_ITEMS, UserSidebar } from "@/components/layouts/user-sidebar"
+import {
+  USER_SIDEBAR_ITEMS,
+  UserSidebar,
+} from "@/components/layouts/user-sidebar"
 import { Logo } from "@/components/shared/logo"
 import { ThemeToggle } from "@/components/shared/theme-toggle"
 
@@ -69,7 +72,7 @@ export default async function UserLayout({
           <ThemeToggle />
         </header>
 
-        <MobileNav items={SIDEBAR_ITEMS} />
+        <MobileNav items={USER_SIDEBAR_ITEMS} />
 
         <div className="flex flex-1 flex-col gap-4 p-4 pb-24">{children}</div>
       </SidebarInset>

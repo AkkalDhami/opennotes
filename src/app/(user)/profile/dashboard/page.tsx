@@ -1,134 +1,81 @@
 import { Metadata } from "next"
 import { redirect } from "next/navigation"
+import Link from "next/link"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { FileUploadIcon } from "@hugeicons/core-free-icons"
 
-import { ProfileHeader } from "@/components/profile/profile-header"
-import { ProfileStats } from "@/components/profile/profile-stats"
-import { ProfileContributions } from "@/components/profile/profile-contributions"
+import { DashboardStats } from "@/components/profile/dashboard-stats"
+import { DashboardQuickActions } from "@/components/profile/dashboard-quick-actions"
+import { DashboardRecentNotes } from "@/components/profile/dashboard-recent-notes"
+import { DashboardSavedNotes } from "@/components/profile/dashboard-saved-notes"
 import { ContributionErrorState } from "@/components/contributions/contribution-error-state"
-import { NoteStatus } from "@/db"
-import { NOTE_STATUSES } from "@/validations/note"
-import { SORT_OPTIONS, SortOption } from "@/types/profile"
-import { getCurrentUserProfile } from "@/lib/user/get-profile"
-import {
-  getUserContributionFilterOptions,
-  getUserContributions,
-  getUserContributionStats,
-} from "@/lib/user/get-contributions"
+import { getUserDashboard } from "@/lib/user/get-dashboard"
 import { PageHeader } from "@/components/shared/page-header"
 import { DashboardContainer } from "@/components/ui/dashboard-container"
+import { Button } from "@/components/ui/button"
 import { getGreeting } from "@/utils/greeting"
+import { APP_NAME } from "@/constants/app.constants"
 
 export const metadata: Metadata = {
   title: "Overview",
-  description:
-    "See your activity, saved notes, collections, and contributions at a glance.",
+  description: `See your notes, downloads, views, and saved activity on ${APP_NAME}.`,
 }
 
-interface ProfilePageProps {
-  searchParams: Promise<Record<string, string | string[] | undefined>>
-}
-
-function parseParam(value: string | string[] | undefined) {
-  return Array.isArray(value) ? value[0] : value
-}
-
-function parseStatus(value: string | undefined): NoteStatus | "ALL" {
-  if (!value || value === "ALL") return "ALL"
-  return NOTE_STATUSES.includes(value as NoteStatus)
-    ? (value as NoteStatus)
-    : "ALL"
-}
-
-function parseSort(value: string | undefined): SortOption {
-  return SORT_OPTIONS.includes(value as SortOption)
-    ? (value as SortOption)
-    : "newest"
-}
-
-export default async function ProfilePage({ searchParams }: ProfilePageProps) {
-  const params = await searchParams
-
-  const filters = {
-    search: parseParam(params.search),
-    status: parseStatus(parseParam(params.status)),
-    subject: parseParam(params.subject),
-    level: parseParam(params.level),
-    course: parseParam(params.course),
-    sort: parseSort(parseParam(params.sort)),
-    page: Number(parseParam(params.page)) || 1,
-  }
-
-  let profile
-  try {
-    profile = await getCurrentUserProfile()
-  } catch {
-    // Never surface raw DB/auth errors to the client.
-    profile = null
-  }
-
-  if (!profile) {
-    redirect("/signin")
-  }
-
-  let contributionsResult
-  let stats
-  let filterOptions
+export default async function ProfileDashboardPage() {
+  let dashboard
   let loadError = false
 
   try {
-    ;[contributionsResult, stats, filterOptions] = await Promise.all([
-      getUserContributions(filters),
-      getUserContributionStats(),
-      getUserContributionFilterOptions(),
-    ])
+    dashboard = await getUserDashboard()
   } catch {
     loadError = true
-    contributionsResult = {
-      items: [],
-      page: 1,
-      pageSize: 20,
-      totalCount: 0,
-      totalPages: 0,
-    }
-    stats = {
-      total: 0,
-      published: 0,
-      pendingReview: 0,
-      rejected: 0,
-      draft: 0,
-      removed: 0,
-      totalDownloads: 0,
-    }
-    filterOptions = { subjectOptions: [], levelOptions: [], courseOptions: [] }
+    dashboard = null
   }
 
-  const hasActiveFilters =
-    Boolean(filters.search) ||
-    filters.status !== "ALL" ||
-    Boolean(filters.subject) ||
-    Boolean(filters.level) ||
-    Boolean(filters.course) ||
-    filters.sort !== "newest"
+  if (!loadError && !dashboard) {
+    redirect("/signin")
+  }
 
-  const greeting = getGreeting(profile.name)
+  const greeting = dashboard
+    ? getGreeting(dashboard.profile.name)
+    : "Welcome back"
 
   return (
     <DashboardContainer>
       <PageHeader
         title={greeting}
         description="See your activity, saved notes, and contributions at a glance."
-      />
-      <ProfileHeader profile={profile} />
-      <ProfileStats stats={stats} />
+      >
+        <Button
+          nativeButton={false}
+          className="gap-2"
+          render={
+            <Link href="/contribution">
+              <HugeiconsIcon
+                icon={FileUploadIcon}
+                size={16}
+                color="currentColor"
+                strokeWidth={2}
+                className="size-4"
+              />
+              Share notes
+            </Link>
+          }
+        />
+      </PageHeader>
 
-      {loadError ? (
+      {loadError || !dashboard ? (
         <ContributionErrorState />
       ) : (
-        <ProfileContributions
-          result={contributionsResult}
-          hasActiveFilters={hasActiveFilters}
-          filterOptions={filterOptions}
-        />
+        <>
+          <DashboardStats stats={dashboard.stats} />
+          <DashboardQuickActions />
+          <DashboardRecentNotes notes={dashboard.recentNotes} />
+          <DashboardSavedNotes
+            notes={dashboard.savedNotes}
+            total={dashboard.stats.savedNotes}
+          />
+        </>
       )}
     </DashboardContainer>
   )
