@@ -7,6 +7,7 @@ import {
   FolderOpenIcon,
   ArrowRight01Icon,
   ArrowDown01Icon,
+  CheckIcon,
 } from "@hugeicons/core-free-icons"
 
 import { Checkbox } from "@/components/ui/checkbox"
@@ -222,9 +223,14 @@ function CollectionPickerRow<T extends PickerCollectionNode>({
         </button>
 
         {badgeLabel && (
-          <Badge variant="outline" className="shrink-0 text-xs">
-            {badgeLabel}
-          </Badge>
+          <div className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary p-1 text-primary-foreground">
+            <HugeiconsIcon
+              icon={CheckIcon}
+              size={24}
+              color="currentColor"
+              strokeWidth={2}
+            />
+          </div>
         )}
       </div>
 

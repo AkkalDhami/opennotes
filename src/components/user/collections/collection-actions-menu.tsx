@@ -262,8 +262,6 @@ export function CollectionActionsMenu({
           </DropdownMenuSubContent>
         </DropdownMenuSub>
 
-        {/* Only public collections get a share entry: a private collection's
-            link 404s by design, so offering it would hand out a dead URL. */}
         {isPublic ? (
           <DropdownMenuItem
             onClick={() =>
