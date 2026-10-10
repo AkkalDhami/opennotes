@@ -148,12 +148,6 @@ export function ContributionStats({ data }: { data: ContributionStatsData }) {
 
   return (
     <div className="mx-auto w-full max-w-md space-y-5">
-      <div className="grid grid-cols-2 gap-4">
-        {METRICS.map((m) => (
-          <StatCard key={m.key} metric={m} value={data[m.key]} />
-        ))}
-      </div>
-
       <Card className="gap-5 rounded-lg py-5 shadow-none">
         <CardHeader className="flex flex-row items-center gap-2 px-5">
           <HugeiconsIcon
@@ -201,6 +195,11 @@ export function ContributionStats({ data }: { data: ContributionStatsData }) {
           </div>
         </CardContent>
       </Card>
+      <div className="grid grid-cols-2 gap-4 rounded-lg border bg-card p-4 sm:p-4">
+        {METRICS.map((m) => (
+          <StatCard key={m.key} metric={m} value={data[m.key]} />
+        ))}
+      </div>
     </div>
   )
 }

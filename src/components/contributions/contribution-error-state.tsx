@@ -28,7 +28,7 @@ export function ContributionErrorState({
       </div>
       <div className="space-y-1">
         <p className="font-medium text-foreground">
-          Unable to load your contributions.
+          Unable to load your notes.
         </p>
         <p className="max-w-sm text-sm text-muted-foreground">
           Something went wrong on our end. Please try again in a moment.

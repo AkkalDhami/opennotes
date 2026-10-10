@@ -40,7 +40,7 @@ export function ContributionTable({ contributions }: ContributionTableProps) {
   }
 
   return (
-    <div className="hidden overflow-hidden rounded-lg border p-4 md:block">
+    <div className="overflow-x-auto rounded-lg border p-4">
       <Table>
         <TableHeader>
           <TableRow>
@@ -48,8 +48,9 @@ export function ContributionTable({ contributions }: ContributionTableProps) {
             <TableHead>Subject</TableHead>
             <TableHead>Education</TableHead>
             <TableHead>Status</TableHead>
+            <TableHead>Views</TableHead>
             <TableHead>Downloads</TableHead>
-            <TableHead>Submitted</TableHead>
+            <TableHead>Created</TableHead>
             <TableHead className="w-10 text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -79,6 +80,9 @@ export function ContributionTable({ contributions }: ContributionTableProps) {
               </TableCell>
               <TableCell>
                 <StatusBadge status={contribution.status} />
+              </TableCell>
+              <TableCell className="text-sm text-muted-foreground tabular-nums">
+                {contribution.viewCount.toLocaleString()}
               </TableCell>
               <TableCell className="text-center text-sm text-muted-foreground">
                 <span className="flex items-center gap-1">

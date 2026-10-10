@@ -280,9 +280,7 @@ export function ContributionFilters(props: ContributionFiltersProps) {
             className="max-h-[85vh] overflow-y-auto px-4 pb-6"
           >
             <SheetHeader className="px-0 pb-0">
-              <SheetTitle className={"text-lg"}>
-                Filter contributions
-              </SheetTitle>
+              <SheetTitle className={"text-lg"}>Filter notes</SheetTitle>
             </SheetHeader>
             <div className="mt-4">
               <FilterFields {...props} />

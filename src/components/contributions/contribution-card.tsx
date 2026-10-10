@@ -1,7 +1,11 @@
 "use client"
 
 import { HugeiconsIcon } from "@hugeicons/react"
-import { Download01Icon, Calendar04Icon } from "@hugeicons/core-free-icons"
+import {
+  Download01Icon,
+  Calendar04Icon,
+  ViewIcon,
+} from "@hugeicons/core-free-icons"
 
 import { Card, CardContent } from "@/components/ui/card"
 import { StatusBadge } from "@/components/profile/status-badge"
@@ -19,10 +23,12 @@ import toast from "react-hot-toast"
 
 interface ContributionCardListProps {
   contributions: ContributionListItem[]
+  layout?: "stack" | "grid"
 }
 
 export function ContributionCardList({
   contributions,
+  layout = "stack",
 }: ContributionCardListProps) {
   const details = useContributionDetailsSheet()
   const router = useRouter()
@@ -35,7 +41,13 @@ export function ContributionCardList({
   }
 
   return (
-    <div className="flex flex-col gap-3 md:hidden">
+    <div
+      className={
+        layout === "grid"
+          ? "grid gap-3 sm:grid-cols-2 xl:grid-cols-3"
+          : "flex flex-col gap-3"
+      }
+    >
       {contributions.map((contribution) => (
         <Card key={contribution.id} className="p-4 shadow-none">
           <CardContent className="space-y-1 p-0">
@@ -69,6 +81,16 @@ export function ContributionCardList({
             <div className="flex items-center justify-between">
               <StatusBadge status={contribution.status} />
               <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                <span className="inline-flex items-center gap-1">
+                  <HugeiconsIcon
+                    icon={ViewIcon}
+                    size={14}
+                    color="currentColor"
+                    strokeWidth={2}
+                    className="size-3.5"
+                  />
+                  {contribution.viewCount.toLocaleString()}
+                </span>
                 <span className="inline-flex items-center gap-1">
                   <HugeiconsIcon
                     icon={Download01Icon}

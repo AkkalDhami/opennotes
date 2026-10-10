@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/tooltip"
 
 import { Spinner } from "@/components/ui/spinner"
-import { SubHeading } from "../ui/sub-heading"
+import { SubHeading } from "@/components/ui/sub-heading"
 import { cn } from "@/lib/utils"
 
 // const YEARS = [

@@ -28,7 +28,7 @@ export function ContributionEmptyState({
       <div className="space-y-1">
         <p className="font-medium text-foreground">
           {isNoResults
-            ? "No contributions found."
+            ? "No notes found."
             : "You haven't shared any notes yet."}
         </p>
         <p className="max-w-sm text-sm text-muted-foreground">
