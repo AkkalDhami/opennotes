@@ -52,10 +52,10 @@ export async function generateMetadata({
   const ownerName = owner?.name ?? owner?.username ?? "a contributor"
 
   return createMetadata({
-    title: `${collection.name} — ${APP_NAME} Collection`,
+    title: `${collection.name} Collection by @${owner?.username}(${ownerName})`,
     description:
       collection.description ||
-      `A collection of study notes and materials curated by ${ownerName} on ${APP_NAME}.`,
+      `A collection of study notes and materials curated by @${owner?.username}(${ownerName}) on ${APP_NAME}.`,
     path: buildCollectionSharePath(collection),
   })
 }
@@ -88,7 +88,7 @@ export default async function page({ params }: PublicCollectionPageProps) {
     <>
       <div className="flex flex-wrap justify-between gap-3">
         <Link
-          href={"/notes" as Route}
+          href={"/collections" as Route}
           className={cn(buttonVariants({ variant: "secondary" }), "w-fit")}
         >
           <HugeiconsIcon
@@ -97,7 +97,7 @@ export default async function page({ params }: PublicCollectionPageProps) {
             color="currentColor"
             strokeWidth={1.5}
           />{" "}
-          Browse Notes
+          Explore Collections
         </Link>
         <ShareCollectionButton
           collection={collection}
@@ -165,7 +165,10 @@ export default async function page({ params }: PublicCollectionPageProps) {
                 href={`/contributors/${owner.username}` as Route}
                 className="text-base font-medium text-foreground hover:underline"
               >
-                {ownerLabel}
+                {ownerLabel}{" "}
+                <span className="text-sm text-muted-foreground">
+                  @{owner.username}
+                </span>
               </Link>
             ) : (
               <span className="text-base font-medium text-foreground">
@@ -176,7 +179,7 @@ export default async function page({ params }: PublicCollectionPageProps) {
         </div>
       )}
 
-      <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+      <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground lowercase">
         <span className="flex items-center gap-1.5">
           <HugeiconsIcon
             icon={File01Icon}
@@ -193,7 +196,8 @@ export default async function page({ params }: PublicCollectionPageProps) {
             color="currentColor"
             strokeWidth={2}
           />
-          {formatCompactNumber(downloadCount)} Downloads
+          {formatCompactNumber(downloadCount)}{" "}
+          {downloadCount === 1 ? "Download" : "Downloads"}
         </span>
         <span className="flex items-center gap-1.5">
           <HugeiconsIcon
