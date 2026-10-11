@@ -24,6 +24,7 @@ type SP = {
   level?: string
   course?: string
   subject?: string
+  // creatorId?: string
   size?: string
   page?: string
 }
@@ -40,7 +41,12 @@ export async function generateMetadata({
     description:
       "Discover public collections of study notes organized by students and educators. Find resources by subject, course, education level.",
     alternates: { canonical: "/collections" },
-    robots: filtered ? { index: false, follow: true } : undefined, // keep faceted URLs out of the index
+    robots: filtered
+      ? {
+          index: false,
+          follow: true,
+        }
+      : undefined, // keep faceted URLs out of the index
   }
 }
 
@@ -54,7 +60,14 @@ export default async function CollectionsPage({
     getPublicCollections({ ...sp, page: Number(sp.page) || 1 }),
     getCollectionFilterOptions(),
   ])
-  const filtered = !!(sp.q || sp.level || sp.course || sp.subject || sp.size)
+  const filtered = !!(
+    sp.q ||
+    sp.level ||
+    sp.course ||
+    sp.subject ||
+    // sp.creatorId ||
+    sp.size
+  )
 
   return (
     <section className="space-y-6">

@@ -4,6 +4,7 @@ import { Container } from "@/components/ui/container"
 import { ContributorsSection } from "@/components/landing/contributors-section"
 import { ContributorMedalShowcase } from "@/components/shared/medal-showcase"
 import { Metadata } from "next"
+import { CollectionsSectionContainer } from "@/components/landing/collection-section-container"
 
 export const metadata: Metadata = {
   title: "Find and Share Educational Notes",
@@ -19,6 +20,7 @@ export default function Page() {
       <HeroSection />
       <TrendingNotesSection />
       <ContributorsSection />
+      <CollectionsSectionContainer />
       <ContributorMedalShowcase className="mx-4 mt-8" minimal={false} />
     </Container>
   )

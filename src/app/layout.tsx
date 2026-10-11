@@ -17,8 +17,8 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
 
   title: {
-    default: `${APP_NAME} — Find and Share Educational Notes`,
-    template: `%s | ${APP_NAME}`,
+    default: `${APP_NAME} - Find and Share Educational Notes`,
+    template: `%s - ${APP_NAME}`,
   },
 
   description: DEFAULT_DESCRIPTION,
@@ -102,7 +102,7 @@ export default function RootLayout({
         "antialiased",
         FONT_VARIABLES,
         alexBrush.variable,
-        "selection:bg-primary selection:text-primary-foreground"
+        "selection:bg-primary/10 selection:text-primary"
       )}
     >
       <head>
