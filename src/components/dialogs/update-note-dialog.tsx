@@ -62,7 +62,7 @@ import {
   NOTES_CATEGORIES,
   SUBJECTS,
 } from "@/constants/notes.constants"
-import { SearchSelect } from "../shared/search-select"
+import { SearchSelect } from "@/components/shared/search-select"
 import { useModal } from "@/hooks/use-modal-store"
 
 const STATUS_OPTIONS: {
