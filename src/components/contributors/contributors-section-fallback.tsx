@@ -14,7 +14,7 @@ export function ContributorsSectionFallback() {
         </SubHeading>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {Array.from({ length: 4 }).map((_, index) => (
           <ContributorCardSkeleton key={index} />
         ))}
