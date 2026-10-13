@@ -14,7 +14,6 @@ import { NoteShareButton } from "./note-share-button"
 import { NoteQrDialog } from "./note-qr-dialog"
 import { PublicNote } from "@/types/note"
 import { DownloadNoteButton } from "@/components/shared/download-note-button"
-import { ButtonGroup } from "@/components/ui/button-group"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -97,64 +96,62 @@ export function NoteActions({ note, fileUrl }: NoteActionsProps) {
         Add to collection
       </Button>
 
-      <ButtonGroup>
-        <Button variant="outline">More</Button>
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            render={
-              <Button variant="outline" size="icon" aria-label="More Options">
-                <HugeiconsIcon
-                  icon={MoreVerticalSquare01Icon}
-                  size={16}
-                  strokeWidth={2}
-                  className="size-4"
-                  aria-hidden="true"
-                />
-              </Button>
-            }
-          />
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          render={
+            <Button variant="outline" aria-label="More Options">
+              More
+              <HugeiconsIcon
+                icon={MoreVerticalSquare01Icon}
+                size={16}
+                strokeWidth={2}
+                className="size-4"
+                aria-hidden="true"
+              />
+            </Button>
+          }
+        />
 
-          <DropdownMenuContent align="end" className="w-40">
-            <DropdownMenuGroup>
-              <DropdownMenuItem
-                onClick={() =>
-                  open("report-note", {
-                    reportNoteId: note.id,
-                  })
-                }
-              >
-                <HugeiconsIcon
-                  icon={Flag02Icon}
-                  size={16}
-                  strokeWidth={2}
-                  className="size-4"
-                  aria-hidden="true"
-                />
-                Report note
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-
-            <DropdownMenuGroup>
-              <DropdownMenuItem onClick={handleCopyLink}>
-                <HugeiconsIcon
-                  key={"idle"}
-                  icon={Copy01Icon}
-                  size={16}
-                  color="currentColor"
-                  strokeWidth={2}
-                />
-                Copy Link
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-
-            <DropdownMenuSeparator />
-
+        <DropdownMenuContent align="end" className="w-40">
+          <DropdownMenuGroup>
             <DropdownMenuItem
-              render={<NoteShareButton note={note} className="justify-start" />}
-            ></DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </ButtonGroup>
+              onClick={() =>
+                open("report-note", {
+                  reportNoteId: note.id,
+                })
+              }
+            >
+              <HugeiconsIcon
+                icon={Flag02Icon}
+                size={16}
+                strokeWidth={2}
+                className="size-4"
+                aria-hidden="true"
+              />
+              Report note
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+
+          <DropdownMenuGroup>
+            <DropdownMenuItem onClick={handleCopyLink}>
+              <HugeiconsIcon
+                key={"idle"}
+                icon={Copy01Icon}
+                size={16}
+                color="currentColor"
+                strokeWidth={2}
+              />
+              Copy Link
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+
+          <DropdownMenuSeparator />
+
+          <DropdownMenuItem
+            render={<NoteShareButton note={note} className="justify-start" />}
+          ></DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   )
 }
