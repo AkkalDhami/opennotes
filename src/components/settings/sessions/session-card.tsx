@@ -27,12 +27,12 @@ export function SessionCard({
               {session.device}
             </span>
             {session.isCurrent && (
-              <span className="hidden rounded-full bg-primary px-2 py-0.5 text-xs font-medium text-primary-foreground sm:inline">
+              <span className="hidden rounded-full bg-primary px-2 py-0.5 text-xs font-medium text-primary-foreground">
                 Current session
               </span>
             )}
             {session.isCurrent && (
-              <span className="size-3 rounded-full bg-primary sm:hidden" />
+              <span className="size-3 animate-out rounded-full bg-primary" />
             )}
           </div>
           <span className="text-sm text-muted-foreground">

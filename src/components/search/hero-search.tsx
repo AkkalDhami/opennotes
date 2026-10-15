@@ -95,7 +95,7 @@ export function HeroSearch({
 
       <InputGroup
         className={cn(
-          "h-14 rounded-full border bg-background px-2",
+          "h-14 rounded-full border bg-transparent px-2",
           "focus-within:border-primary/50",
           "focus-within:ring-4 focus-within:ring-primary/10"
         )}
