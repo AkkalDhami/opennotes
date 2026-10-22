@@ -52,7 +52,6 @@ export type CollectionFilters = {
   level?: string
   course?: string
   subject?: string
-  creator?: string
   size?: string
   sort?: SortKey
   page?: number
