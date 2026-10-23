@@ -99,11 +99,11 @@ export function SearchSelect({
             role="combobox"
             aria-expanded={open}
             disabled={disabled}
-            className="w-full justify-between font-normal"
+            className="h-10 min-h-10 w-full justify-between font-normal"
           >
             <span
               className={cn(
-                "truncate",
+                "min-w-0 flex-1 truncate text-left",
                 !selected && !selectedOptions.length && "text-muted-foreground"
               )}
             >
@@ -117,6 +117,7 @@ export function SearchSelect({
                   ? selected.name
                   : placeholder}
             </span>
+
             <HugeiconsIcon
               icon={ArrowDown01Icon}
               strokeWidth={2}
@@ -129,7 +130,7 @@ export function SearchSelect({
 
       <PopoverContent
         align="start"
-        className="w-[--radix-popover-trigger-width] p-0"
+        className="w-[--radix-popover-trigger-width] rounded-lg! p-0"
       >
         <Command>
           <CommandInput placeholder={searchPlaceholder} />
