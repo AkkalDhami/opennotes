@@ -48,7 +48,7 @@ export function NoteQrDialog({ note }: NoteQrDialogProps) {
         const dataUrl = await generateNoteQrCompositeDataUrl({
           url,
           title: note.title,
-          course: slugToTitle(note.course),
+          course: slugToTitle(note.course ?? ""),
           subject: slugToTitle(note.subject),
           grade: slugToTitle(note.grade ?? ""),
         })

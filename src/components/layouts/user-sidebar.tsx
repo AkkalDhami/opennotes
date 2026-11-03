@@ -25,7 +25,7 @@ import { Logo } from "@/components/shared/logo"
 import { usePathname } from "next/navigation"
 import { ParsedProfileCta } from "@/components/profile/profile-cta"
 
-export const SIDEBAR_ITEMS = [
+export const USER_SIDEBAR_ITEMS = [
   {
     title: "Dashboard",
     url: "/profile/dashboard",
@@ -75,7 +75,7 @@ export function UserSidebar({
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={SIDEBAR_ITEMS} />
+        <NavMain items={USER_SIDEBAR_ITEMS} />
         <ParsedProfileCta pathname={pathname} />
       </SidebarContent>
 
