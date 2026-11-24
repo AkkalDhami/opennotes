@@ -1,4 +1,5 @@
 import { ShaderFire } from "@/components/ui/shader-fire"
+import { Highlight } from "@/components/ui/highlight"
 import Link from "next/link"
 
 export default function NotFound() {
@@ -7,14 +8,10 @@ export default function NotFound() {
       {" "}
       <ShaderFire />
       <div className="relative w-full max-w-lg text-center">
-        <p className="mb-4 text-xs font-medium tracking-[0.25em] text-muted-foreground uppercase">
-          Error 404
-        </p>
-
         <h1 className="text-7xl font-bold tracking-tight sm:text-8xl">404</h1>
 
         <h2 className="mt-6 text-2xl font-semibold tracking-tight sm:text-3xl">
-          Page not found
+          Page <Highlight animate={false}>not found</Highlight>
         </h2>
 
         <p className="mx-auto mt-4 max-w-md text-sm leading-6 text-muted-foreground sm:text-base">

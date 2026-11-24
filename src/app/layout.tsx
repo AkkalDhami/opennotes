@@ -102,6 +102,7 @@ export default function RootLayout({
         "antialiased",
         FONT_VARIABLES,
         alexBrush.variable,
+        "font-geist",
         "selection:bg-primary/10 selection:text-primary"
       )}
     >
