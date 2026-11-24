@@ -1,6 +1,7 @@
 export type ThemeName =
   | "carbon"
   | "midnight"
+  | "incognito"
   | "ember"
   | "teal"
   | "ocean-blue"
@@ -17,18 +18,6 @@ export type ThemeName =
   | "deep-purple"
   | "volt"
   | "cosmic-navy"
-
-export interface ThemeSeed {
-  id: ThemeName
-  name: string
-  description: string
-  neutralHue: number
-  neutralSat: number
-  primaryHue: number
-  primarySat: number
-  accentHue: number
-  accentSat: number
-}
 
 export interface ThemeTokens {
   background: string
@@ -64,6 +53,23 @@ export interface ThemeTokens {
   chart5: string
 }
 
+export interface ThemeSeed {
+  id: ThemeName
+  name: string
+  description: string
+  neutralHue: number
+  neutralSat: number
+  primaryHue: number
+  primarySat: number
+  accentHue: number
+  accentSat: number
+  /** Exact per-mode token overrides (hex). Applied after the generated tokens. */
+  overrides?: {
+    light?: Partial<ThemeTokens>
+    dark?: Partial<ThemeTokens>
+  }
+}
+
 export interface ThemeDefinition extends ThemeSeed {
   light: ThemeTokens
   dark: ThemeTokens
@@ -96,6 +102,27 @@ function hslToHex(h: number, s: number, l: number): string {
   return `#${toHex(f(0))}${toHex(f(8))}${toHex(f(4))}`
 }
 
+/** Sets primary + foreground and keeps ring / sidebar variants in sync. */
+function primaryOverrides(
+  primary: string,
+  foreground: string
+): Partial<ThemeTokens> {
+  return {
+    primary,
+    primaryForeground: foreground,
+    ring: primary,
+    sidebarPrimary: primary,
+    sidebarPrimaryForeground: foreground,
+    sidebarRing: primary,
+  }
+}
+
+/** Pure black app + sidebar background (dark mode). */
+const PURE_BLACK: Partial<ThemeTokens> = {
+  background: "#000000",
+  sidebar: "#000000",
+}
+
 export const THEME_SEEDS: ThemeSeed[] = [
   {
     id: "carbon",
@@ -107,6 +134,49 @@ export const THEME_SEEDS: ThemeSeed[] = [
     primarySat: 0,
     accentHue: 0,
     accentSat: 0,
+    overrides: {
+      dark: {
+        ...PURE_BLACK,
+        ...primaryOverrides("#ffffff", "#000000"),
+      },
+      light: primaryOverrides("#000000", "#ffffff"),
+    },
+  },
+  {
+    id: "incognito",
+    name: "Incognito",
+    description: "Monochrome with a bold orange accent",
+    neutralHue: 0,
+    neutralSat: 0,
+    primaryHue: 0,
+    primarySat: 0,
+    accentHue: 16,
+    accentSat: 100,
+    overrides: {
+      dark: {
+        ...PURE_BLACK,
+        ...primaryOverrides("#ff5b1e", "#ffffff"),
+        chart1: "#ff5b1e",
+      },
+      light: {
+        ...primaryOverrides("#ff5b1e", "#ffffff"),
+        chart1: "#ff5b1e",
+      },
+    },
+  },
+  {
+    id: "volt",
+    name: "Volt",
+    description: "Bold & energetic",
+    neutralHue: 255,
+    neutralSat: 8,
+    primaryHue: 89,
+    primarySat: 85,
+    accentHue: 28,
+    accentSat: 55,
+    overrides: {
+      dark: PURE_BLACK,
+    },
   },
   {
     id: "cosmic-navy",
@@ -118,17 +188,17 @@ export const THEME_SEEDS: ThemeSeed[] = [
     primarySat: 75,
     accentHue: 215,
     accentSat: 55,
-  },
-  {
-    id: "volt",
-    name: "Volt",
-    description: "Bold & energetic",
-    neutralHue: 80,
-    neutralSat: 0,
-    primaryHue: 90,
-    primarySat: 100,
-    accentHue: 80,
-    accentSat: 100,
+    overrides: {
+      dark: {
+        ...PURE_BLACK,
+        ...primaryOverrides("#4974d6", "#ffffff"),
+        chart1: "#4974d6",
+      },
+      light: {
+        ...primaryOverrides("#4974d6", "#ffffff"),
+        chart1: "#4974d6",
+      },
+    },
   },
   {
     id: "midnight",
@@ -185,7 +255,6 @@ export const THEME_SEEDS: ThemeSeed[] = [
     accentHue: 200,
     accentSat: 40,
   },
-
   {
     id: "midnight-azure",
     name: "Midnight Azure",
@@ -197,7 +266,6 @@ export const THEME_SEEDS: ThemeSeed[] = [
     accentHue: 210,
     accentSat: 65,
   },
-
   {
     id: "graphite-studio",
     name: "Graphite Studio",
@@ -231,7 +299,6 @@ export const THEME_SEEDS: ThemeSeed[] = [
     accentHue: 180,
     accentSat: 45,
   },
-
   {
     id: "royal-violet",
     name: "Royal Violet",
@@ -316,7 +383,7 @@ export function buildVariant(
   const primaryL = dark ? 60 : 46
   const primaryFgL = dark ? 11 : 98
 
-  return {
+  const tokens: ThemeTokens = {
     background: hslToHex(nh, ns, dark ? 8 : 98),
     foreground: hslToHex(nh, 8, dark ? 95 : 13),
     card: hslToHex(nh, ns, dark ? 11 : 100),
@@ -349,6 +416,8 @@ export function buildVariant(
     chart4: hslToHex((ah + 20) % 360, 55, 60),
     chart5: hslToHex((ah + 160) % 360, 50, 55),
   }
+
+  return { ...tokens, ...seed.overrides?.[mode] }
 }
 
 export const THEMES: Record<ThemeName, ThemeDefinition> = THEME_SEEDS.reduce(

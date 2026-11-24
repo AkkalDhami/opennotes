@@ -14,6 +14,8 @@ function block(selector: string, tokens: ThemeTokens): string {
   return `${selector} {\n${lines}\n}`
 }
 
+// ff581a
+
 const header = `/**
  * GENERATED FILE — do not edit by hand.
  * Source: src/lib/appearance/themes.ts
@@ -34,6 +36,6 @@ for (const seed of THEME_SEEDS) {
 }
 
 const css = parts.join("\n\n") + "\n"
-const outPath = resolve(__dirname, "../src/styles/themes.css")
+const outPath = resolve(import.meta.dirname, "../src/app/styles/themes.css")
 writeFileSync(outPath, css, "utf8")
 console.log(`Wrote ${outPath} (${THEME_SEEDS.length} themes x 2 modes)`)

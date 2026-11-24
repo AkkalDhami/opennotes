@@ -54,7 +54,7 @@ export interface AppearancePreferences {
 export const DEFAULT_PREFERENCES: AppearancePreferences = {
   mode: "system",
   theme: "volt",
-  fontFamily: "manrope",
+  fontFamily: "geist",
   fontSize: "medium",
   radius: "default",
   density: "comfortable",

@@ -15,6 +15,7 @@ const PUBLIC_ROUTES = [
   "/community",
   "/notes",
   "/settings",
+  "/collections",
 ]
 
 function isPublicRoute(pathname: string) {
