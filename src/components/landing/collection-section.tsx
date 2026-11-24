@@ -19,6 +19,7 @@ export function CollectionSection({ collections }: CollectionSectionProps) {
         <SectionHeader
           headingId="collections-heading"
           title="Study Collections"
+          highlight="Collections"
           description="Find organized study materials shared by the community."
           viewAllHref="/collections"
           viewAllLabel="View all collections"

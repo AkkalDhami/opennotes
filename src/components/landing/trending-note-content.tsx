@@ -20,7 +20,8 @@ export function TrendingNoteContent({ notes }: TrendingNotesProps) {
       <Reveal>
         <SectionHeader
           headingId="trending-notes-heading"
-          title="Trending notes"
+          title="Trending Notes"
+          highlight="Notes"
           description="Notes students are reading and downloading right now."
           viewAllHref="/notes"
           viewAllLabel="View all notes"

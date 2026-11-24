@@ -9,7 +9,7 @@ import {
 } from "motion/react"
 import { Suspense, useEffect } from "react"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { BookOpen02Icon, Share05Icon } from "@hugeicons/core-free-icons"
+import { BookOpen02Icon, Upload01Icon } from "@hugeicons/core-free-icons"
 
 import { cn } from "@/lib/utils"
 import { HeroSearch } from "@/components/search/hero-search"
@@ -22,6 +22,7 @@ import { SideRays } from "@/components/ui/siderays"
 import Link from "next/link"
 import { Route } from "next"
 import { AnimatedText } from "@/components/ui/animated-text"
+import { Highlight } from "@/components/ui/highlight"
 
 interface HeroSectionProps {
   className?: string
@@ -64,21 +65,22 @@ export function HeroSection({ className }: HeroSectionProps) {
 
   const startAnimate = () => {
     animate(
-      "#hero-title span",
-      {
-        opacity: 1,
-        filter: "blur(0)",
-        y: 0,
-      },
-      {
-        duration: 0.3,
-        ease: "easeInOut",
-        delay: stagger(0.03),
-      }
+      "[data-word]",
+      { opacity: 1, filter: "blur(0)", y: 0 },
+      { duration: 0.3, ease: "easeInOut", delay: stagger(0.03) }
     )
   }
 
-  const heroTitle = "Share what you know. Find what you need."
+  const heroWords = [
+    { text: "Share" },
+    { text: "what" },
+    { text: "you" },
+    { text: "know." },
+    { text: "Find" },
+    { text: "what" },
+    { text: "you" },
+    { text: "need", highlight: true, suffix: "." },
+  ]
 
   return (
     <>
@@ -138,20 +140,26 @@ export function HeroSection({ className }: HeroSectionProps) {
           <div ref={scope}>
             <motion.h1
               id="hero-title"
-              aria-labelledby="hero-title"
               className="text-4xl leading-[1.09] font-medium tracking-tight sm:text-5xl md:max-w-3xl md:text-6xl lg:text-7xl"
             >
-              {heroTitle.split(" ").map((word, idx) => (
+              {heroWords.map((word, idx) => (
                 <motion.span
                   key={idx}
-                  style={{
-                    opacity: 0,
-                    filter: "blur(10px)",
-                    y: 10,
-                  }}
-                  className="inline-block"
+                  data-word
+                  style={{ opacity: 0, filter: "blur(10px)", y: 10 }}
+                  className="mr-[0.25em] inline-block last:mr-0"
                 >
-                  {word} &nbsp;
+                  {word.highlight ? (
+                    <Highlight
+                      // animate={false}
+                      variant="solid"
+                    >
+                      {word.text}
+                    </Highlight>
+                  ) : (
+                    word.text
+                  )}
+                  {word.suffix}
                 </motion.span>
               ))}
             </motion.h1>
@@ -159,8 +167,14 @@ export function HeroSection({ className }: HeroSectionProps) {
 
           <AnimatedText
             className="mx-auto max-w-150 text-base leading-relaxed text-muted-foreground sm:max-w-170 sm:text-lg"
-            text="Discover notes and study materials shared by students and educators. Share your own notes, build your contributor profile, and help others learn."
+            text="Free notes and study materials from students and educators. Browse
+            by subject, or publish your own and build your contributor profile."
           />
+          {/* <p className="mx-auto max-w-150 text-base leading-relaxed text-muted-foreground sm:max-w-170 sm:text-lg">
+            Free notes and study materials from students and educators. Browse
+            by subject, or publish your own and build your contributor profile.
+           
+          </p> */}
 
           <motion.div variants={item} className="w-full max-w-2xl">
             <Suspense fallback={<div className="h-14" />}>
@@ -198,13 +212,13 @@ export function HeroSection({ className }: HeroSectionProps) {
                 "rounded-lg px-4 py-5.5 text-base font-normal"
               )}
             >
-              <HugeiconsIcon icon={Share05Icon} size={18} aria-hidden="true" />
+              <HugeiconsIcon icon={Upload01Icon} size={18} aria-hidden="true" />
               Share Your Notes
             </Link>
           </motion.div>
 
           <motion.p variants={item} className="text-sm text-muted-foreground">
-            No sign-up walls. No paywalls. Just share the link.
+            Free to browse. No sign-up. No paywalls.{" "}
           </motion.p>
         </motion.div>
       </Section>

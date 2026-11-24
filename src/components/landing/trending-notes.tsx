@@ -44,6 +44,7 @@ export function TrendingNotes() {
           description="Notes students are reading and downloading right now."
           viewAllHref="/notes"
           viewAllLabel="View all notes"
+          highlight="notes"
         />
       </Reveal>
       <TrendingNotesSection />
