@@ -15,6 +15,7 @@ import { SubHeading } from "@/components/ui/sub-heading"
 import { ArrowRight02Icon, BookOpen02Icon } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { NoiseTexture } from "@/components/ui/noise-texture"
+import { Highlight } from "@/components/ui/highlight"
 
 export function ContributorMedalShowcase({
   className,
@@ -31,7 +32,6 @@ export function ContributorMedalShowcase({
           className
         )}
       >
-        {/* <NoiseTexture noiseOpacity={0.3} /> */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -39,8 +39,12 @@ export function ContributorMedalShowcase({
           transition={{ duration: 0.5, ease: "easeOut" }}
           className="relative flex max-w-xl flex-col items-center gap-6"
         >
-          <Heading className="font-semibold" as="h1">
-            Ready to share what you know?
+          <Heading>
+            Ready to{" "}
+            <Highlight animate={false} color="var(--primary)" variant="outline">
+              share
+            </Highlight>{" "}
+            what you know?
           </Heading>
           <SubHeading className="text-center font-medium text-muted-foreground">
             Every note you share helps someone else learn faster. Publish your
@@ -100,13 +104,18 @@ export function ContributorMedalShowcase({
     >
       <NoiseTexture noiseOpacity={0.3} />
       <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.5, ease: "easeOut" }}
         className="flex max-w-xl flex-col items-center gap-3"
       >
-        <Heading>Become a Contributor</Heading>
+        <Heading>
+          Become a{" "}
+          <Highlight animate={false} color="var(--primary)" variant="outline">
+            Contributor
+          </Highlight>
+        </Heading>
         <SubHeading>
           Every note you share helps someone else learn faster. Publish your
           notes, climb the leaderboard, and earn your place among our top

@@ -32,7 +32,7 @@ export function SessionCard({
               </span>
             )}
             {session.isCurrent && (
-              <span className="size-3 animate-out rounded-full bg-primary" />
+              <span className="size-2.5 animate-out rounded-full bg-primary" />
             )}
           </div>
           <span className="text-sm text-muted-foreground">

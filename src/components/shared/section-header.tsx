@@ -6,13 +6,16 @@ import { SubHeading } from "@/components/ui/sub-heading"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { ArrowRight02Icon } from "@hugeicons/core-free-icons"
 import { Route } from "next"
+import { ReactNode } from "react"
+import { Highlight } from "@/components/ui/highlight"
 
 interface SectionHeaderProps {
   headingId: string
-  title: string
+  title: string | ReactNode
   description: string
   viewAllHref: string
   viewAllLabel?: string
+  highlight?: string
 }
 
 export function SectionHeader({
@@ -21,11 +24,30 @@ export function SectionHeader({
   description,
   viewAllHref,
   viewAllLabel,
+  highlight,
 }: SectionHeaderProps) {
+  const highlightedTitle =
+    typeof title === "string" && highlight
+      ? title.split(new RegExp(`(${highlight})`, "gi"))
+      : null
+
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div className="space-y-2">
-        <Heading id={headingId}>{title}</Heading>
+        <Heading id={headingId}>
+          {highlightedTitle
+            ? highlightedTitle.map((part, index) =>
+                part.toLowerCase() === highlight?.toLowerCase() ? (
+                  <Highlight key={index} animate={false} variant="outline">
+                    {part}
+                  </Highlight>
+                ) : (
+                  part
+                )
+              )
+            : title}
+        </Heading>
+
         <SubHeading>{description}</SubHeading>
       </div>
 

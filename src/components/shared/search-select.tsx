@@ -99,7 +99,7 @@ export function SearchSelect({
             role="combobox"
             aria-expanded={open}
             disabled={disabled}
-            className="h-10 min-h-10 w-full justify-between font-normal"
+            className="h-9 min-h-9 w-full justify-between font-normal"
           >
             <span
               className={cn(
