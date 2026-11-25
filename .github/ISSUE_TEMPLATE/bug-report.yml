@@ -1,0 +1,44 @@
+name: Bug report
+description: Something on OpenNotes is broken or behaving unexpectedly.
+title: "[Bug] "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **This issue is public.** Please do not include personal information, passwords, tokens, or private links. Blur anything sensitive in screenshots.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe the problem and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Go to ...
+        2. Click ...
+        3. See error
+  - type: input
+    id: page-url
+    attributes:
+      label: Page URL
+      description: The page where it happened.
+  - type: input
+    id: device
+    attributes:
+      label: Device
+      placeholder: e.g. Android phone, Windows laptop, iPad
+  - type: input
+    id: browser
+    attributes:
+      label: Browser
+      placeholder: e.g. Chrome 130, Safari 18
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Drag and drop images here. Remove any personal information first.

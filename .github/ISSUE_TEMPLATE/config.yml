@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Suggest an idea
+    url: https://github.com/akkaldhami/opennotes/discussions/new?category=ideas
+    about: Share feature ideas and improvements in Discussions.
+  - name: Request notes
+    url: https://github.com/akkaldhami/opennotes/discussions/new?category=note-requests
+    about: Ask for notes on a subject, course, or level.
+  - name: Ask a question
+    url: https://github.com/akkaldhami/opennotes/discussions/new?category=q-a
+    about: Get help or ask how something works.

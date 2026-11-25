@@ -1,0 +1,40 @@
+name: Report a note
+description: Flag a note that is incorrect, spam, a duplicate, or otherwise problematic.
+title: "[Report] "
+labels: ["report", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **This issue is public.** Do not include personal information (names, emails, phone numbers, addresses, or IDs) of yourself or anyone else.
+
+        **Copyright claims, harassment, or other abuse:** do not post these here. Please email **aavashdhami21@gmail.com** instead.
+  - type: input
+    id: note-url
+    attributes:
+      label: Note URL
+      description: Link to the note you are reporting.
+      placeholder: https://opennotesbyme.vercel.app/notes/...
+    validations:
+      required: true
+  - type: dropdown
+    id: reason
+    attributes:
+      label: Reason
+      description: What is the main problem with this note?
+      options:
+        - Incorrect / misleading
+        - Spam
+        - Inappropriate
+        - Duplicate
+        - Unreadable / low quality
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: Tell us what is wrong and, if possible, which part of the note. If it is a duplicate, link the original.
+    validations:
+      required: true

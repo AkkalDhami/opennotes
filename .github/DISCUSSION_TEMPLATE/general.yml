@@ -1,0 +1,17 @@
+title: ""
+labels: ["general"]
+body:
+  - type: textarea
+    id: message
+    attributes:
+      label: What's on your mind?
+    validations:
+      required: true
+  - type: checkboxes
+    id: no-personal-info
+    attributes:
+      label: Privacy
+      description: Discussions are public.
+      options:
+        - label: I have not included any personal information (mine or anyone else's).
+          required: true

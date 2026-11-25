@@ -1,0 +1,36 @@
+title: "[Note request] "
+labels: ["note-request"]
+body:
+  - type: input
+    id: subject
+    attributes:
+      label: Subject
+      placeholder: e.g. Physics
+    validations:
+      required: true
+  - type: input
+    id: course
+    attributes:
+      label: Course
+      placeholder: e.g. Grade 11 Physics, BSc CSIT Semester 2
+    validations:
+      required: true
+  - type: dropdown
+    id: level
+    attributes:
+      label: Level
+      options:
+        - School
+        - High school / +2
+        - Undergraduate
+        - Postgraduate
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: Which chapters or topics do you need? Anything else that would help.
+    validations:
+      required: true
