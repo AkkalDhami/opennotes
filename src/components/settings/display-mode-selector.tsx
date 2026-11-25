@@ -1,6 +1,7 @@
 "use client"
 
 import { HugeiconsIcon } from "@hugeicons/react"
+import { useTheme } from "next-themes"
 import {
   Sun03Icon,
   Moon02Icon,
@@ -24,14 +25,20 @@ const ICONS = {
 export function DisplayModeSelector() {
   const mode = useAppearanceStore((s) => s.mode)
   const setMode = useAppearanceStore((s) => s.setMode)
+  const { setTheme } = useTheme()
 
-  function toggleTheme(mode: AppearanceMode) {
+  function toggleTheme(nextMode: AppearanceMode) {
+    const updateTheme = () => {
+      setMode(nextMode)
+      setTheme(nextMode)
+    }
+
     if (!document.startViewTransition) {
-      setMode(mode)
+      updateTheme()
       return
     }
 
-    document.startViewTransition(() => setMode(mode))
+    document.startViewTransition(updateTheme)
   }
 
   return (
