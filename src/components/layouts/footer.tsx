@@ -14,9 +14,9 @@ const footerLinks = [
 
 export function Footer() {
   return (
-    <footer className="relative mb-12 border-y text-muted-foreground">
+    <footer className="relative mb-12 text-muted-foreground">
       {/* <NoiseTexture noiseOpacity={0.1} /> */}
-      <div className="mx-auto max-w-6xl space-y-2 border-x px-4 py-6">
+      <div className="mx-auto max-w-6xl space-y-2 border-t px-4 pt-10 pb-6">
         <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
           <p>
             &copy; {new Date().getFullYear()} | {APP_NAME} | A community library

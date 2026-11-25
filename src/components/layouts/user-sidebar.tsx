@@ -12,7 +12,12 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { Folder01Icon, HeartIcon } from "@hugeicons/core-free-icons"
+import {
+  FileStarIcon,
+  Folder01Icon,
+  HeartIcon,
+  Shield01Icon,
+} from "@hugeicons/core-free-icons"
 import { UserProfile } from "@/components/shared/user-profile"
 
 import {
@@ -46,11 +51,11 @@ export const USER_SIDEBAR_ITEMS = [
     url: "/profile/collections",
     icon: Folder01Icon,
   },
-  // {
-  //   title: "Contributions",
-  //   url: "/profile/contributions",
-  //   icon: FileStarIcon,
-  // },
+  {
+    title: "My Contributions",
+    url: "/profile/contributions",
+    icon: FileStarIcon,
+  },
   {
     title: "Settings",
     url: "/profile/settings",
@@ -63,6 +68,18 @@ export function UserSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar> & { user: UserType }) {
   const pathname = usePathname()
+  const navItems =
+    user.role === "ADMIN"
+      ? [
+          {
+            title: "Admin Dashboard",
+            url: "/admin/dashboard",
+            icon: Shield01Icon,
+          },
+          ...USER_SIDEBAR_ITEMS,
+        ]
+      : USER_SIDEBAR_ITEMS
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -75,7 +92,7 @@ export function UserSidebar({
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={USER_SIDEBAR_ITEMS} />
+        <NavMain items={navItems} />
         <ParsedProfileCta pathname={pathname} />
       </SidebarContent>
 

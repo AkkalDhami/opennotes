@@ -22,8 +22,8 @@ export async function Navbar() {
   const user = await getCurrentUser()
 
   return (
-    <header className="pt-0.5r sticky top-0 z-40 border-t border-b bg-background backdrop-blur-md">
-      <div className="relative z-10 mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 border-x px-4">
+    <header className="sticky top-0 z-40 bg-background backdrop-blur-md">
+      <div className="relative z-10 mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4">
         <div className="flex items-center gap-6">
           <Logo />
         </div>

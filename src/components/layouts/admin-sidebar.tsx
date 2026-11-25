@@ -17,6 +17,7 @@ import {
   Flag02Icon,
   Home03Icon,
   UserGroup03Icon,
+  UserIcon,
 } from "@hugeicons/core-free-icons"
 import { UserProfile } from "@/components/shared/user-profile"
 
@@ -35,6 +36,11 @@ const data = {
       title: "Home",
       url: "/",
       icon: Home03Icon,
+    },
+    {
+      title: "User Dashboard",
+      url: "/profile/dashboard",
+      icon: UserIcon,
     },
     {
       title: "Dashboard",
