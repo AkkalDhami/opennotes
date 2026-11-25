@@ -15,7 +15,7 @@
     "db:studio": "drizzle-kit studio",
     "db:push": "npx drizzle-kit push",
     "db:search": "npx tsx scripts/setup-search.ts",
-    "db:seed": "tsx src/db/seed.ts",
+    "db:seed": "tsx --env-file=.env src/db/seed.ts",
     "prepare": "husky",
     "generate:themes": "tsx scripts/generate-theme-css.ts",
     "test:e2e:report-flow": "npx playwright test tests/e2e/report-flow.spec.ts",
