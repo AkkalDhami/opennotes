@@ -10,7 +10,7 @@ export const metadata = {
 
 export default function SettingsPage() {
   return (
-    <Container className="space-y-6 border-x px-4 pt-4 pb-6">
+    <Container className="space-y-6 px-4 pt-4 pb-6">
       <div className="mb-6 space-y-2">
         <Heading>Settings</Heading>
         <SubHeading>

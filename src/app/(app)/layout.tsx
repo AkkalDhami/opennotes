@@ -8,21 +8,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <div className="relative min-h-screen w-full bg-background">
-        <div
-          className="absolute inset-0 z-0"
-          style={{
-            background:
-              "radial-gradient(ellipse 80% 60% at 50% 0%, var(--primary), transparent 70%), var(--background)",
-            opacity: 0.14,
-          }}
-        />
-        {/* <div
-          className="absolute inset-0 z-0 dark:hidden"
-          style={{
-            background:
-              "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0, 0, 0, 0.07), transparent 70%), #ffffff",
-          }}
-        /> */}
         <Navbar />
         <main className="relative max-w-svw overflow-hidden">{children} </main>
         <Footer />

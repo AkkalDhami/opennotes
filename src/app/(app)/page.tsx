@@ -16,11 +16,11 @@ export const metadata: Metadata = {
 }
 export default function Page() {
   return (
-    <Container className="border-edge space-y-2 border-x pb-6">
+    <Container className="space-y-2 pb-6">
       <HeroSection />
-      <TrendingNotesSection />
+      <TrendingNotesSection view="list" />
+      <CollectionsSectionContainer view="list" />
       <ContributorsSection />
-      <CollectionsSectionContainer />
       <ContributorMedalShowcase className="mx-4 mt-8" minimal={false} />
     </Container>
   )

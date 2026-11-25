@@ -41,11 +41,15 @@ export async function GET(
   }
 
   try {
-    const response = await fetch(
-      resolveNoteFileUrl(note.fileKey) +
-        `?ik-sdk-version=javascript-1.4.3&ik-sdk-platform=web`,
-      {}
-    )
+    const fileUrl = await resolveNoteFileUrl(note.fileKey)
+
+    if (!fileUrl) {
+      throw new Error("Unable to resolve note file URL.")
+    }
+
+    const response = await fetch(fileUrl, {
+      headers: { Accept: "application/pdf" },
+    })
 
     if (!response.ok || !response.body) {
       throw new Error("Unable to fetch note file.")
@@ -53,10 +57,10 @@ export async function GET(
 
     return new NextResponse(response.body, {
       headers: {
-        "Content-Type":
-          response.headers.get("content-type") ?? "application/pdf",
+        "Content-Type": "application/pdf",
         "Content-Disposition": `inline; filename="${note.slug}.pdf"`,
         "Cache-Control": "private, no-store",
+        "X-Content-Type-Options": "nosniff",
       },
     })
   } catch (error) {
