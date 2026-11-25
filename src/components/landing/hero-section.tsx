@@ -64,6 +64,8 @@ export function HeroSection({ className }: HeroSectionProps) {
   }, [])
 
   const startAnimate = () => {
+    if (shouldReduceMotion) return
+
     animate(
       "[data-word]",
       { opacity: 1, filter: "blur(0)", y: 0 },
@@ -146,8 +148,12 @@ export function HeroSection({ className }: HeroSectionProps) {
                 <motion.span
                   key={idx}
                   data-word
-                  style={{ opacity: 0, filter: "blur(10px)", y: 10 }}
-                  className="mr-[0.25em] inline-block last:mr-0"
+                  style={{
+                    opacity: shouldReduceMotion ? 1 : 0,
+                    filter: shouldReduceMotion ? "blur(0px)" : "blur(10px)",
+                    y: shouldReduceMotion ? 0 : 10,
+                  }}
+                  className="mr-[0.2em] inline-block last:mr-0"
                 >
                   {word.highlight ? (
                     <Highlight
@@ -184,7 +190,7 @@ export function HeroSection({ className }: HeroSectionProps) {
 
           <motion.div
             variants={item}
-            className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:gap-4"
+            className="mt-2 flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:gap-4"
           >
             <Link
               href={"/notes" as Route}
@@ -204,7 +210,6 @@ export function HeroSection({ className }: HeroSectionProps) {
             </Link>
             <Link
               href="/contribution"
-
               className={cn(
                 buttonVariants({
                   variant: "outline",

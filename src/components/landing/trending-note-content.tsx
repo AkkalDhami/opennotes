@@ -3,14 +3,19 @@
 import { SectionHeader } from "@/components/shared/section-header"
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/shared/reveal"
 import { NoteCard } from "@/components/notes/note-card"
+import { NoteList, NoteListItem } from "@/components/notes/note-list"
 import { Section } from "@/components/ui/section"
-import { PublicNote } from "@/types/note"
+import type { NoteView, PublicNote } from "@/types/note"
 
 interface TrendingNotesProps {
   notes: PublicNote[]
+  view?: NoteView
 }
 
-export function TrendingNoteContent({ notes }: TrendingNotesProps) {
+export function TrendingNoteContent({
+  notes,
+  view = "grid",
+}: TrendingNotesProps) {
   return (
     <Section
       id="trending-notes"
@@ -28,16 +33,24 @@ export function TrendingNoteContent({ notes }: TrendingNotesProps) {
         />
       </Reveal>
 
-      <StaggerGroup className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {notes?.map((note, index) => (
-          <StaggerItem
-            key={note.id}
-            className={index === 3 ? "hidden xl:block" : undefined}
-          >
-            <NoteCard note={note} />
-          </StaggerItem>
-        ))}
-      </StaggerGroup>
+      {view === "list" ? (
+        <NoteList className="mt-8">
+          {notes?.map((note, index) => (
+            <NoteListItem key={note.id} note={note} index={index} reveal />
+          ))}
+        </NoteList>
+      ) : (
+        <StaggerGroup className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {notes?.map((note, index) => (
+            <StaggerItem
+              key={note.id}
+              className={index === 3 ? "hidden xl:block" : undefined}
+            >
+              <NoteCard note={note} />
+            </StaggerItem>
+          ))}
+        </StaggerGroup>
+      )}
     </Section>
   )
 }

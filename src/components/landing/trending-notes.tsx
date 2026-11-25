@@ -1,12 +1,30 @@
 import { SectionHeader } from "@/components/shared/section-header"
 import { Reveal } from "@/components/shared/reveal"
-import { NoteCardSkeleton } from "@/components/notes/note-card-skeleton"
+import {
+  NoteCardSkeleton,
+  NoteListSkeleton,
+} from "@/components/notes/note-card-skeleton"
 import { Section } from "@/components/ui/section"
 import { getTrendingNotes } from "@/lib/notes/get-trending-notes"
 import { Suspense } from "react"
 import { TrendingNoteContent } from "./trending-note-content"
+import type { NoteView } from "@/types/note"
 
-export function TrendingNotesSkeleton() {
+interface TrendingNotesSectionProps {
+  view?: NoteView
+}
+
+export function TrendingNotesSkeleton({
+  view = "grid",
+}: TrendingNotesSectionProps) {
+  if (view === "list") {
+    return (
+      <div className="mt-8 px-4">
+        <NoteListSkeleton count={4} />
+      </div>
+    )
+  }
+
   return (
     <div className="mt-8 grid grid-cols-1 gap-4 px-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {Array.from({ length: 4 }).map((_, i) => (
@@ -16,21 +34,25 @@ export function TrendingNotesSkeleton() {
   )
 }
 
-export async function TrendingNotesData() {
+export async function TrendingNotesData({
+  view = "grid",
+}: TrendingNotesSectionProps) {
   const notes = await getTrendingNotes()
 
-  return <TrendingNoteContent notes={notes} />
+  return <TrendingNoteContent notes={notes} view={view} />
 }
 
-export function TrendingNotesSection() {
+export function TrendingNotesSection({
+  view = "grid",
+}: TrendingNotesSectionProps) {
   return (
-    <Suspense fallback={<TrendingNotesSkeleton />}>
-      <TrendingNotesData />
+    <Suspense fallback={<TrendingNotesSkeleton view={view} />}>
+      <TrendingNotesData view={view} />
     </Suspense>
   )
 }
 
-export function TrendingNotes() {
+export function TrendingNotes({ view = "grid" }: TrendingNotesSectionProps) {
   return (
     <Section
       id="trending-notes"
@@ -47,7 +69,7 @@ export function TrendingNotes() {
           highlight="notes"
         />
       </Reveal>
-      <TrendingNotesSection />
+      <TrendingNotesSection view={view} />
     </Section>
   )
 }
