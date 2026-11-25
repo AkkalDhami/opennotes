@@ -23,10 +23,13 @@ body:
       label: Reason
       description: What is the main problem with this note?
       options:
+        - Copyright / ownership issue
         - Incorrect / misleading
         - Spam
         - Inappropriate
+        - Offensive content
         - Duplicate
+        - Malware / suspicious file
         - Unreadable / low quality
         - Other
     validations:
