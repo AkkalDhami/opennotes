@@ -4,8 +4,8 @@ import { Container } from "@/components/ui/container"
 import { Route } from "next"
 export default function NotFound() {
   return (
-    <Container>
-      <h2 className="font-serif text-2xl">Collection not found.</h2>
+    <Container className="space-y-2">
+      <h2 className="text-2xl">Collection not found.</h2>
       <p className="text-muted-foreground">
         This collection may have been removed or the link may be incorrect.
       </p>

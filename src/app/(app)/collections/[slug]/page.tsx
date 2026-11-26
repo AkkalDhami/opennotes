@@ -14,6 +14,8 @@ import {
 } from "@hugeicons/core-free-icons"
 
 import { NoteCard } from "@/components/notes/note-card"
+import { CollectionCard } from "@/components/collections/collection-card"
+import { CollectionViewSwitcher } from "@/components/user/collections/collection-view-switcher"
 import { buttonVariants } from "@/components/ui/button"
 import { APP_NAME } from "@/constants/app.constants"
 import { cn } from "@/lib/utils"
@@ -33,6 +35,7 @@ import { ShareCollectionButton } from "@/components/user/collections/share-colle
 
 type PublicCollectionPageProps = {
   params: Promise<{ slug: string }>
+  searchParams: Promise<{ view?: string }>
 }
 
 export async function generateMetadata({
@@ -60,8 +63,12 @@ export async function generateMetadata({
   })
 }
 
-export default async function page({ params }: PublicCollectionPageProps) {
-  const { slug } = await params
+export default async function page({
+  params,
+  searchParams,
+}: PublicCollectionPageProps) {
+  const [{ slug }, query] = await Promise.all([params, searchParams])
+  const view = query.view === "list" ? "list" : "grid"
 
   const collection = await getPublicCollectionByShareSlug(slug)
   if (!collection) notFound()
@@ -112,7 +119,7 @@ export default async function page({ params }: PublicCollectionPageProps) {
               <li key={ancestor.id} className="flex items-center gap-1.5">
                 <Link
                   href={buildCollectionSharePath(ancestor) as Route}
-                  className="rounded hover:text-foreground hover:underline"
+                  className="rounded underline-offset-2 hover:text-primary hover:underline"
                 >
                   {ancestor.name}
                 </Link>
@@ -163,10 +170,10 @@ export default async function page({ params }: PublicCollectionPageProps) {
             {owner.username ? (
               <Link
                 href={`/contributors/${owner.username}` as Route}
-                className="text-base font-medium text-foreground hover:underline"
+                className="group text-base font-medium text-foreground underline-offset-2 hover:text-primary hover:underline"
               >
                 {ownerLabel}{" "}
-                <span className="text-sm text-muted-foreground">
+                <span className="text-sm text-muted-foreground group-hover:text-primary">
                   @{owner.username}
                 </span>
               </Link>
@@ -226,37 +233,60 @@ export default async function page({ params }: PublicCollectionPageProps) {
 
       {children.length > 0 && (
         <section className="space-y-3">
-          <h2 className="font-semibold text-muted-foreground">
-            Subcollections
-          </h2>
-          <div className="divide-y divide-border rounded-lg border bg-card">
-            {children.map((child) => (
-              <Link
-                key={child.id}
-                href={buildCollectionSharePath(child) as Route}
-                className="flex items-center gap-3 px-4 py-3 hover:bg-muted/40"
-              >
-                <HugeiconsIcon
-                  icon={Folder01Icon}
-                  size={20}
-                  color="currentColor"
-                  strokeWidth={2}
-                  className="text-primary"
-                />
-                <div className="min-w-0 flex-1">
-                  <div className="truncate font-medium">{child.name}</div>
-                  {child.description && (
-                    <div className="truncate text-sm text-muted-foreground">
-                      {child.description}
-                    </div>
-                  )}
-                </div>
-                <span className="shrink-0 text-xs text-muted-foreground">
-                  {formatCompactNumber(child.stats.noteCount)} Notes
-                </span>
-              </Link>
-            ))}
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="font-semibold text-muted-foreground">
+              Subcollections
+            </h2>
+            <CollectionViewSwitcher value={view} label="Subcollection layout" />
           </div>
+          {view === "list" ? (
+            <div className="divide-y divide-border rounded-lg border bg-card">
+              {children.map((child) => (
+                <Link
+                  key={child.id}
+                  href={buildCollectionSharePath(child) as Route}
+                  className="flex items-center gap-3 px-4 py-3 hover:bg-muted/40"
+                >
+                  <HugeiconsIcon
+                    icon={Folder01Icon}
+                    size={20}
+                    color="currentColor"
+                    strokeWidth={2}
+                    className="text-primary"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <div className="truncate font-medium">{child.name}</div>
+                    {child.description && (
+                      <div className="truncate text-sm text-muted-foreground">
+                        {child.description}
+                      </div>
+                    )}
+                  </div>
+                  <span className="shrink-0 text-xs text-muted-foreground">
+                    {formatCompactNumber(child.stats.noteCount)} Notes
+                  </span>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {children.map((child, index) => (
+                <CollectionCard
+                  key={child.id}
+                  c={{
+                    name: child.name,
+                    slug: child.slug,
+                    description: child.description,
+                    noteCount: child.stats.noteCount,
+                    downloads: child.stats.downloadCount,
+                    views: child.stats.viewCount,
+                  }}
+                  href={buildCollectionSharePath(child)}
+                  index={index}
+                />
+              ))}
+            </div>
+          )}
         </section>
       )}
 
@@ -267,7 +297,7 @@ export default async function page({ params }: PublicCollectionPageProps) {
             This collection doesn&apos;t have any published notes yet.
           </p>
         ) : (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="columns-1 gap-4 sm:columns-2 lg:columns-3">
             {notes.map((note) => (
               <NoteCard key={note.id} note={note} />
             ))}

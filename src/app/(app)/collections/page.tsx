@@ -6,7 +6,10 @@ import {
   getPublicCollections,
   type SortKey,
 } from "@/lib/collections/collections-queries"
-import { CollectionCard } from "@/components/collections/collection-card"
+import {
+  CollectionCard,
+  type CollectionView,
+} from "@/components/collections/collection-card"
 import {
   CollectionSearch,
   CollectionSort,
@@ -17,6 +20,9 @@ import { Button } from "@/components/ui/button"
 import { SubHeading } from "@/components/ui/sub-heading"
 import { Heading } from "@/components/ui/heading"
 import { APP_NAME } from "@/constants/app.constants"
+import { Highlight } from "@/components/ui/highlight"
+import { ContributorMedalShowcase } from "@/components/shared/medal-showcase"
+import { CollectionViewSwitcher } from "@/components/user/collections/collection-view-switcher"
 
 type SP = {
   q?: string
@@ -24,7 +30,8 @@ type SP = {
   level?: string
   course?: string
   subject?: string
-  // creatorId?: string
+  creatorId?: string
+  view?: CollectionView
   size?: string
   page?: string
 }
@@ -57,24 +64,34 @@ export default async function CollectionsPage({
 }) {
   const sp = await searchParams
   const [{ items, total, page, totalPages }, options] = await Promise.all([
-    getPublicCollections({ ...sp, page: Number(sp.page) || 1 }),
-    getCollectionFilterOptions(),
+    getPublicCollections({
+      ...sp,
+      page: Number(sp.page) || 1,
+      topLevelOnly: true,
+    }),
+    getCollectionFilterOptions({ topLevelOnly: true }),
   ])
+  const view: CollectionView = sp.view === "list" ? "list" : "grid"
   const filtered = !!(
     sp.q ||
     sp.level ||
     sp.course ||
     sp.subject ||
-    // sp.creatorId ||
+    sp.creatorId ||
     sp.size
   )
 
   return (
     <section className="space-y-6">
       <div className="mb-6 space-y-2">
-        <Heading>Study Collections</Heading>
+        <Heading>
+          Study{" "}
+          <Highlight animate={false} color="var(--primary)" variant="outline">
+            Collections
+          </Highlight>
+        </Heading>
         <SubHeading>
-          Find organized notes and study materials shared by the {APP_NAME}
+          Find organized notes and study materials shared by the {APP_NAME}{" "}
           community.
         </SubHeading>
       </div>
@@ -83,21 +100,26 @@ export default async function CollectionsPage({
         <CollectionSearch />
       </Suspense>
       <div className="mt-6 space-y-4">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <Suspense>
-            <CollectionFilters options={options} />
-          </Suspense>
-          <Suspense>
-            <CollectionSort />
-          </Suspense>
+        <Suspense>
+          <CollectionFilters options={options} />
+        </Suspense>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-muted-foreground" aria-live="polite">
+            Showing{" "}
+            <strong className="font-medium">{total.toLocaleString()}</strong>{" "}
+            public collection
+            {total === 1 ? "" : "s"}
+            {totalPages > 1 && ` · page ${page} of ${totalPages}`}
+          </p>
+          <div className="flex flex-wrap items-center gap-2">
+            <Suspense>
+              <CollectionSort />
+            </Suspense>
+            <Suspense>
+              <CollectionViewSwitcher value={view} className="shrink-0" />
+            </Suspense>
+          </div>
         </div>
-        <p className="text-sm text-muted-foreground" aria-live="polite">
-          Showing{" "}
-          <strong className="font-medium">{total.toLocaleString()}</strong>{" "}
-          public collection
-          {total === 1 ? "" : "s"}
-          {totalPages > 1 && ` · page ${page} of ${totalPages}`}
-        </p>
       </div>
 
       {items.length === 0 ? (
@@ -123,9 +145,15 @@ export default async function CollectionsPage({
         </section>
       ) : (
         <>
-          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div
+            className={
+              view === "list"
+                ? "mt-4 border-b"
+                : "mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+            }
+          >
             {items.map((c, i) => (
-              <CollectionCard key={c.id} c={c} index={i} />
+              <CollectionCard key={c.id} c={c} index={i} view={view} />
             ))}
           </div>
           <CollectionPagination
@@ -135,6 +163,8 @@ export default async function CollectionsPage({
           />
         </>
       )}
+
+      <ContributorMedalShowcase minimal />
     </section>
   )
 }

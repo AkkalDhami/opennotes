@@ -9,12 +9,13 @@ import Link from "next/link"
 
 export default function page() {
   return (
-    <Container className="space-y-6 border-x px-4 pt-4 pb-6">
+    <Container className="space-y-6 px-4 pt-4 pb-6">
       <div className="space-y-2">
         <Reveal>
           <SectionHeader
             headingId="share-notes"
             title="Share your notes"
+            highlight="notes"
             description="Help other students learn by sharing your study materials. Upload your
           notes and contribute to the community."
             viewAllHref="#"

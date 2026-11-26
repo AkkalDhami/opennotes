@@ -1,50 +1,54 @@
-import { Metadata } from "next"
+import type { Metadata } from "next"
 import { notFound } from "next/navigation"
-import Link from "next/link"
-import { getContributorSummary } from "@/lib/contributors/sync"
-import { getEarnedBadgeSlugs } from "@/lib/contributors/queries"
-import { ContributorNotes } from "@/components/admin/contributors/contributor-notes"
-import {
-  getContributorByUsername,
-  getContributorPublishedNotes,
-} from "@/lib/admin/queries"
-import { APP_NAME } from "@/constants/app.constants"
-import { HugeiconsIcon } from "@hugeicons/react"
-import {
-  ArrowLeft02Icon,
-  Calendar04Icon,
-  ChampionIcon,
-  Download01Icon,
-  NotebookIcon,
-} from "@hugeicons/core-free-icons"
-import { slugToTitle } from "@/utils/slug"
-import { formatDate } from "@/utils/format-date"
-import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
-import { SubHeading } from "@/components/ui/sub-heading"
-import { getContributionActivity } from "@/lib/contributions/get-contribution-activity"
-import { NoteContributionGraph } from "@/components/contributions/contribution-graph-content"
-import { getContributorRank } from "@/lib/contributors/get-contributor-rank"
-import { absoluteUrl } from "@/lib/seo"
-import { ContributorDashboard } from "@/components/badge/contributor-dashboard"
-import { RankCard } from "@/components/shared/rank-card"
-import { ContributionStats } from "@/components/contributions/contribution-stats"
-import { ContributionOverviewChart } from "@/components/contributors/contribution-overview-chart"
-import { getContributorChartData } from "@/lib/contributors/get-contributor-chart-data"
-import { VerifiedUserAvatar } from "@/components/shared/verified-user-avatar"
-import { Signature } from "@/components/ui/signature"
 
-interface ContributorDetailPageProps {
+import { ContributorProfile } from "@/components/contributors/contributor-profile"
+import { APP_NAME } from "@/constants/app.constants"
+import {
+  getContributorPageData,
+  getPublicContributorByUsername,
+} from "@/lib/contributors/queries"
+import { absoluteUrl } from "@/lib/seo"
+import type { NoteSort } from "@/types/contributor"
+
+interface ContributorPageProps {
   params: Promise<{ username: string }>
-  searchParams: Promise<{ page?: string }>
+  searchParams: Promise<{
+    page?: string | string[]
+    sort?: string | string[]
+  }>
 }
+
+type SearchParam = string | string[] | undefined
+
+const VALID_SORTS: readonly NoteSort[] = [
+  "newest",
+  "oldest",
+  "most_downloaded",
+  "most_viewed",
+]
+
+function getSearchParamValue(value: SearchParam): string | undefined {
+  return Array.isArray(value) ? value[0] : value
+}
+
+function parseSort(value: SearchParam): NoteSort {
+  const sort = getSearchParamValue(value)
+  return VALID_SORTS.find((option) => option === sort) ?? "newest"
+}
+
+function parsePage(value: SearchParam): number {
+  const parsed = Number(getSearchParamValue(value))
+  return Number.isSafeInteger(parsed) && parsed > 0 ? parsed : 1
+}
+
+// --- SEO (spec section 31) ---------------------------------------------
 
 export async function generateMetadata({
   params,
-}: ContributorDetailPageProps): Promise<Metadata> {
+}: ContributorPageProps): Promise<Metadata> {
   const { username } = await params
 
-  const contributor = await getContributorByUsername(username)
+  const contributor = await getPublicContributorByUsername(username)
 
   if (!contributor) {
     return {
@@ -56,18 +60,18 @@ export async function generateMetadata({
     }
   }
 
-  const title = `${contributor.displayName}(@${contributor.username}) — ${APP_NAME} Contributor`
+  const title = `${contributor.name} (@${contributor.username}) — ${APP_NAME} Contributor`
 
   const description =
     contributor.bio ||
-    `${contributor.displayName} has shared educational notes and study materials with the ${APP_NAME} learning community.`
+    `${contributor.name} has shared educational notes and study materials with the ${APP_NAME} learning community.`
 
   return {
     title,
     description,
 
     alternates: {
-      canonical: `/contributors/${contributor.username}`,
+      canonical: absoluteUrl(`/contributors/${contributor.username}`),
     },
 
     openGraph: {
@@ -75,254 +79,29 @@ export async function generateMetadata({
       title,
       description,
       url: absoluteUrl(`/contributors/${contributor.username}`),
-      images: contributor.avatarUrl
-        ? [contributor.avatarUrl]
-        : ["/og-image.png"],
+      images: [absoluteUrl(contributor.avatarUrl || "/og-image.png")],
     },
   }
 }
 
-export default async function ContributorDetailPage({
+// TODO: emit Person + BreadcrumbList JSON-LD structured data (spec
+// section 31) — likely via a small <script type="application/ld+json">
+// rendered from this page using only real, non-fabricated fields.
+
+export default async function ContributorPage({
   params,
   searchParams,
-}: ContributorDetailPageProps) {
-  const { username } = await params
-  const { page: pageParam } = await searchParams
-  const page = Math.max(1, Number(pageParam) || 1)
+}: ContributorPageProps) {
+  const [{ username }, query] = await Promise.all([params, searchParams])
+  const contributor = await getPublicContributorByUsername(username)
 
-  const contributor = await getContributorByUsername(username)
+  if (!contributor) {
+    notFound()
+  }
 
-  if (!contributor) notFound()
+  const page = parsePage(query.page)
+  const sort = parseSort(query.sort)
+  const data = await getContributorPageData(contributor, { page, sort })
 
-  const [
-    { notes, totalPages },
-    contributionActivity,
-    contributorRank,
-    chartData,
-  ] = await Promise.all([
-    getContributorPublishedNotes(contributor.id, page),
-    getContributionActivity({
-      contributorId: contributor.id,
-    }),
-    getContributorRank(contributor.id),
-    getContributorChartData(contributor.id),
-  ])
-
-  const [summary, earnedBadgeSlugs] = await Promise.all([
-    getContributorSummary(contributor.id),
-    getEarnedBadgeSlugs(contributor.id),
-  ])
-
-  return (
-    <main className="space-y-6">
-      <Link
-        href="/contributors"
-        className={cn(
-          buttonVariants({
-            variant: "secondary",
-          })
-        )}
-      >
-        <HugeiconsIcon
-          icon={ArrowLeft02Icon}
-          size={22}
-          color="currentColor"
-          strokeWidth={1.5}
-        />{" "}
-        All Contributors
-      </Link>
-
-      <ContributorDashboard
-        summary={summary}
-        earnedBadgeSlugs={earnedBadgeSlugs}
-      />
-
-      <div className="flex flex-wrap-reverse justify-between gap-6">
-        <div className="space-y-4">
-          <div className="flex flex-wrap-reverse justify-between gap-6">
-            <div className="flex items-center gap-2">
-              {contributorRank?.rank && (
-                <h2 className="text-6xl font-semibold">
-                  #{contributorRank?.rank}.
-                </h2>
-              )}
-
-              <div className="relative">
-                <VerifiedUserAvatar
-                  displayName={contributor.displayName}
-                  avatarUrl={contributor.avatarUrl}
-                  emailVerified={!contributor.email}
-                  size="md"
-                />
-              </div>
-              <div className="space-y-1">
-                <h3 className="text-xl font-medium text-foreground">
-                  {contributor.displayName}
-                </h3>
-                <p className="text-muted-foreground">@{contributor.username}</p>
-              </div>
-            </div>
-            {contributorRank?.rank && (
-              <>
-                <RankCard
-                  rank={contributorRank?.rank}
-                  totalScore={contributorRank?.score || 0}
-                  scoreUnit="pts"
-                  className="hidden"
-                />
-              </>
-            )}
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2 sm:gap-4">
-            <div className="flex items-center gap-2">
-              <HugeiconsIcon
-                icon={NotebookIcon}
-                size={24}
-                color="currentColor"
-                strokeWidth={2}
-                className="size-4 text-muted-foreground"
-              />
-              <p className="font-medium text-muted-foreground">
-                {contributor.publishedNoteCount === 1
-                  ? "Published Note"
-                  : "Published Notes"}
-                :{" "}
-                <span className="font-medium text-foreground">
-                  {contributor.publishedNoteCount.toLocaleString()}
-                </span>
-              </p>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <HugeiconsIcon
-                icon={Download01Icon}
-                size={24}
-                color="currentColor"
-                strokeWidth={2}
-                className="size-4 text-muted-foreground"
-              />
-
-              <p className="text-muted-foreground">
-                Total downloads:{" "}
-                <span className="font-medium text-foreground">
-                  {contributorRank?.downloads
-                    ? contributorRank.downloads.toLocaleString()
-                    : "0"}
-                </span>
-              </p>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <HugeiconsIcon
-                icon={ChampionIcon}
-                size={24}
-                color="currentColor"
-                strokeWidth={2}
-                className="size-4 text-muted-foreground"
-              />
-
-              <p className="text-muted-foreground">
-                Total contribution points:{" "}
-                <span className="font-medium text-foreground">
-                  {contributorRank?.score
-                    ? contributorRank.score.toLocaleString()
-                    : "0"}
-                </span>
-              </p>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <HugeiconsIcon
-                icon={Calendar04Icon}
-                size={24}
-                color="currentColor"
-                strokeWidth={2}
-                className="size-4 text-muted-foreground"
-              />
-
-              <p className="text-muted-foreground">
-                Member since{" "}
-                {formatDate(contributor.joinedAt, {
-                  dateStyle: "medium",
-                })}
-              </p>
-            </div>
-          </div>
-
-          {contributor.bio && (
-            <div className="space-y-1">
-              <h4 className="text-lg font-medium text-foreground">Bio:</h4>
-              <p className="mt-1 max-w-md text-base text-muted-foreground">
-                {contributor.bio}
-              </p>
-            </div>
-          )}
-
-          {contributor.subjects.length > 0 && (
-            <div className="space-y-1">
-              <h4 className="text-lg font-medium text-foreground">Subjects:</h4>
-              <ul
-                className="list-inside list-disc space-y-1 text-muted-foreground"
-                aria-label="Subjects contributed"
-              >
-                {contributor.subjects.map((subject) => (
-                  <li key={subject} className="list-inside pl-2">
-                    <Link
-                      href={`/notes?subject=${subject}`}
-                      key={subject}
-                      className="underline-offset-2 hover:text-foreground hover:underline"
-                    >
-                      {slugToTitle(subject)}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <ContributionOverviewChart data={chartData} />
-
-      <div className="grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,0.7fr)]">
-        <div className="min-w-0 space-y-6">
-          <NoteContributionGraph
-            initialData={contributionActivity.days}
-            className="w-full"
-          />
-
-          <section className="min-w-0 space-y-4">
-            <SubHeading as="h3">Published Notes</SubHeading>
-            <ContributorNotes
-              notes={notes}
-              page={page}
-              totalPages={totalPages}
-              username={contributor.username}
-              from="contributor"
-            />
-          </section>
-        </div>
-
-        <ContributionStats
-          data={{
-            totalScore: contributorRank?.score ?? 0,
-            publishedNotes:
-              contributorRank?.publishedNotes ?? contributor.publishedNoteCount,
-            downloads: contributorRank?.downloads ?? 0,
-            views: contributorRank?.views ?? 0,
-            bookmarks: contributorRank?.bookmarks ?? 0,
-          }}
-        />
-      </div>
-
-      <div className="flex items-center justify-end mask-b-from-40%">
-        <Signature
-          text={`- ${contributor.displayName}`}
-          fontSize={20}
-          color="var(--color-primary)"
-        />
-      </div>
-    </main>
-  )
+  return <ContributorProfile {...data} currentPage={page} currentSort={sort} />
 }

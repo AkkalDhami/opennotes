@@ -145,7 +145,7 @@ export default async function NoteDetailPage({ params }: NoteDetailPageProps) {
           </Link>
 
           <BookmarkButton
-            className="top-0"
+            className="absolute top-0 right-4 z-10"
             noteId={note.id}
             size={"size-6"}
             initialBookmarked={note.isBookmarked}
@@ -207,6 +207,8 @@ export default async function NoteDetailPage({ params }: NoteDetailPageProps) {
 
           <NoteActions note={note} fileUrl={fileUrl} />
 
+          <NotePdfViewer note={note} fileUrl={fileUrl} />
+
           {note.sourceType !== "ORIGINAL" && (
             <NoteSourceInfo
               sourceType={note.sourceType}
@@ -214,7 +216,6 @@ export default async function NoteDetailPage({ params }: NoteDetailPageProps) {
               sourceUrl={note.sourceUrl}
             />
           )}
-          <NotePdfViewer note={note} fileUrl={fileUrl} />
 
           <div className="mt-4 space-y-4">
             {note.tags.length > 0 && (
@@ -272,7 +273,7 @@ export default async function NoteDetailPage({ params }: NoteDetailPageProps) {
 
           <RelatedNotes note={note} />
         </div>
-        <div className="sticky top-20 lg:w-100 lg:max-w-80">
+        <div className="sticky top-20 lg:w-full lg:max-w-84">
           <ContributorPreview
             contributor={note.contributor}
             notes={filteredNotes}
