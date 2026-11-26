@@ -14,7 +14,7 @@ export async function TopContributorsSection() {
   let top: TopContributor[]
 
   try {
-    top = await getTopContributors(3)
+    top = await getTopContributors(5)
   } catch (error) {
     console.error("[admin-dashboard] failed to load top contributors", error)
     return <DashboardSectionError title="Couldn't load top contributors." />

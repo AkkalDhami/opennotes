@@ -5,7 +5,8 @@ import { ContributorsEmptyState } from "@/components/admin/contributors/contribu
 import { ContributorsGrid } from "@/components/admin/contributors/contributors-grid"
 import { TopContributors } from "@/components/admin/contributors/top-contributors"
 import {
-  ContributorSort,
+  type ContributorSort,
+  VALID_CONTRIBUTOR_SORTS,
   getContributors,
   getContributorStats,
 } from "@/lib/admin/queries"
@@ -13,7 +14,6 @@ import { Heading } from "@/components/ui/heading"
 import { SubHeading } from "@/components/ui/sub-heading"
 import { Metadata } from "next"
 import { APP_NAME } from "@/constants/app.constants"
-import { VALID_SORTS } from "@/app/(app)/contributors/page"
 import { ContributorStatsSection } from "@/components/admin/contributors/contributor-stats"
 import { getContributorsRanking } from "@/lib/contributors/contributors-ranking"
 import { DashboardContainer } from "@/components/ui/dashboard-container"
@@ -34,14 +34,14 @@ interface ContributorsPageProps {
 export default async function page({ searchParams }: ContributorsPageProps) {
   const params = await searchParams
   const search = params.search?.trim() || undefined
-  const sort = VALID_SORTS.includes(params.sort as ContributorSort)
+  const sort = VALID_CONTRIBUTOR_SORTS.includes(params.sort as ContributorSort)
     ? (params.sort as ContributorSort)
     : "contributions"
   const page = Math.max(1, Number(params.page) || 1)
 
   const [stats, topContributors, contributorsResult] = await Promise.all([
     getContributorStats(),
-    getContributorsRanking(),
+    getContributorsRanking(5),
     getContributors({ search, sort, page }),
   ])
 

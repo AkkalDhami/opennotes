@@ -53,7 +53,7 @@ export default async function Page() {
         <Suspense fallback={<ListCardSkeleton rows={5} />}>
           <RecentContributorsSection />
         </Suspense>
-        <Suspense fallback={<ListCardSkeleton rows={3} />}>
+        <Suspense fallback={<ListCardSkeleton rows={5} />}>
           <TopContributorsSection />
         </Suspense>
       </div>

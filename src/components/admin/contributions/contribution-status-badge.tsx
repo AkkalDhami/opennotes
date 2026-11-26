@@ -19,8 +19,8 @@ const STATUS_CONFIG: Record<NoteStatus, { label: string; className: string }> =
       className: "border-transparent bg-destructive/15 text-destructive",
     },
     REMOVED: {
-      label: "Removed",
-      className: "border-transparent bg-destructive/15 text-destructive",
+      label: "Deleted Draft",
+      className: "border-transparent bg-muted text-muted-foreground",
     },
     DRAFT: {
       label: "Draft",

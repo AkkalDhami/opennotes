@@ -137,7 +137,8 @@ export function TopContributors({
       {reveal ? (
         <StaggerGroup
           className={
-            "mt-6 columns-1 gap-4 sm:columns-1 md:columns-2 lg:columns-3"
+            CONTRIBUTORS_GRID_CLASS
+            // "mt-6 columns-1 space-y-4 sm:columns-1 md:columns-2 lg:columns-3"
           }
         >
           {contributorItems}
