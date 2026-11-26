@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { and, eq, sql } from "drizzle-orm"
 
-import { db, downloads, notes } from "@/db"
-import { generateHashDownloader } from "@/helpers/token.helper"
+import { db, notes } from "@/db"
 import {
   checkRateLimit,
   getClientIP,
@@ -64,13 +63,15 @@ export async function GET(
     }
 
     const [note] = await db
-      .select({
-        id: notes.id,
+      .update(notes)
+      .set({
+        downloadCount: sql`${notes.downloadCount} + 1`,
+      })
+      .where(and(eq(notes.id, id), eq(notes.status, "PUBLISHED")))
+      .returning({
         slug: notes.slug,
         fileKey: notes.fileKey,
       })
-      .from(notes)
-      .where(and(eq(notes.id, id), eq(notes.status, "PUBLISHED")))
 
     if (!note) {
       return NextResponse.json(
@@ -80,30 +81,6 @@ export async function GET(
         },
         { status: 404 }
       )
-    }
-
-    const downloaderHash = generateHashDownloader(ip)
-
-    const inserted = await db
-      .insert(downloads)
-      .values({
-        noteId: note.id,
-        downloaderHash,
-      })
-      .onConflictDoNothing({
-        target: [downloads.noteId, downloads.downloaderHash],
-      })
-      .returning({
-        id: downloads.id,
-      })
-
-    if (inserted.length > 0) {
-      await db
-        .update(notes)
-        .set({
-          downloadCount: sql`${notes.downloadCount} + 1`,
-        })
-        .where(eq(notes.id, note.id))
     }
 
     const fileUrl = await resolveNoteFileUrl(note.fileKey)

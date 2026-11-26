@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { and, eq } from "drizzle-orm"
+import { and, eq, ne } from "drizzle-orm"
 
 import { db, notes } from "@/db"
 import { getCurrentUser } from "@/lib/auth/get-current-user"
@@ -29,7 +29,11 @@ export async function GET(
     .where(
       user.role === "ADMIN"
         ? eq(notes.id, id)
-        : and(eq(notes.id, id), eq(notes.contributorId, user.id))
+        : and(
+            eq(notes.id, id),
+            eq(notes.contributorId, user.id),
+            ne(notes.status, "REMOVED")
+          )
     )
     .limit(1)
 

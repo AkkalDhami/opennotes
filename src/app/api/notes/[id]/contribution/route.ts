@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
+import { revalidatePath } from "next/cache"
 
 import { db, NOTE_STATUS, notes } from "@/db"
 import { getCurrentUser } from "@/lib/auth/get-current-user"
@@ -34,6 +35,8 @@ export async function PATCH(
       { status: 400 }
     )
   }
+
+  const isAdminEdit = isAdmin && formData.get("editMode") === "admin"
 
   const parsed = ContributionFieldsSchema.safeParse({
     title: formData.get("title") || undefined,
@@ -81,7 +84,7 @@ export async function PATCH(
     sourceUrl: fields.sourceUrl || null,
   }
 
-  if (!isAdmin) {
+  if (!isAdminEdit) {
     updateData.rejectionReason = null
     updateData.status = isDraft ? "DRAFT" : "PENDING_REVIEW"
   }
@@ -90,7 +93,7 @@ export async function PATCH(
     .update(notes)
     .set(updateData)
     .where(
-      isAdmin
+      isAdminEdit
         ? eq(notes.id, id)
         : and(
             eq(notes.id, id),
@@ -98,7 +101,7 @@ export async function PATCH(
             inArray(notes.status, EDITABLE_NOTE_STATUSES)
           )
     )
-    .returning({ id: notes.id, status: notes.status })
+    .returning({ id: notes.id, slug: notes.slug, status: notes.status })
 
   if (!updatedNote) {
     return NextResponse.json(
@@ -111,9 +114,17 @@ export async function PATCH(
     )
   }
 
+  revalidatePath("/profile/contributions")
+  revalidatePath("/profile/notes")
+  revalidatePath(`/profile/contributions/${id}`)
+  revalidatePath("/admin/contributions")
+  revalidatePath("/admin/notes")
+  revalidatePath("/notes")
+  revalidatePath(`/notes/${updatedNote.slug}`)
+
   return NextResponse.json({
     success: true,
-    message: isAdmin
+    message: isAdminEdit
       ? "Note updated successfully."
       : isDraft
         ? "Draft saved successfully."
