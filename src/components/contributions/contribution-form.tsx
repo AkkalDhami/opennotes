@@ -1,5 +1,6 @@
 "use client"
 
+import type { Route } from "next"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { Controller, Resolver, useForm, useWatch } from "react-hook-form"
@@ -44,8 +45,6 @@ import {
   SUBJECTS,
 } from "@/constants/notes.constants"
 import { handleConfetti } from "@/components/ui/confetti"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { CheckmarkCircle02Icon } from "@hugeicons/core-free-icons"
 import { NoteSourceType, NoteStatus } from "@/db"
 import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
@@ -99,6 +98,7 @@ interface ContributionFormProps {
   initialValues?: ContributionFormInitialValues
   initialStatus?: NoteStatus
   adminEdit?: boolean
+  returnTo?: Route
 }
 
 export function ContributionForm({
@@ -106,6 +106,7 @@ export function ContributionForm({
   initialValues,
   initialStatus,
   adminEdit = false,
+  returnTo,
 }: ContributionFormProps) {
   const router = useRouter()
   const isEditing = Boolean(contributionId && initialValues)
@@ -208,6 +209,9 @@ export function ContributionForm({
         formData.append("file", values.file)
       }
       formData.append("tags", values.tags ?? "")
+      if (isEditing) {
+        formData.append("editMode", adminEdit ? "admin" : "contributor")
+      }
       if (isDraft) {
         formData.append("status", "DRAFT")
       }
@@ -254,7 +258,7 @@ export function ContributionForm({
             : "/profile/notes"
           : isDraft
             ? "/profile/notes"
-            : "/"
+            : (returnTo ?? "/")
       )
     } catch (error) {
       console.error("[ContributionForm] submission failed:", error)
@@ -769,7 +773,7 @@ export function ContributionForm({
         ✓ Your submission will be reviewed before publication.
       </p>
 
-      <div className="border-t pt-5">
+      {/* <div className="border-t pt-5">
         <h4 className="mb-3 text-sm font-semibold">Before you submit</h4>
 
         <ul className="space-y-2 text-sm text-muted-foreground">
@@ -809,7 +813,7 @@ export function ContributionForm({
             The content does not violate copyright or other rights.
           </li>
         </ul>
-      </div>
+      </div> */}
 
       <div className="flex justify-end gap-3">
         <Button
@@ -822,7 +826,7 @@ export function ContributionForm({
                 ? adminEdit
                   ? "/admin/notes"
                   : "/profile/contributions"
-                : "/"
+                : (returnTo ?? "/")
             )
           }
         >

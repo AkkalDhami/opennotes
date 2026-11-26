@@ -1,13 +1,19 @@
 "use client"
 
 import Link from "next/link"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import toast from "react-hot-toast"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
   MoreVerticalIcon,
-  ViewIcon,
   Edit02Icon,
   Delete02Icon,
   Upload04Icon,
+  Link04Icon,
+  Link01Icon,
+  FileLinkIcon,
+  Edit03Icon,
 } from "@hugeicons/core-free-icons"
 
 import {
@@ -18,6 +24,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import { Spinner } from "@/components/ui/spinner"
+import { deleteDraftContribution } from "@/lib/user/submit-contribution"
 import { ContributionListItem } from "@/types/contribution"
 import { Route } from "next"
 
@@ -32,6 +50,31 @@ export function ContributionActionsMenu({
   onViewDetails,
   onSubmitDraft,
 }: ContributionActionsMenuProps) {
+  const router = useRouter()
+  const [deleteOpen, setDeleteOpen] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  async function handleDeleteDraft() {
+    if (isDeleting) return
+    setIsDeleting(true)
+
+    try {
+      const result = await deleteDraftContribution(contribution.id)
+      if (!result.success) {
+        toast.error(result.error)
+        return
+      }
+
+      toast.success(result.message)
+      setDeleteOpen(false)
+      router.refresh()
+    } catch {
+      toast.error("Unable to delete this draft. Please try again.")
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -51,7 +94,7 @@ export function ContributionActionsMenu({
       <DropdownMenuContent align="end" className="w-55">
         <DropdownMenuItem onClick={() => onViewDetails(contribution)}>
           <HugeiconsIcon
-            icon={ViewIcon}
+            icon={Link04Icon}
             size={16}
             color="currentColor"
             strokeWidth={2}
@@ -67,9 +110,11 @@ export function ContributionActionsMenu({
               href={
                 `/profile/contributions/${contribution.id}/preview` as Route
               }
+              target="_blank"
+              rel="noopener noreferrer"
             >
               <HugeiconsIcon
-                icon={ViewIcon}
+                icon={FileLinkIcon}
                 size={16}
                 color="currentColor"
                 strokeWidth={2}
@@ -110,7 +155,23 @@ export function ContributionActionsMenu({
               }
             ></DropdownMenuItem>
           </>
-        ) : null}
+        ) : (
+          <DropdownMenuItem
+            nativeButton={false}
+            render={
+              <Link href={`/profile/contributions/${contribution.id}` as Route}>
+                <HugeiconsIcon
+                  icon={Edit03Icon}
+                  size={16}
+                  color="currentColor"
+                  strokeWidth={2}
+                  className="mr-2 size-4"
+                />
+                Edit Note
+              </Link>
+            }
+          ></DropdownMenuItem>
+        )}
 
         {contribution.status === "REJECTED" ? (
           <DropdownMenuItem
@@ -134,9 +195,9 @@ export function ContributionActionsMenu({
           <DropdownMenuItem
             nativeButton={false}
             render={
-              <Link href={`/notes/${contribution.slug}`}>
+              <Link href={`/notes/${contribution.slug}`} target="_blank">
                 <HugeiconsIcon
-                  icon={ViewIcon}
+                  icon={Link01Icon}
                   size={16}
                   color="currentColor"
                   strokeWidth={2}
@@ -151,7 +212,7 @@ export function ContributionActionsMenu({
         {contribution.status === "PENDING_REVIEW" ? (
           <DropdownMenuItem onClick={() => onViewDetails(contribution)}>
             <HugeiconsIcon
-              icon={ViewIcon}
+              icon={Link01Icon}
               size={16}
               color="currentColor"
               strokeWidth={2}
@@ -166,10 +227,8 @@ export function ContributionActionsMenu({
             <DropdownMenuSeparator />
             <DropdownMenuItem
               variant="destructive"
-              onClick={() => {
-                // Deletion should go through a confirmation dialog + server action.
-                // Left as a TODO integration point.
-              }}
+              onClick={() => setDeleteOpen(true)}
+              disabled={isDeleting}
             >
               <HugeiconsIcon
                 icon={Delete02Icon}
@@ -183,6 +242,39 @@ export function ContributionActionsMenu({
           </>
         ) : null}
       </DropdownMenuContent>
+
+      <AlertDialog
+        open={deleteOpen}
+        onOpenChange={(open) => {
+          if (!isDeleting) setDeleteOpen(open)
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete draft?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently remove the draft &ldquo;{contribution.title}
+              &rdquo; from your notes. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              variant="destructive"
+              disabled={isDeleting}
+              onClick={handleDeleteDraft}
+            >
+              {isDeleting ? (
+                <>
+                  <Spinner /> Deleting...
+                </>
+              ) : (
+                "Delete Draft"
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </DropdownMenu>
   )
 }

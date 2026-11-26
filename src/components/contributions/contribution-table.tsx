@@ -23,6 +23,8 @@ import { formatDate } from "@/utils/format-date"
 import { submitDraftContribution } from "@/lib/user/submit-contribution"
 import { useRouter } from "next/navigation"
 import toast from "react-hot-toast"
+import Link from "next/link"
+import { Route } from "next"
 
 interface ContributionTableProps {
   contributions: ContributionListItem[]
@@ -43,7 +45,7 @@ export function ContributionTable({ contributions }: ContributionTableProps) {
     <div className="overflow-x-auto rounded-lg border p-4">
       <Table>
         <TableHeader>
-          <TableRow>
+          <TableRow className="py-2 hover:bg-background">
             <TableHead>Note</TableHead>
             <TableHead>Subject</TableHead>
             <TableHead>Education</TableHead>
@@ -59,9 +61,19 @@ export function ContributionTable({ contributions }: ContributionTableProps) {
             <TableRow key={contribution.id}>
               <TableCell className="max-w-xs">
                 <div className="space-y-0.5">
-                  <p className="truncate font-medium text-foreground">
+                  <Link
+                    href={
+                      (contribution.status === "PUBLISHED"
+                        ? `/notes/${contribution.slug}`
+                        : `/profile/contributions/${contribution.id}`) as Route
+                    }
+                    target={
+                      contribution.status === "PUBLISHED" ? "_blank" : undefined
+                    }
+                    className="truncate font-medium text-foreground underline-offset-2 hover:text-primary hover:underline"
+                  >
                     {contribution.title}
-                  </p>
+                  </Link>
                   {contribution.description ? (
                     <p className="truncate text-xs text-muted-foreground">
                       {contribution.description}

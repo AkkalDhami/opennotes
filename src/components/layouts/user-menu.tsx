@@ -16,11 +16,7 @@ import { UserAvatar } from "@/components/admin/users/user-avatar"
 import { useState } from "react"
 import { toast } from "react-hot-toast"
 import { HugeiconsIcon } from "@hugeicons/react"
-import {
-  DashboardSquare03Icon,
-  LogoutIcon,
-  UserIcon,
-} from "@hugeicons/core-free-icons"
+import { DashboardSquare03Icon, LogoutIcon } from "@hugeicons/core-free-icons"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { LogoutAlertDialog } from "@/components/settings/sessions/logout-alert-dialog"
@@ -52,8 +48,8 @@ export function UserMenu({
         <DropdownMenuGroup>
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuItem render={<Link href={"/profile"} />}>
-            <HugeiconsIcon icon={UserIcon} strokeWidth={2} />
-            My Profile
+            <HugeiconsIcon icon={DashboardSquare03Icon} strokeWidth={2} />
+            Dashboard
           </DropdownMenuItem>
           {user.role === "ADMIN" && (
             <DropdownMenuItem render={<Link href={"/admin/dashboard"} />}>

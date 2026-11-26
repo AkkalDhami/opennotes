@@ -20,8 +20,15 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { StatusBadge } from "@/components/profile/status-badge"
 import { ContributionListItem } from "@/types/contribution"
-import { slugToTitle } from "@/utils/slug"
+
 import Link from "next/link"
+import {
+  getCategoryName,
+  getCourseName,
+  getEducationLevelName,
+  getGradeName,
+  getSubjectName,
+} from "@/utils/get-edu-name"
 
 interface ContributionDetailsSheetProps {
   contribution: ContributionListItem
@@ -93,23 +100,23 @@ export function ContributionDetailsSheet({
         <div className="space-y-2 divide-y">
           <DetailRow
             label="Subject"
-            value={slugToTitle(contribution.subject)}
+            value={getSubjectName(contribution.subject)}
           />
           <DetailRow
             label="Category"
-            value={slugToTitle(contribution.category)}
+            value={getCategoryName(contribution.category)}
           />
           <DetailRow
             label="Educational Level"
-            value={slugToTitle(contribution.educationLevel)}
+            value={getEducationLevelName(contribution.educationLevel)}
           />
           <DetailRow
             label="Course"
-            value={slugToTitle(contribution.course || "")?.toUpperCase()}
+            value={getCourseName(contribution.course || "")?.toUpperCase()}
           />
           <DetailRow
             label="Grade"
-            value={slugToTitle(contribution.grade || "")?.toUpperCase()}
+            value={getGradeName(contribution.grade || "")?.toUpperCase()}
           />
           <DetailRow label="Topic" value={contribution.topic} />
           <DetailRow label="Academic Year" value={contribution.academicYear} />

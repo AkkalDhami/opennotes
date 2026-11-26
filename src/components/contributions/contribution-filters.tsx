@@ -49,6 +49,10 @@ const SORT_LABELS: Record<string, string> = {
   most_downloaded: "Most Downloaded",
 }
 
+function getSingleValue(value: string | string[]) {
+  return Array.isArray(value) ? (value[0] ?? "") : value
+}
+
 function FilterFields({
   subjectOptions,
   levelOptions,
@@ -74,23 +78,31 @@ function FilterFields({
     return courseOptions.filter((option) => option.levelId === level)
   }, [courseOptions, level])
 
-  const updateParam = useCallback(
-    (key: string, value: string | null) => {
+  const updateParams = useCallback(
+    (updates: Record<string, string | null>) => {
       const params = new URLSearchParams(searchParams.toString())
 
-      if (value && value !== "ALL" && value.length > 0) {
-        params.set(key, value)
-      } else {
-        params.delete(key)
+      for (const [key, value] of Object.entries(updates)) {
+        if (value && value !== "ALL" && value.length > 0) {
+          params.set(key, value)
+        } else {
+          params.delete(key)
+        }
       }
 
       params.delete("page")
 
+      const query = params.toString()
       startTransition(() => {
-        router.push(`${pathname}?${params.toString()}` as Route)
+        router.push((query ? `${pathname}?${query}` : pathname) as Route)
       })
     },
     [pathname, router, searchParams]
+  )
+
+  const updateParam = useCallback(
+    (key: string, value: string | null) => updateParams({ [key]: value }),
+    [updateParams]
   )
 
   const hasActiveFilters =
@@ -153,32 +165,37 @@ function FilterFields({
         </InputGroupAddon>
       </InputGroup>
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
         <Select
           value={status}
-          onValueChange={(value) => updateParam("status", value)}
+          onValueChange={(value) =>
+            updateParam("status", value === status ? null : value)
+          }
         >
-          <SelectTrigger>
+          <SelectTrigger className="w-full">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="w-full">
             <SelectItem value="ALL">All statuses</SelectItem>
-            {NOTE_STATUSES.map((value) => (
-              <SelectItem key={value} value={value}>
-                {STATUS_CONFIG[value].label}
-              </SelectItem>
-            ))}
+            {NOTE_STATUSES.filter((status) => status !== "REMOVED").map(
+              (value) => (
+                <SelectItem key={value} value={value}>
+                  {STATUS_CONFIG[value].label}
+                </SelectItem>
+              )
+            )}
           </SelectContent>
         </Select>
 
         <SearchSelect
           value={subject}
-          onChange={(value: string | string[]) =>
+          onChange={(value) => {
+            const nextValue = getSingleValue(value)
             updateParam(
               "subject",
-              Array.isArray(value) ? (value[0] ?? null) : value || null
+              nextValue === subject ? null : nextValue || null
             )
-          }
+          }}
           options={subjectOptions.map((option) => ({
             id: option.value,
             name: option.label,
@@ -189,12 +206,12 @@ function FilterFields({
 
         <SearchSelect
           value={level}
-          onChange={(value: string | string[]) => {
-            const singleValue = Array.isArray(value)
-              ? (value[0] ?? null)
-              : value || null
-            updateParam("level", singleValue)
-            updateParam("course", null)
+          onChange={(value) => {
+            const nextValue = getSingleValue(value)
+            updateParams({
+              level: nextValue === level ? null : nextValue || null,
+              course: null,
+            })
           }}
           options={levelOptions.map((option) => ({
             id: option.value,
@@ -206,12 +223,13 @@ function FilterFields({
 
         <SearchSelect
           value={course}
-          onChange={(value: string | string[]) =>
+          onChange={(value) => {
+            const nextValue = getSingleValue(value)
             updateParam(
               "course",
-              Array.isArray(value) ? (value[0] ?? null) : value || null
+              nextValue === course ? null : nextValue || null
             )
-          }
+          }}
           options={filteredCourseOptions.map((option) => ({
             id: option.value,
             name: option.label,
@@ -223,12 +241,14 @@ function FilterFields({
 
         <Select
           value={sort}
-          onValueChange={(value) => updateParam("sort", value)}
+          onValueChange={(value) =>
+            updateParam("sort", value === sort ? null : value)
+          }
         >
-          <SelectTrigger>
+          <SelectTrigger className="w-full">
             <SelectValue placeholder="Sort" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="w-full">
             {Object.entries(SORT_LABELS).map(([value, label]) => (
               <SelectItem key={value} value={value}>
                 {label}

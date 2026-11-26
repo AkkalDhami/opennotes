@@ -78,7 +78,7 @@ export function ShareCollectionDialog() {
     const dataUrl = await generateQrWithCaptionDataUrl({
       url: shareUrl,
       title: name,
-      subtitle: APP_NAME,
+      subtitle: description || APP_NAME,
     })
     const blob = await (await fetch(dataUrl)).blob()
     return { dataUrl, file: new File([blob], fileName, { type: "image/png" }) }

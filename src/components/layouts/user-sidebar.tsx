@@ -16,13 +16,16 @@ import {
   FileStarIcon,
   Folder01Icon,
   HeartIcon,
+  Home03Icon,
   Shield01Icon,
+  UserIcon,
 } from "@hugeicons/core-free-icons"
 import { UserProfile } from "@/components/shared/user-profile"
 
 import {
   DashboardSquare02Icon,
   File01Icon,
+  Upload01Icon,
   Settings02Icon,
 } from "@hugeicons/core-free-icons"
 import { UserType } from "@/types/auth"
@@ -32,9 +35,24 @@ import { ParsedProfileCta } from "@/components/profile/profile-cta"
 
 export const USER_SIDEBAR_ITEMS = [
   {
+    title: "Home",
+    url: "/",
+    icon: Home03Icon,
+  },
+  {
     title: "Dashboard",
     url: "/profile/dashboard",
     icon: DashboardSquare02Icon,
+  },
+  {
+    title: "Contribute",
+    url: "/profile/contribute",
+    icon: Upload01Icon,
+  },
+  {
+    title: "My Profile",
+    url: "/profile/profile",
+    icon: UserIcon,
   },
   {
     title: "My Notes",
@@ -56,6 +74,7 @@ export const USER_SIDEBAR_ITEMS = [
     url: "/profile/contributions",
     icon: FileStarIcon,
   },
+
   {
     title: "Settings",
     url: "/profile/settings",

@@ -42,7 +42,7 @@ export function ContributionEmptyState({
         <Button
           variant={"default"}
           nativeButton={false}
-          render={<Link href="/contribution">Share a Note</Link>}
+          render={<Link href="/profile/contribute">Share a Note</Link>}
           className="mt-2"
         ></Button>
       ) : null}
