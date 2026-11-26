@@ -4,8 +4,12 @@ import { eq, and } from "drizzle-orm"
 import { extractUsername } from "@/utils/extract-username"
 import redis from "@/configs/redis"
 import { generateHashedToken, generateUUID } from "@/helpers/token.helper"
-import { signAccessToken, signRefreshToken } from "@/lib/jwt"
-import { verifyRefreshToken } from "@/lib/jwt"
+import {
+  JwtInvalidError,
+  signAccessToken,
+  signRefreshToken,
+  verifyRefreshToken,
+} from "@/lib/jwt"
 import { SessionType } from "@/types/auth"
 import { PublicSessionType } from "@/types/session"
 import { env } from "@/configs/env"
@@ -167,21 +171,21 @@ export async function refreshAccessToken(refreshToken: string) {
   const payload = verifyRefreshToken(refreshToken)
 
   if (!payload?.sub) {
-    throw new Error("Invalid refresh token")
+    throw new JwtInvalidError()
   }
 
   const session = (await redis.get(sessionKey(payload.sid))) as SessionType
 
   if (!session) {
-    throw new Error("Invalid refresh token")
+    throw new JwtInvalidError()
   }
 
   if (session.refreshTokenHash !== generateHashedToken(refreshToken)) {
-    throw new Error("Invalid refresh token")
+    throw new JwtInvalidError()
   }
 
   if (session.userId !== payload.sub) {
-    throw new Error("Invalid refresh token")
+    throw new JwtInvalidError()
   }
 
   const [user] = await db
@@ -189,6 +193,10 @@ export async function refreshAccessToken(refreshToken: string) {
     .from(users)
     .where(eq(users.id, payload.sub))
     .limit(1)
+
+  if (!user) {
+    throw new JwtInvalidError()
+  }
 
   const newAccessToken = signAccessToken({
     sub: payload.sub,
