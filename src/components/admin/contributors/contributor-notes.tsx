@@ -25,7 +25,7 @@ export function ContributorNotes({
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <div className="columns-1 gap-3 sm:columns-2 lg:columns-2">
         {notes.map((note) => (
           <NoteCard key={note.id} note={note} from={from} />
         ))}

@@ -54,7 +54,7 @@ export function ContributorSearch() {
         onChange={(e) => handleChange(e.target.value)}
         placeholder="Search contributors..."
         aria-label="Search contributors by name or username"
-        className="pl-9"
+        className="pl-9 focus-visible:ring-0"
       />
     </div>
   )

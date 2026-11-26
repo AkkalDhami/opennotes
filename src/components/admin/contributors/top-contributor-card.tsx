@@ -10,13 +10,10 @@ import { cn } from "@/lib/utils"
 import { BadgeCheckFilled } from "./contributor-card"
 import { Route } from "next"
 import { HugeiconsIcon } from "@hugeicons/react"
-import {
-  BookOpen01Icon,
-  ChampionIcon,
-  Download01Icon,
-} from "@hugeicons/core-free-icons"
+import { ChampionIcon } from "@hugeicons/core-free-icons"
 import { ContributorRanking } from "@/lib/contributors/contributors-ranking"
 import { Tilt } from "@/components/ui/tilt"
+import { formatCompactNumber, formatNoteMeta } from "@/utils/format"
 
 type PodiumRank = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
 
@@ -64,6 +61,8 @@ export function TopContributorCard({
     rank,
     downloads,
     publishedNotes,
+    bookmarks,
+    // views,
   },
   admin = false,
 }: ContributorCardProps) {
@@ -110,9 +109,9 @@ export function TopContributorCard({
             {podiumRank && (
               <RankMedal
                 rank={podiumRank}
-                size={70}
+                size={60}
                 showLabel={false}
-                className="absolute right-2 bottom-2 opacity-80"
+                className="absolute right-3 bottom-3 opacity-80"
               />
             )}
             {podiumRank && (
@@ -127,7 +126,7 @@ export function TopContributorCard({
                     size={16}
                     strokeWidth={2}
                   />
-                  <span>{score} contribution points</span>
+                  <span>{formatCompactNumber(score)} points</span>
                 </div>
               </div>
             )}
@@ -137,7 +136,7 @@ export function TopContributorCard({
                   <div className="relative">
                     <Avatar
                       className={cn(
-                        "size-16 sm:size-20",
+                        "size-12 sm:size-14",
                         podiumRank &&
                           cn(
                             "ring-2 ring-offset-2 ring-offset-background",
@@ -160,7 +159,7 @@ export function TopContributorCard({
 
                     <span
                       className={cn(
-                        "absolute right-1 bottom-0.5 flex items-center justify-center rounded-full bg-background",
+                        "absolute -right-1 bottom-0.5 flex items-center justify-center rounded-full bg-background",
                         "size-6 p-0.5"
                       )}
                     >
@@ -168,42 +167,28 @@ export function TopContributorCard({
                     </span>
                   </div>
 
-                  <div className="space-y-1">
-                    <p className="text-xl font-medium text-foreground">
+                  <div className="space-y-0">
+                    <p className="text-lg font-medium text-foreground">
                       {name}
                     </p>
-                    <p className="text-lg text-muted-foreground">@{username}</p>
+                    <p className="text-muted-foreground">@{username}</p>
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
-                  <div className="flex items-center gap-1.5">
-                    <HugeiconsIcon
-                      icon={BookOpen01Icon}
-                      size={16}
-                      strokeWidth={2}
-                    />
-                    <span>{publishedNotes} notes</span>
-                  </div>
-
-                  <div className="flex items-center gap-1.5">
-                    <HugeiconsIcon
-                      icon={Download01Icon}
-                      size={16}
-                      strokeWidth={2}
-                    />
-                    <span>{downloads} downloads</span>
-                  </div>
-                  {/* 
-                <div className="flex items-center gap-1.5">
-                  <HugeiconsIcon
-                    icon={ChampionIcon}
-                    size={16}
-                    strokeWidth={2}
-                  />
-                  <span>{score} contribution points</span>
-                </div> */}
-                </div>
+                <p className="flex w-[80%] flex-wrap items-center gap-1.5 text-sm text-muted-foreground tabular-nums">
+                  {formatNoteMeta([
+                    publishedNotes
+                      ? `${formatCompactNumber(publishedNotes)} notes`
+                      : null,
+                    downloads
+                      ? `${formatCompactNumber(downloads)} downloads`
+                      : null,
+                    // views ? `${views} views` : null,
+                    bookmarks
+                      ? `${formatCompactNumber(bookmarks)} bookmarks`
+                      : null,
+                  ])}
+                </p>
               </div>
             </div>
           </div>
