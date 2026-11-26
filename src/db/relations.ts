@@ -2,7 +2,7 @@ import { relations } from "drizzle-orm/_relations"
 import { users } from "./schemas/user.schema"
 import { noteModerationEvents, notes } from "./schemas/note.schema"
 import { bookmarks } from "./schemas/bookmark.schema"
-import { downloads } from "./schemas/download.schema"
+// import { downloads } from "./schemas/download.schema"
 import { reports } from "./schemas/report.schema"
 import {
   contributorScoreEvents,
@@ -11,7 +11,7 @@ import {
 import { badges, userBadges } from "./schemas/badge.schema"
 import { collectionNotes, collections } from "./schemas/collection.schema"
 import { contributorProfiles } from "./schemas/contributor-profile.schema"
-import { views } from "./schemas/view.schema"
+// import { views } from "./schemas/view.schema"
 
 export const usersRelations = relations(users, ({ one, many }) => ({
   notes: many(notes),
@@ -45,9 +45,9 @@ export const notesRelations = relations(notes, ({ one, many }) => ({
     references: [users.id],
   }),
 
-  downloads: many(downloads),
+  // downloads: many(downloads),
 
-  views: many(views),
+  // views: many(views),
 
   bookmarks: many(bookmarks),
 
@@ -60,6 +60,7 @@ export const notesRelations = relations(notes, ({ one, many }) => ({
   noteModerationEvents: many(noteModerationEvents),
 }))
 
+/* Legacy relations kept for reference while per-event tables are disabled.
 export const downloadsRelations = relations(downloads, ({ one }) => ({
   note: one(notes, {
     fields: [downloads.noteId],
@@ -73,6 +74,7 @@ export const viewsRelations = relations(views, ({ one }) => ({
     references: [notes.id],
   }),
 }))
+*/
 
 export const bookmarksRelations = relations(bookmarks, ({ one }) => ({
   user: one(users, {
