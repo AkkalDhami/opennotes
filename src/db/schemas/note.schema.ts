@@ -76,6 +76,7 @@ export const notes = pgTable(
       .default("PROCESSING"),
 
     status: noteStatusEnum("status").notNull().default("PENDING_REVIEW"),
+    // Aggregate counters replace the legacy per-event tracking tables.
     downloadCount: integer("download_count").notNull().default(0),
     viewCount: integer("view_count").notNull().default(0),
     rejectionReason: text("rejection_reason"),

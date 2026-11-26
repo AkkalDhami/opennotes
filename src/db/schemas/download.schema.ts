@@ -1,3 +1,5 @@
+// Legacy per-download tracking is disabled; notes.download_count is the source of truth.
+/*
 import { index, pgTable, text, uniqueIndex, uuid } from "drizzle-orm/pg-core"
 import { notes } from "./note.schema"
 import { timestamps } from "./schema.helper"
@@ -20,3 +22,4 @@ export const downloads = pgTable(
 )
 
 export type DownloadType = typeof downloads.$inferSelect
+*/

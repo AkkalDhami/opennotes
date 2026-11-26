@@ -1,3 +1,5 @@
+// Legacy per-view tracking is disabled; notes.view_count is the source of truth.
+/*
 import { index, pgTable, text, uniqueIndex, uuid } from "drizzle-orm/pg-core"
 
 import { notes } from "./note.schema"
@@ -26,3 +28,4 @@ export const views = pgTable(
 )
 
 export type ViewType = typeof views.$inferSelect
+*/
