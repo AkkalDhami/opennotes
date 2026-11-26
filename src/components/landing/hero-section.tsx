@@ -159,6 +159,7 @@ export function HeroSection({ className }: HeroSectionProps) {
                     <Highlight
                       // animate={false}
                       variant="solid"
+                      // className="font-serif italic"
                     >
                       {word.text}
                     </Highlight>

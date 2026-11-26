@@ -40,11 +40,15 @@ export function TrendingNoteContent({
           ))}
         </NoteList>
       ) : (
-        <StaggerGroup className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <StaggerGroup className="mt-8 columns-1 gap-4 sm:columns-1 md:columns-2 lg:columns-3 xl:columns-4">
           {notes?.map((note, index) => (
             <StaggerItem
               key={note.id}
-              className={index === 3 ? "hidden xl:block" : undefined}
+              className={
+                index === 3
+                  ? "hidden break-inside-avoid xl:block"
+                  : "break-inside-avoid"
+              }
             >
               <NoteCard note={note} />
             </StaggerItem>

@@ -1,6 +1,6 @@
 "use client"
 
-import { Reveal, StaggerGroup, StaggerItem } from "@/components/shared/reveal"
+import { Reveal } from "@/components/shared/reveal"
 import { SectionHeader } from "@/components/shared/section-header"
 import { Section } from "@/components/ui/section"
 import {
@@ -31,7 +31,7 @@ export function CollectionSection({
         />
       </Reveal>
 
-      <StaggerGroup
+      <div
         className={
           view === "list"
             ? "mt-8 border-b"
@@ -39,16 +39,21 @@ export function CollectionSection({
         }
       >
         {collections.map((collection, index) => (
-          <StaggerItem key={collection.slug} className="h-full">
+          <Reveal
+            key={collection.slug}
+            className="h-full"
+            amount={0.2}
+            delay={Math.min(index, 5) * 0.07}
+          >
             <CollectionCard
               c={collection}
               index={index}
               view={view}
               reveal={false}
             />
-          </StaggerItem>
+          </Reveal>
         ))}
-      </StaggerGroup>
+      </div>
     </Section>
   )
 }
