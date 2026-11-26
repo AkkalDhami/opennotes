@@ -36,7 +36,10 @@ export function NoteSort() {
 
   return (
     <Select value={activeSort} onValueChange={handleChange}>
-      <SelectTrigger aria-label="Sort notes" className="w-full sm:w-52">
+      <SelectTrigger
+        aria-label="Sort notes"
+        className="w-full data-[size=default]:h-10 sm:w-52"
+      >
         <SelectValue placeholder="Sort by" />
       </SelectTrigger>
       <SelectContent>

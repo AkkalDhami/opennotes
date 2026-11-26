@@ -1,6 +1,7 @@
 "use client"
 
 import { useRef, useState } from "react"
+import { useRouter } from "next/navigation"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Download01Icon, LinkSquare01Icon } from "@hugeicons/core-free-icons"
 import { Button } from "@/components/ui/button"
@@ -12,25 +13,32 @@ interface NotePdfViewerProps {
 }
 
 export function NotePdfViewer({ note, fileUrl }: NotePdfViewerProps) {
+  const router = useRouter()
   const [embedFailed, setEmbedFailed] = useState(false)
 
   const hasTrackedView = useRef(false)
 
-  const handlePdfLoad = () => {
+  const handlePdfLoad = async () => {
     if (hasTrackedView.current) {
       return
     }
 
     hasTrackedView.current = true
 
-    void fetch(`/api/notes/${note.id}/view`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).catch((error) => {
+    try {
+      const response = await fetch(`/api/notes/${note.id}/view`, {
+        method: "POST",
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to track note view")
+      }
+
+      router.refresh()
+    } catch (error) {
+      hasTrackedView.current = false
       console.error("Failed to track note view:", error)
-    })
+    }
   }
 
   return (

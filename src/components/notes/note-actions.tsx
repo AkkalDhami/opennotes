@@ -6,7 +6,6 @@ import {
   ArrowUpRight01Icon,
   Copy01Icon,
   MoreVerticalSquare01Icon,
-  Flag02Icon,
   FolderAddIcon,
 } from "@hugeicons/core-free-icons"
 import { Button } from "@/components/ui/button"
@@ -26,6 +25,7 @@ import { useModal } from "@/hooks/use-modal-store"
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard"
 import { useOrigin } from "@/hooks/use-origin"
 import { toast } from "react-hot-toast"
+import { NoteFeedbackMenuItems } from "./note-feedback-menu-items"
 
 interface NoteActionsProps {
   note: PublicNote
@@ -37,9 +37,10 @@ export function NoteActions({ note, fileUrl }: NoteActionsProps) {
 
   const { copy } = useCopyToClipboard()
   const origin = useOrigin()
+  const url = `${origin}/notes/${note.slug}`
 
   function handleCopyLink() {
-    copy(`${origin}/notes/${note.slug}`)
+    copy(url)
     toast.success("Link copied successfully!")
   }
 
@@ -114,7 +115,13 @@ export function NoteActions({ note, fileUrl }: NoteActionsProps) {
 
         <DropdownMenuContent align="end" className="w-40">
           <DropdownMenuGroup>
-            <DropdownMenuItem
+            <NoteFeedbackMenuItems
+              note={{
+                url: url,
+                title: note.title,
+              }}
+            />
+            {/* <DropdownMenuItem
               onClick={() =>
                 open("report-note", {
                   reportNoteId: note.id,
@@ -129,7 +136,7 @@ export function NoteActions({ note, fileUrl }: NoteActionsProps) {
                 aria-hidden="true"
               />
               Report note
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
           </DropdownMenuGroup>
 
           <DropdownMenuGroup>

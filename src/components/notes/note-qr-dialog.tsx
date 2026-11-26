@@ -25,8 +25,13 @@ import { QrCode } from "@/components/shared/qr-code"
 import { useOrigin } from "@/hooks/use-origin"
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard"
 import { generateNoteQrCompositeDataUrl } from "@/lib/notes/qr"
-import { slugToTitle } from "@/utils/slug"
 import { cn } from "@/lib/utils"
+import {
+  getCourseName,
+  getEducationLevelName,
+  getGradeName,
+  getSubjectName,
+} from "@/utils/get-edu-name"
 
 interface NoteQrDialogProps {
   note: PublicNote
@@ -48,9 +53,15 @@ export function NoteQrDialog({ note }: NoteQrDialogProps) {
         const dataUrl = await generateNoteQrCompositeDataUrl({
           url,
           title: note.title,
-          course: slugToTitle(note.course ?? ""),
-          subject: slugToTitle(note.subject),
-          grade: slugToTitle(note.grade ?? ""),
+          eduLevel: getEducationLevelName(note.educationLevel) || "",
+          course: getCourseName(note.course) || "",
+          subject: getSubjectName(note.subject) || "",
+          grade: getGradeName(note.grade) || "",
+          contributor: {
+            name: note.contributor.name,
+            username: note.contributor.username,
+            avatar: note.contributor.avatarUrl || undefined,
+          },
         })
         const link = document.createElement("a")
         link.href = dataUrl

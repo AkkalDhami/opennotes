@@ -26,7 +26,7 @@ export async function RelatedNotes({ note }: RelatedNotesProps) {
       >
         Related notes
       </h2>
-      <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div className="mt-4 columns-1 gap-4 md:columns-2 lg:columns-2">
         {related.map((relatedNote) => (
           <NoteCard key={relatedNote.id} note={relatedNote} />
         ))}

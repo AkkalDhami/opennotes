@@ -89,7 +89,7 @@ export function ContributorPreview({
             More from {sliceContent(contributor.name)}:
           </SubHeading>
 
-          <div className="flex flex-wrap gap-4 space-y-4">
+          <div className="columns-1 gap-4">
             {notes?.map((note) => (
               <NoteCard key={note.id} note={note} from="contributor" />
             ))}

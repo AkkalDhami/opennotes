@@ -7,13 +7,13 @@ import { FilterIcon, Cancel01Icon } from "@hugeicons/core-free-icons"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-  SheetFooter,
-} from "@/components/ui/sheet"
+  Drawer,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
 import {
   buildNoteFiltersQuery,
   getActiveFilterChips,
@@ -59,10 +59,10 @@ function FilterField({
   children: React.ReactNode
 }) {
   return (
-    <div className="space-y-1.5">
+    <div className="relative space-y-2">
       <label
         htmlFor={htmlFor}
-        className="text-xs font-medium text-muted-foreground"
+        className="mb-1 text-xs font-medium text-muted-foreground"
       >
         {label}
       </label>
@@ -113,12 +113,13 @@ export function NoteFilters({ options }: NoteFiltersProps) {
   }
 
   function clearAll() {
-    router.push(pathname as Route, { scroll: false })
+    const query = buildNoteFiltersQuery({ view: filters.view })
+    router.push(`${pathname}${query}` as Route, { scroll: false })
     setMobileOpen(false)
   }
 
   const fields = (
-    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="relative grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
       <FilterField label="Educational Level" htmlFor="filter-education-level">
         <SearchSelect
           id="filter-education-level"
@@ -199,8 +200,13 @@ export function NoteFilters({ options }: NoteFiltersProps) {
       </div>
 
       <div className="flex items-center gap-2 lg:hidden">
-        <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-          <SheetTrigger
+        <Drawer
+          swipeDirection="down"
+          open={mobileOpen}
+          showSwipeHandle
+          onOpenChange={setMobileOpen}
+        >
+          <DrawerTrigger
             render={
               <Button variant="outline" className="gap-2">
                 <HugeiconsIcon
@@ -219,17 +225,14 @@ export function NoteFilters({ options }: NoteFiltersProps) {
               </Button>
             }
           />
-          <SheetContent
-            side="bottom"
-            className="max-h-[85vh] overflow-y-auto p-4"
-          >
-            <SheetHeader className="p-0">
-              <SheetTitle className={"text-lg font-medium"}>
+          <DrawerContent className="p-4">
+            <DrawerHeader className="my-2 p-0">
+              <DrawerTitle className={"text-lg font-medium"}>
                 Filter notes
-              </SheetTitle>
-            </SheetHeader>
+              </DrawerTitle>
+            </DrawerHeader>
             <div className="">{fields}</div>
-            <SheetFooter className="flex-row gap-2 p-0">
+            <DrawerFooter className="mt-4 flex-row gap-2 p-0">
               {filtersActive && (
                 <Button variant="ghost" onClick={clearAll} className="flex-1">
                   Clear filters
@@ -238,9 +241,9 @@ export function NoteFilters({ options }: NoteFiltersProps) {
               <Button onClick={() => setMobileOpen(false)} className="flex-1">
                 Show results
               </Button>
-            </SheetFooter>
-          </SheetContent>
-        </Sheet>
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
 
         {filtersActive && (
           <Button variant="ghost" size="sm" onClick={clearAll}>

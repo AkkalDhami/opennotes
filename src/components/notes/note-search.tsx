@@ -85,7 +85,7 @@ export function NoteSearch() {
         onChange={(e) => handleChange(e.target.value)}
         placeholder="Search by title, subject, topic, tags, contributor..."
         aria-label="Search notes"
-        className="rounded-fulll h-14 pr-6 pl-12"
+        className="h-14 rounded-lg pr-6 pl-12 focus-visible:ring-0"
         {...autocomplete.inputProps}
       />
       {value && (
