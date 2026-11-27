@@ -9,29 +9,25 @@ export const SEARCH_CONFIG = {
   /** Queries longer than this are truncated, not rejected (§4). */
   maxQueryLength: 200,
 
-  /**
-   * Below this length the trigram fallback is skipped entirely. Similarity
-   * on 1–3 character strings is noise: "ab" is ~0.3 similar to half the
-   * corpus, which would make the fuzzy fallback match everything.
-   */
+  /** Full-query fuzzy matching starts at four characters to avoid noise. */
   minFuzzyLength: 4,
 
-  /**
-   * Trigram similarity floor for the fuzzy fallback.
-   *
-   * IMPORTANT: the index-usable `%` operator compares against Postgres's
-   * own `pg_trgm.similarity_threshold` GUC (default 0.3), NOT this value.
-   * `%` is what lets the planner use notes_*_trgm_idx — `similarity() > x`
-   * cannot use a trigram index at all. So the engine filters with `%` for
-   * speed and then re-checks `similarity() >= trigramThreshold` so this
-   * constant stays authoritative even if the server GUC is different.
-   *
-   * Keep this at or above 0.3 — set it lower and the `%` prefilter, not
-   * this constant, becomes the real floor.
-   */
-  trigramThreshold: 0.3,
+  /** Short autocomplete prefixes may use trigrams with this stricter floor. */
+  minPrefixFuzzyLength: 2,
+  prefixTrigramThreshold: 0.45,
 
-  /** Mirrors the UI's page size so engine and grid agree on pagination. */
+  /**
+   * Similarity floor for typo-tolerant matches. The index-usable `%` operator
+   * uses pg_trgm.similarity_threshold (default 0.3), so this must be >= 0.3.
+   * The query re-checks similarity() after the index prefilter.
+   */
+  trigramThreshold: 0.34,
+
+  /** Words this short are matched as prefixes instead of complete tsvectors. */
+  prefixTokenLength: 3,
+
+  /** Maximum edit distance for word-level typo correction. */
+  maxFuzzyDistance: 2,
   defaultPageSize: DEFAULT_PAGE_SIZE,
   maxPageSize: 50,
 
@@ -50,7 +46,8 @@ export const SEARCH_WEIGHTS = {
   educationLevelExact: 3,
   tagMatch: 5,
   contributorMatch: 2,
-  fuzzyTitle: 2,
+  fuzzyTitle: 3,
+  prefixMatch: 6,
   titleFullText: 8,
   popularity: 1,
   freshness: 1,
@@ -74,6 +71,8 @@ export const TSVECTOR_WEIGHTS = {
   tags: "B",
   description: "C",
   course: "D",
+  grade: "D",
+  educationLevel: "D",
 } as const
 
 /**

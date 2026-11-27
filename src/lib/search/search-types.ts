@@ -88,4 +88,6 @@ export interface NoteSuggestion {
   label: string
   /** What kind of thing this suggestion represents, for UI grouping. */
   kind: "subject" | "topic" | "title"
+  /** Optional public note destination for title suggestions. */
+  slug?: string
 }
