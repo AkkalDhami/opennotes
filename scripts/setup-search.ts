@@ -20,7 +20,7 @@ const SQL_FILE = path.join(
 const REBUILD_SQL = `
 UPDATE notes
 SET search_vector = notes_build_search_vector(
-      title, topic, subject, tags, category, description, course
+      title, topic, subject, tags, category, description, course, grade, education_level
     );
 `
 
@@ -32,6 +32,16 @@ SELECT
      WHERE tgname = 'notes_search_vector_trg' AND NOT tgisinternal)      AS has_trigger,
   (SELECT count(*) FROM pg_indexes
      WHERE tablename = 'notes' AND indexname = 'notes_search_vector_idx') AS has_gin_index,
+  (SELECT count(*) FROM pg_indexes
+     WHERE tablename = 'notes' AND indexname IN (
+       'notes_title_trgm_idx', 'notes_topic_trgm_idx',
+       'notes_subject_trgm_idx', 'notes_category_trgm_idx',
+       'notes_course_trgm_idx'
+     ))                                               AS has_trgm_indexes,
+  (SELECT count(*) FROM pg_indexes
+     WHERE tablename = 'users' AND indexname IN (
+       'users_name_trgm_idx', 'users_username_trgm_idx'
+     ))                                               AS has_user_trgm_indexes,
   (SELECT count(*) FROM notes)                                           AS total_notes,
   (SELECT count(*) FROM notes WHERE search_vector IS NULL)               AS unindexed_notes;
 `
@@ -40,6 +50,8 @@ type VerifyRow = {
   has_pg_trgm: number
   has_trigger: number
   has_gin_index: number
+  has_trgm_indexes: number
+  has_user_trgm_indexes: number
   total_notes: number
   unindexed_notes: number
 }
@@ -87,14 +99,22 @@ async function main() {
     console.log(`  pg_trgm extension   : ${ok(result.has_pg_trgm)}`)
     console.log(`  sync trigger        : ${ok(result.has_trigger)}`)
     console.log(`  GIN index on vector : ${ok(result.has_gin_index)}`)
+    console.log(`  note trigram indexes: ${ok(result.has_trgm_indexes)}`)
+    console.log(`  user trigram indexes: ${ok(result.has_user_trgm_indexes)}`)
     console.log(`  notes total         : ${result.total_notes}`)
     console.log(`  notes unindexed     : ${result.unindexed_notes}`)
     console.log("")
 
-    if (Number(result.unindexed_notes) > 0) {
+    if (
+      Number(result.unindexed_notes) > 0 ||
+      Number(result.has_trgm_indexes) !== 5 ||
+      Number(result.has_user_trgm_indexes) !== 2
+    ) {
       console.warn(
-        `[db:search] ${result.unindexed_notes} note(s) still have a NULL search_vector. ` +
-          "Re-run with --rebuild."
+        Number(result.unindexed_notes) > 0
+          ? `[db:search] ${result.unindexed_notes} note(s) still have a NULL search_vector. ` +
+              "Re-run with --rebuild."
+          : "[db:search] One or more note/user trigram indexes are missing. Re-run db:search."
       )
       process.exitCode = 1
       return

@@ -13,6 +13,9 @@
 -- Apply with:  npm run db:search           (idempotent, safe to re-run)
 --              npm run db:search -- --rebuild   (also recomputes every row)
 --
+-- This file is the authoritative search migration. It is safe on both a fresh
+-- database and the legacy database where search_vector exists but is NULL.
+--
 -- Run it after any `npm run db:push` that touched the `notes` table, since
 -- push can drop and recreate objects it doesn't know about.
 --
@@ -38,6 +41,43 @@ CREATE EXTENSION IF NOT EXISTS pg_trgm;
 -- on push having run first.
 ALTER TABLE notes ADD COLUMN IF NOT EXISTS search_vector tsvector;
 
+-- Older releases used a generated column. PostgreSQL cannot use the STABLE
+-- array_to_string(tags, ' ') expression in a generated column, and a generated
+-- column cannot be assigned by the trigger. Convert it if it exists.
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = current_schema()
+      AND table_name = 'notes'
+      AND column_name = 'search_vector'
+      AND is_generated = 'ALWAYS'
+  ) THEN
+    ALTER TABLE notes DROP COLUMN search_vector;
+    ALTER TABLE notes ADD COLUMN search_vector tsvector;
+  END IF;
+END
+$$;
+
+-- tags is nullable in the legacy schema. Normalize it before declaring the
+-- Drizzle model's non-null contract.
+UPDATE notes SET tags = '{}'::text[] WHERE tags IS NULL;
+ALTER TABLE notes ALTER COLUMN tags SET DEFAULT '{}'::text[];
+ALTER TABLE notes ALTER COLUMN tags SET NOT NULL;
+
+-- Normalize slash-separated values before indexing so both "computer science"
+-- and "computer-science" find the same notes. The original columns stay intact
+-- for display and exact filters.
+CREATE OR REPLACE FUNCTION notes_normalize_search_text(value text)
+RETURNS text
+LANGUAGE sql
+IMMUTABLE
+PARALLEL SAFE
+AS $$
+  SELECT lower(regexp_replace(replace(value, '-', ' '), '\s+', ' ', 'g'))
+$$;
+
 
 -- ---------------------------------------------------------------------------
 -- 3. The vector builder
@@ -50,7 +90,7 @@ ALTER TABLE notes ADD COLUMN IF NOT EXISTS search_vector tsvector;
 --   A  title, topic             — what the note is actually about
 --   B  subject, tags, category  — how it's classified
 --   C  description              — supporting prose
---   D  course                   — coarse context
+--   D  course, grade, education level — coarse context
 --
 -- `category` earns weight B rather than C because it is a controlled
 -- vocabulary (NOTES_CATEGORIES: "previous-year-questions",
@@ -67,6 +107,25 @@ ALTER TABLE notes ADD COLUMN IF NOT EXISTS search_vector tsvector;
 -- GENERATED ALWAYS column: Postgres rejects non-immutable expressions in
 -- generated columns, so the "generated column" approach cannot include the
 -- tags array at all.
+--
+-- Metadata is normalized before to_tsvector so slash-separated stored values
+-- ("computer-science", "grade-12") match space-separated user input. Display
+-- columns are never modified.
+CREATE OR REPLACE FUNCTION notes_search_text_query(value text)
+RETURNS tsquery
+LANGUAGE sql
+IMMUTABLE
+PARALLEL SAFE
+AS $$
+  SELECT CASE
+    WHEN notes_normalize_search_text(coalesce(value, '')) = '' THEN NULL::tsquery
+    ELSE websearch_to_tsquery(
+      'simple',
+      replace(notes_normalize_search_text(coalesce(value, '')), ' ', ' & ')
+    )
+  END
+$$;
+
 -- Drop every existing overload by name first. `CREATE OR REPLACE FUNCTION`
 -- only replaces a function with the *same* argument list — change the
 -- signature (as happened when `category` was added) and you get a second
@@ -95,29 +154,32 @@ CREATE OR REPLACE FUNCTION notes_build_search_vector(
   p_tags        text[],
   p_category    text,
   p_description text,
-  p_course      text
+  p_course      text,
+  p_grade       text,
+  p_education   text
 ) RETURNS tsvector
 LANGUAGE sql
 STABLE
 AS $$
   SELECT
-       setweight(to_tsvector('simple', coalesce(p_title, '')), 'A')
-    || setweight(to_tsvector('simple', coalesce(p_topic, '')), 'A')
-    || setweight(to_tsvector('simple', coalesce(p_subject, '')), 'B')
+       setweight(to_tsvector('simple', notes_normalize_search_text(coalesce(p_title, ''))), 'A')
+    || setweight(to_tsvector('simple', notes_normalize_search_text(coalesce(p_topic, ''))), 'A')
+    || setweight(to_tsvector('simple', notes_normalize_search_text(coalesce(p_subject, ''))), 'B')
     || setweight(
-         to_tsvector('simple', coalesce(array_to_string(p_tags, ' '), '')),
+         to_tsvector('simple', notes_normalize_search_text(coalesce(array_to_string(p_tags, ' '), ''))),
          'B'
        )
-    || setweight(to_tsvector('simple', coalesce(p_category, '')), 'B')
-    || setweight(to_tsvector('simple', coalesce(p_description, '')), 'C')
-    || setweight(to_tsvector('simple', coalesce(p_course, '')), 'D');
+    || setweight(to_tsvector('simple', notes_normalize_search_text(coalesce(p_category, ''))), 'B')
+    || setweight(to_tsvector('simple', notes_normalize_search_text(coalesce(p_description, ''))), 'C')
+    || setweight(to_tsvector('simple', notes_normalize_search_text(coalesce(p_course, ''))), 'D')
+    || setweight(to_tsvector('simple', notes_normalize_search_text(coalesce(p_grade, ''))), 'D')
+    || setweight(to_tsvector('simple', notes_normalize_search_text(coalesce(p_education, ''))), 'D');
 $$;
 
--- Note on slugs: subject/course/grade are stored slugified
--- ("computer-science", "grade-12"). Postgres's default parser indexes a
--- hyphenated word as the whole token AND its parts, so "computer-science"
--- is findable by "computer", "science", or "computer science". No manual
--- de-slugging needed.
+-- Note on slugs: subject/course/grade are stored slashified
+-- ("computer-science", "grade-12"). notes_normalize_search_text() replaces
+-- those separators before indexing, so "computer science" and
+-- "computer-science" are equivalent search terms.
 
 
 -- ---------------------------------------------------------------------------
@@ -134,7 +196,9 @@ BEGIN
     NEW.tags,
     NEW.category,
     NEW.description,
-    NEW.course
+    NEW.course,
+    NEW.grade,
+    NEW.education_level
   );
   RETURN NEW;
 END;
@@ -154,7 +218,7 @@ DROP TRIGGER IF EXISTS notes_search_vector_trg ON notes;
 -- finding recently edited notes.
 CREATE TRIGGER notes_search_vector_trg
 BEFORE INSERT OR UPDATE OF
-  title, topic, subject, tags, category, description, course
+  title, topic, subject, tags, category, description, course, grade, education_level
 ON notes
 FOR EACH ROW
 EXECUTE FUNCTION notes_search_vector_refresh();
@@ -166,14 +230,13 @@ EXECUTE FUNCTION notes_search_vector_refresh();
 -- The trigger only covers rows written from now on. Existing rows have a
 -- NULL vector and would stay invisible to search forever.
 --
--- Only touches NULL rows, so re-running is cheap. `npm run db:search --
--- --rebuild` appends a second statement that recomputes everything (use it
--- after changing weights above).
+-- Refresh NULL vectors and vectors built by the previous field list/weights.
+-- Counter-only updates never fire this trigger. `npm run db:search -- --rebuild`
+-- remains available to force every row to be recomputed.
 UPDATE notes
 SET search_vector = notes_build_search_vector(
-      title, topic, subject, tags, category, description, course
-    )
-WHERE search_vector IS NULL;
+  title, topic, subject, tags, category, description, course, grade, education_level
+);
 
 
 -- ---------------------------------------------------------------------------
@@ -188,19 +251,40 @@ CREATE INDEX IF NOT EXISTS notes_search_vector_idx
 --
 -- CRITICAL: the indexed expression must match the query expression
 -- character for character, or the planner silently ignores the index. These
--- three mirror exactly what buildRankingExpressions() emits in
+-- note metadata expressions mirror what buildRankingExpressions() emits in
 -- src/lib/search/search-ranking.ts. If you edit one, edit the other.
 --
--- These also accelerate the prefix ILIKE used by the autocomplete
--- suggestions, which a btree index cannot do for a leading wildcard.
-CREATE INDEX IF NOT EXISTS notes_title_trgm_idx
-  ON notes USING GIN (lower(title) gin_trgm_ops);
+-- The GIN index uses the normalized expressions below. Replace legacy
+-- lower(column) indexes so they match the fuzzy query expression exactly.
+DROP INDEX IF EXISTS notes_title_trgm_idx;
+CREATE INDEX notes_title_trgm_idx
+  ON notes USING GIN (notes_normalize_search_text(title) gin_trgm_ops);
 
-CREATE INDEX IF NOT EXISTS notes_topic_trgm_idx
-  ON notes USING GIN (lower(coalesce(topic, '')) gin_trgm_ops);
+DROP INDEX IF EXISTS notes_topic_trgm_idx;
+CREATE INDEX notes_topic_trgm_idx
+  ON notes USING GIN (notes_normalize_search_text(coalesce(topic, '')) gin_trgm_ops);
 
-CREATE INDEX IF NOT EXISTS notes_subject_trgm_idx
-  ON notes USING GIN (lower(subject) gin_trgm_ops);
+DROP INDEX IF EXISTS notes_subject_trgm_idx;
+CREATE INDEX notes_subject_trgm_idx
+  ON notes USING GIN (notes_normalize_search_text(subject) gin_trgm_ops);
+
+DROP INDEX IF EXISTS notes_category_trgm_idx;
+CREATE INDEX notes_category_trgm_idx
+  ON notes USING GIN (notes_normalize_search_text(category) gin_trgm_ops);
+
+DROP INDEX IF EXISTS notes_course_trgm_idx;
+CREATE INDEX notes_course_trgm_idx
+  ON notes USING GIN (notes_normalize_search_text(course) gin_trgm_ops);
+
+-- Contributor-name and username fuzzy matches use the same normalized,
+-- indexable expressions as the notes fields.
+DROP INDEX IF EXISTS users_name_trgm_idx;
+CREATE INDEX users_name_trgm_idx
+  ON users USING GIN (notes_normalize_search_text(name) gin_trgm_ops);
+
+DROP INDEX IF EXISTS users_username_trgm_idx;
+CREATE INDEX users_username_trgm_idx
+  ON users USING GIN (notes_normalize_search_text(username) gin_trgm_ops);
 
 -- The empty-query case: /notes with no `q` is a browse page ordered by
 -- recency over published notes only. A partial index keeps drafts, rejected
