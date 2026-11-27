@@ -85,7 +85,7 @@ export function createSubjectResolver(
 ): SubjectResolver {
   const dynamicAliases: Record<string, string> = {}
   for (const subject of knownSubjects) {
-    dynamicAliases[subject.toLowerCase()] = subject
+    dynamicAliases[normalizeSearchQuery(subject)] = subject
   }
 
   // Static aliases take priority (they're curated), then fall back to
