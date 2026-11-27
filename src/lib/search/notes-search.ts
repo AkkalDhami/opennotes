@@ -22,11 +22,11 @@ const index: NotesSearchIndex = new PostgresNotesSearchIndex()
  * Search published notes. The single entry point for the discovery page and
  * any server component that lists notes.
  *
- * Requires the database-side search infrastructure to be installed
- * (`npm run db:search`). Without it `notes.search_vector` is NULL on every
- * row and full-text matching finds nothing — the fuzzy and exact-metadata
- * signals still work, so this degrades to poor results rather than an error,
- * which is exactly why it's easy to miss.
+ * Install the database-side search infrastructure with `npm run db:search`.
+ * The engine combines trigger-maintained full-text vectors, indexed trigram
+ * matching, word-prefix matching, and a bounded edit-distance fallback. If
+ * pg_trgm is unavailable, full-text and parameterized prefix matching still
+ * work without emitting SQL that would fail the whole request.
  */
 export async function searchNotes(
   params: SearchNotesParams

@@ -7,6 +7,8 @@ import { SEARCH_CONFIG } from "./search-constants"
 import type { NotesSearchIndex } from "./notes-search"
 import { createSubjectResolver, parseAcademicQuery } from "./search-parser"
 import { buildRankingExpressions } from "./search-ranking"
+import { getSearchWords, isFuzzyWordMatch } from "./search-query"
+import { normalizeSearchQuery } from "./search-normalizer"
 import type {
   NoteSuggestion,
   ParsedAcademicQuery,
@@ -52,6 +54,32 @@ export function clearKnownSubjectsCache(): void {
   knownSubjectsCache = null
 }
 
+// Fuzzy search is optional infrastructure: a database without pg_trgm can
+// still serve full-text and exact matches. Probe for both the function and the
+// operator before emitting SQL that references them, otherwise a 4+ character
+// query fails the entire Server Component render.
+let trigramSupportCache: { available: boolean; expiresAt: number } | null = null
+const TRIGRAM_SUPPORT_TTL_MS = 5 * 60 * 1000
+
+async function supportsTrigramSearch(): Promise<boolean> {
+  if (trigramSupportCache && trigramSupportCache.expiresAt > Date.now()) {
+    return trigramSupportCache.available
+  }
+
+  const result = await db.execute(sql`
+    SELECT
+      to_regprocedure('similarity(text, text)') IS NOT NULL
+      AND to_regoperator('%(text, text)') IS NOT NULL AS available
+  `)
+  const available = result.rows[0]?.available === true
+
+  trigramSupportCache = {
+    available,
+    expiresAt: Date.now() + TRIGRAM_SUPPORT_TTL_MS,
+  }
+  return available
+}
+
 // ---------------------------------------------------------------------------
 // Row → PublicNote
 // ---------------------------------------------------------------------------
@@ -63,6 +91,7 @@ function noteSelection(isBookmarked: SQL<boolean>) {
     title: notes.title,
     description: notes.description,
     subject: notes.subject,
+    category: notes.category,
     grade: notes.grade,
     educationLevel: notes.educationLevel,
     course: notes.course,
@@ -97,12 +126,13 @@ type NoteRow = {
   title: string
   description: string | null
   subject: string
+  category: string
   grade: string
   educationLevel: string
   course: string
   topic: string | null
   academicYear: string | null
-  tags: string[] | null
+  tags: string[]
   pageCount: number | null
   fileSizeBytes: number
   viewCount: number
@@ -126,6 +156,7 @@ function toPublicNote(row: NoteRow): PublicNote {
     title: row.title,
     description: row.description,
     subject: row.subject,
+    category: row.category,
     grade: row.grade,
     educationLevel: row.educationLevel,
     course: row.course,
@@ -263,6 +294,7 @@ function resolveSort(
 
 export class PostgresNotesSearchIndex implements NotesSearchIndex {
   async search(params: SearchNotesParams): Promise<SearchNotesResult> {
+    const rawQuery = params.q?.slice(0, SEARCH_CONFIG.maxQueryLength) ?? ""
     const page = Math.max(1, params.page ?? 1)
     const pageSize = Math.min(
       SEARCH_CONFIG.maxPageSize,
@@ -274,21 +306,33 @@ export class PostgresNotesSearchIndex implements NotesSearchIndex {
     // normalizes to "" and must be treated as browsing, not as a search that
     // returns nothing.
     let parsed: ParsedAcademicQuery | null = null
-    if (params.q && params.q.trim()) {
-      const knownSubjects = await getKnownSubjects()
-      parsed = parseAcademicQuery(params.q, {
+    if (rawQuery.trim()) {
+      const knownSubjects = params.subject
+        ? [params.subject]
+        : await getKnownSubjects()
+      parsed = parseAcademicQuery(rawQuery, {
         subjectResolver: createSubjectResolver(knownSubjects),
       })
       if (!parsed.normalized) parsed = null
     }
     const hasQuery = parsed !== null
 
-    const conditions = buildFilterConditions(toFilters(params))
+    const filterConditions = buildFilterConditions(toFilters(params))
+    const parsedConditions: SQL[] = []
+    if (parsed?.subject)
+      parsedConditions.push(eq(notes.subject, parsed.subject))
+    if (parsed?.grade) parsedConditions.push(eq(notes.grade, parsed.grade))
+    if (parsed?.educationLevel)
+      parsedConditions.push(eq(notes.educationLevel, parsed.educationLevel))
+
+    const conditions = [...filterConditions, ...parsedConditions]
 
     let scoreExpr: SQL<number> | null = null
+    let trigram = false
 
     if (parsed) {
-      const ranking = buildRankingExpressions(parsed)
+      trigram = await supportsTrigramSearch()
+      const ranking = buildRankingExpressions(parsed, { trigram })
       scoreExpr = ranking.relevanceScore
 
       // Don't rank every published note against the query — require at least
@@ -297,15 +341,24 @@ export class PostgresNotesSearchIndex implements NotesSearchIndex {
       // keeps notes that score ~0 out of the results entirely rather than
       // ranked last (which would make "0 results" impossible and the result
       // count meaningless).
+      const hasRemainingTerms =
+        parsed.topicTerms.length > 0 || parsed.generalTerms.length > 0
       const signals: SQL[] = [ranking.fullTextMatch]
-      if (ranking.trigramMatch) signals.push(ranking.trigramMatch)
-      signals.push(
-        ranking.exact.title,
-        ranking.exact.topic,
-        ranking.exact.subject,
-        ranking.exact.grade,
-        ranking.exact.tag
-      )
+      if (ranking.fallbackMatch) signals.push(ranking.fallbackMatch)
+      signals.push(ranking.exact.title, ranking.exact.topic, ranking.exact.tag)
+
+      // Parsed fields already narrow the WHERE clause. They are standalone
+      // match signals only for a purely structural query such as "physics" or
+      // "class 12"; otherwise "physics ray optics" would return every Physics
+      // note even when neither remaining topic word matched.
+      if (!hasRemainingTerms) {
+        signals.push(
+          ranking.exact.subject,
+          ranking.exact.grade,
+          ranking.exact.educationLevel
+        )
+      }
+
       if (ranking.exact.contributor) signals.push(ranking.exact.contributor)
 
       const matchCondition = or(...signals)
@@ -313,6 +366,7 @@ export class PostgresNotesSearchIndex implements NotesSearchIndex {
     }
 
     const whereClause = and(...conditions)
+
     const orderBy = buildOrderBy(resolveSort(params.sort, hasQuery), scoreExpr)
 
     // Bookmark state is per-viewer, so it can't be cached with the rest of
@@ -346,10 +400,67 @@ export class PostgresNotesSearchIndex implements NotesSearchIndex {
         .where(whereClause),
     ])
 
-    const total = countRows[0]?.count ?? 0
+    let total = countRows[0]?.count ?? 0
+    let publicNotes = rows.map((row) => toPublicNote(row))
+
+    // Word-level typo correction is intentionally a fallback: use the indexed
+    // full-text/trigram candidates first, then fill a short page from the small
+    // published corpus only when those signals found nothing.
+    if (
+      parsed &&
+      total === 0 &&
+      rawQuery.trim().length >= SEARCH_CONFIG.minFuzzyLength &&
+      trigram
+    ) {
+      const fuzzyCandidates = await db
+        .select(noteSelection(isBookmarked))
+        .from(notes)
+        .innerJoin(users, eq(notes.contributorId, users.id))
+        .where(and(...filterConditions, ...parsedConditions))
+        .orderBy(desc(notes.downloadCount), desc(notes.id))
+        .limit(500)
+
+      const words = getSearchWords(parsed)
+      const fuzzyMatches = fuzzyCandidates.map((row) => {
+        const note = toPublicNote(row)
+        const fields = [
+          note.title,
+          note.topic ?? "",
+          note.subject,
+          note.category ?? "",
+          note.course ?? "",
+          note.grade ?? "",
+          note.educationLevel ?? "",
+          note.contributor.name,
+          note.contributor.username,
+          ...(note.tags ?? []),
+        ]
+        const normalizedFields = fields.flatMap((field) =>
+          normalizeSearchQuery(field).split(/\s+/).filter(Boolean)
+        )
+        const matched = words.filter((word) =>
+          normalizedFields.some((candidate) =>
+            isFuzzyWordMatch(word, candidate)
+          )
+        ).length
+        const coverage = words.length > 0 ? matched / words.length : 0
+
+        return coverage >= 0.75 ? { note, coverage } : null
+      })
+      const matchedTotal = fuzzyMatches.filter(Boolean).length
+      total = matchedTotal
+
+      publicNotes = fuzzyMatches
+        .filter((match): match is { note: PublicNote; coverage: number } =>
+          Boolean(match)
+        )
+        .sort((a, b) => b.coverage - a.coverage)
+        .slice(offset, offset + pageSize)
+        .map(({ note }) => note)
+    }
 
     return {
-      notes: rows.map((row) => toPublicNote(row)),
+      notes: publicNotes,
       total,
       page,
       pageSize,
@@ -358,72 +469,95 @@ export class PostgresNotesSearchIndex implements NotesSearchIndex {
   }
 
   /**
-   * Autocomplete. Prefix matching (`lower(col) LIKE 'foo%'`) rather than
-   * ranked full-text: while someone is still typing, "elec" isn't a word yet,
-   * so a tsquery for it matches nothing. The trigram indexes on
-   * lower(title)/lower(topic)/lower(subject) serve these leading-anchored
-   * LIKEs, which a btree index could also do — but the trigram indexes are
-   * already there for the fuzzy fallback.
-   *
-   * Returns labels only. Picking a suggestion runs a normal search for that
-   * text; it never navigates straight to a note, so this stays a search-box
-   * aid rather than a second, subtly different results path.
+   * Autocomplete over normalized metadata. Prefixes are preferred; typo
+   * suggestions fill the remaining slots only when they clear a stricter
+   * similarity floor. Results come from one SQL query rather than three
+   * independent connection round trips.
    */
   async suggest(query: string): Promise<NoteSuggestion[]> {
-    const normalized = query.trim().toLowerCase()
+    const normalized = normalizeSearchQuery(query)
     if (normalized.length < SEARCH_CONFIG.minSuggestLength) return []
 
-    // Escape LIKE metacharacters so a user typing "100%" or "a_b" doesn't
-    // turn their own input into a wildcard pattern.
     const escaped = normalized.replace(/([\\%_])/g, "\\$1")
     const prefix = `${escaped}%`
+    const wordPrefix = `% ${escaped}%`
     const perKind = SEARCH_CONFIG.maxSuggestionsPerKind
 
-    const published = eq(notes.status, "PUBLISHED")
-
-    const [subjectRows, topicRows, titleRows] = await Promise.all([
-      db
-        .selectDistinct({ value: notes.subject })
-        .from(notes)
-        .where(and(published, sql`lower(${notes.subject}) LIKE ${prefix}`))
-        .limit(perKind),
-      db
-        .selectDistinct({ value: notes.topic })
-        .from(notes)
-        .where(
-          and(
-            published,
-            sql`${notes.topic} IS NOT NULL`,
-            sql`lower(${notes.topic}) LIKE ${prefix}`
+    const result = await db.execute<{
+      kind: NoteSuggestion["kind"]
+      label: string
+      slug?: string
+      prefix_match: boolean
+      score: number
+    }>(sql`
+      WITH candidates AS (
+        SELECT 'subject'::text AS kind, subject AS label, NULL::text AS slug, true AS prefix_match, 1::float AS score
+        FROM notes WHERE status = 'PUBLISHED'
+          AND (
+            notes_normalize_search_text(subject) LIKE ${prefix}
+            OR notes_normalize_search_text(subject) LIKE ${wordPrefix}
           )
-        )
-        .limit(perKind),
-      // Titles are ordered by downloads so the most useful completion wins;
-      // subjects/topics are DISTINCT sets where ordering carries no meaning.
-      db
-        .select({ value: notes.title })
-        .from(notes)
-        .where(and(published, sql`lower(${notes.title}) LIKE ${prefix}`))
-        .orderBy(desc(notes.downloadCount), desc(notes.id))
-        .limit(perKind),
-    ])
+        UNION ALL
+        SELECT 'topic', topic, NULL::text, true, 1::float
+        FROM notes WHERE status = 'PUBLISHED' AND topic IS NOT NULL
+          AND (
+            notes_normalize_search_text(coalesce(topic, '')) LIKE ${prefix}
+            OR notes_normalize_search_text(coalesce(topic, '')) LIKE ${wordPrefix}
+          )
+        UNION ALL
+        SELECT 'title', title, slug, true, 1::float
+        FROM notes WHERE status = 'PUBLISHED'
+          AND (
+            notes_normalize_search_text(title) LIKE ${prefix}
+            OR notes_normalize_search_text(title) LIKE ${wordPrefix}
+          )
+        UNION ALL
+        SELECT 'subject', subject, NULL::text, false,
+               similarity(notes_normalize_search_text(subject), ${normalized})
+        FROM notes WHERE status = 'PUBLISHED'
+          AND notes_normalize_search_text(subject) NOT LIKE ${prefix}
+          AND notes_normalize_search_text(subject) NOT LIKE ${wordPrefix}
+          AND similarity(notes_normalize_search_text(subject), ${normalized}) >= ${SEARCH_CONFIG.prefixTrigramThreshold}
+        UNION ALL
+        SELECT 'topic', topic, NULL::text, false,
+               similarity(notes_normalize_search_text(coalesce(topic, '')), ${normalized})
+        FROM notes WHERE status = 'PUBLISHED' AND topic IS NOT NULL
+          AND notes_normalize_search_text(coalesce(topic, '')) NOT LIKE ${prefix}
+          AND notes_normalize_search_text(coalesce(topic, '')) NOT LIKE ${wordPrefix}
+          AND similarity(notes_normalize_search_text(coalesce(topic, '')), ${normalized}) >= ${SEARCH_CONFIG.prefixTrigramThreshold}
+        UNION ALL
+        SELECT 'title', title, slug, false,
+               similarity(notes_normalize_search_text(title), ${normalized})
+        FROM notes WHERE status = 'PUBLISHED'
+          AND notes_normalize_search_text(title) NOT LIKE ${prefix}
+          AND notes_normalize_search_text(title) NOT LIKE ${wordPrefix}
+          AND similarity(notes_normalize_search_text(title), ${normalized}) >= ${SEARCH_CONFIG.prefixTrigramThreshold}
+      ), ranked AS (
+        SELECT kind, label, slug, prefix_match, score,
+               row_number() OVER (
+                 PARTITION BY kind, lower(label)
+                 ORDER BY prefix_match DESC, score DESC, label
+               ) AS duplicate_rank
+        FROM candidates
+      )
+      SELECT kind, label, slug, prefix_match, score
+      FROM (
+        SELECT *, count(*) OVER (PARTITION BY kind) AS kind_count,
+               row_number() OVER (
+                 PARTITION BY kind ORDER BY prefix_match DESC, score DESC, label
+               ) AS kind_rank
+        FROM ranked
+        WHERE duplicate_rank = 1
+      ) ranked_unique
+      WHERE kind_rank <= ${perKind}
+      ORDER BY prefix_match DESC, score DESC, kind_count ASC, label
+      LIMIT ${SEARCH_CONFIG.maxSuggestions}
+    `)
 
-    const suggestions: NoteSuggestion[] = [
-      ...subjectRows.map((r) => ({ label: r.value, kind: "subject" as const })),
-      ...topicRows
-        .filter((r): r is { value: string } => Boolean(r.value))
-        .map((r) => ({ label: r.value, kind: "topic" as const })),
-      ...titleRows.map((r) => ({ label: r.value, kind: "title" as const })),
-    ]
-
-    const seen = new Set<string>()
-    return suggestions
-      .filter((s) => {
-        const key = s.label.toLowerCase()
-        if (seen.has(key)) return false
-        seen.add(key)
-        return true
-      })
-      .slice(0, SEARCH_CONFIG.maxSuggestions)
+    return result.rows.map((row) => ({
+      kind: row.kind,
+      label: row.label,
+      ...(row.slug ? { slug: row.slug } : {}),
+    }))
   }
 }
