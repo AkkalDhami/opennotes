@@ -81,3 +81,23 @@ And the platform should make all three experiences simple.
 ## OpenNotes
 
 **Find notes. Share knowledge. Learn together.**
+
+---
+
+### OpenNotes — Public Academic Notes Platform
+
+**Next.js · TypeScript · PostgreSQL · Drizzle ORM · Redis · ImageKit · Tailwind CSS**
+
+Built a community-driven academic platform where students and educators can discover, organize, publish, and share educational notes.
+
+- Architected a relational data model using PostgreSQL and Drizzle ORM for notes, contributors, hierarchical collections, bookmarks, and engagement tracking.
+- Implemented secure authentication with Google/GitHub OAuth, JWT-based sessions, Redis-backed session management, and multi-device session controls.
+- Developed a PDF upload and processing pipeline with file validation, SHA-256 duplicate detection, cloud storage, and metadata extraction.
+- Built public note discovery with search, filtering, pagination, PDF previews, and SEO-friendly URLs.
+- Implemented nested public/private collections with ownership-based authorization, collection sharing, and QR code generation.
+- Developed contributor profiles and ranking algorithms using aggregated engagement metrics, including downloads, views, and bookmarks.
+- Implemented content moderation, reporting, role-based access control, and privacy-conscious analytics.
+
+Malware/file scanning: Protect users from malicious files
+Background PDF processing: Avoid long-running upload requests
+Full-text PDF search: Search inside documents
