@@ -24,6 +24,8 @@
   "registries": {
     "@react-bits": "https://reactbits.dev/r/{name}.json",
     "@23rd": "https://23rd.dev/r/{name}.json",
-    "@evilcharts": "https://evilcharts.com/r/{name}.json"
+    "@evilcharts": "https://evilcharts.com/r/{name}.json",
+    "@svgl": "https://svgl.app/r/{name}.json",
+    "@uselayouts": "https://uselayouts.com/r/{name}.json"
   }
 }

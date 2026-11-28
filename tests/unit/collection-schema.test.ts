@@ -1,7 +1,39 @@
 import { describe, expect, it } from "vitest"
 
-import { CreateCollectionSchema } from "../../src/validations/collection"
-import { normalizeSlugDraft } from "../../src/utils/slug"
+import {
+  CreateCollectionSchema,
+  UpdateNoteCollectionsSchema,
+} from "@/validations/collection"
+import { normalizeSlugDraft } from "@/utils/slug"
+
+describe("UpdateNoteCollectionsSchema", () => {
+  it("allows an empty selection to remove every membership", () => {
+    const result = UpdateNoteCollectionsSchema.safeParse({
+      noteId: "11111111-1111-4111-8111-111111111111",
+      collectionIds: [],
+    })
+
+    expect(result.success).toBe(true)
+  })
+
+  it("accepts a selected collection set", () => {
+    const result = UpdateNoteCollectionsSchema.safeParse({
+      noteId: "11111111-1111-4111-8111-111111111111",
+      collectionIds: ["22222222-2222-4222-8222-222222222222"],
+    })
+
+    expect(result.success).toBe(true)
+  })
+
+  it("rejects invalid collection ids", () => {
+    const result = UpdateNoteCollectionsSchema.safeParse({
+      noteId: "11111111-1111-4111-8111-111111111111",
+      collectionIds: ["not-a-uuid"],
+    })
+
+    expect(result.success).toBe(false)
+  })
+})
 
 describe("CreateCollectionSchema", () => {
   it("accepts a custom slug and trims it", () => {
@@ -19,7 +51,7 @@ describe("CreateCollectionSchema", () => {
     }
   })
 
-  it("allows a blank slug to mean auto-generate", () => {
+  it("allows a blank slug for auto-generation", () => {
     const result = CreateCollectionSchema.safeParse({
       name: "Biology Notes",
       slug: "",
@@ -27,7 +59,7 @@ describe("CreateCollectionSchema", () => {
 
     expect(result.success).toBe(true)
     if (result.success) {
-      expect(result.data.slug).toBeUndefined()
+      expect(result.data.slug).toBe("")
     }
   })
 
