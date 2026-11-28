@@ -1,0 +1,101 @@
+name: CI
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Check formatting for changed files
+        shell: bash
+        run: |
+          mapfile -t files < <(
+            git diff --name-only --diff-filter=ACMR \
+              "${{ github.event.pull_request.base.sha || 'HEAD^' }}...HEAD" \
+              -- '*.ts' '*.tsx' '*.js' '*.jsx' '*.mjs' '*.json' '*.yml' '*.yaml'
+          )
+
+          if [ "${#files[@]}" -gt 0 ]; then
+            npx prettier --check "${files[@]}"
+          fi
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Run unit tests
+        run: npm test
+
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    env:
+      # Build-only placeholders keep PRs from requiring production secrets.
+      DATABASE_URL: postgresql://ci:ci@127.0.0.1:5432/opennotes
+      UPSTASH_REDIS_REST_URL: https://redis.example.com
+      UPSTASH_REDIS_REST_TOKEN: ci-token
+      IMAGEKIT_PRIVATE_KEY: ci-private-key
+      IMAGEKIT_ID: ci-imagekit-id
+      IMAGEKIT_URL_ENDPOINT: https://ik.imagekit.io/ci/
+      CRYPTO_SECRET: ci-crypto-secret
+      DOWNLOADER_HASH_SECRET: ci-downloader-secret
+      VIEWER_HASH_SECRET: ci-viewer-secret
+      ADMIN_EMAIL: ci@example.com
+      NEXTAUTH_URL: http://localhost:3000
+      NEXTAUTH_SECRET: ci-nextauth-secret
+      GOOGLE_CLIENT_ID: ci-google-client-id
+      GOOGLE_CLIENT_SECRET: ci-google-client-secret
+      GITHUB_ID: ci-github-client-id
+      GITHUB_SECRET: ci-github-client-secret
+      JWT_ACCESS_SECRET: ci-jwt-access-secret
+      JWT_REFRESH_SECRET: ci-jwt-refresh-secret
+      NEXT_TELEMETRY_DISABLED: 1
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Build
+        run: npm run build
